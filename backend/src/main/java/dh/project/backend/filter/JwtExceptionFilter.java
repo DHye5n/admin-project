@@ -1,7 +1,8 @@
 package dh.project.backend.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dh.project.backend.dto.response.ApiResponseDto;
+import dh.project.backend.dto.ApiResponseDto;
+import dh.project.backend.enums.ResponseStatus;
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -25,11 +26,12 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (JwtException e) {
+
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setCharacterEncoding("UTF-8");
 
-            ApiResponseDto<?> errorResponse = ApiResponseDto.failure(e.getMessage());
+            ApiResponseDto<Void> errorResponse = ApiResponseDto.failure(ResponseStatus.JWT_ERROR);
 
             String responseJson = objectMapper.writeValueAsString(errorResponse);
             response.getWriter().write(responseJson);

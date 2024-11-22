@@ -26,6 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final PrincipalDetailsService principalDetailsService;
+//    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -81,4 +82,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         return null;
     }
+
+//    private void sendErrorResponse(HttpServletResponse response, ApiResponseException exception) throws IOException {
+//        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+//        response.setStatus(exception.getStatus().value());
+//        response.setCharacterEncoding("UTF-8");
+//
+//        ApiResponseDto<?> errorResponse = ApiResponseDto.failure(exception);
+//
+//        String responseJson = objectMapper.writeValueAsString(errorResponse);
+//        response.getWriter().write(responseJson);
+//    }
 }
