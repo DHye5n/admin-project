@@ -22,8 +22,6 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-
-
         try {
             filterChain.doFilter(request, response);
         } catch (JwtException e) {
@@ -31,7 +29,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setCharacterEncoding("UTF-8");
 
-            ApiResponseDto errorResponse = new ApiResponseDto(false, e.getMessage(), null);
+            ApiResponseDto<?> errorResponse = ApiResponseDto.failure(e.getMessage());
 
             String responseJson = objectMapper.writeValueAsString(errorResponse);
             response.getWriter().write(responseJson);
