@@ -8,6 +8,7 @@ spring:
     password: ENC(15rwtWiFfquvgJpwQsZEZw==)
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+
   jpa:
     open-in-view: false
     defer-datasource-initialization: true
@@ -32,6 +33,11 @@ spring:
           auth: true
           starttls:
             enable: true
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 110MB
 
 logging:
   level:
