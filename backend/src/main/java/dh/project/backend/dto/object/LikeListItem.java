@@ -4,6 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
+/**
+ *  공통 객체 DTO 클래스
+ * */
+
 @Getter
 @NoArgsConstructor
 public class LikeListItem {

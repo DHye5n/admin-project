@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ *  공통 객체 DTO 클래스
+ * */
+
 @Getter
 @NoArgsConstructor
 public class BoardListItem {
