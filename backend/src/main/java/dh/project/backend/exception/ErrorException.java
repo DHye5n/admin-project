@@ -17,8 +17,4 @@ public class ErrorException extends RuntimeException {
         return status.getStatus();
     }
 
-    public String getCode() {
-        return status.getCode();
-    }
-
 }

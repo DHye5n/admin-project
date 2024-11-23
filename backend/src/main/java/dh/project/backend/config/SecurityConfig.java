@@ -33,15 +33,15 @@ public class SecurityConfig {
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
                                 .antMatchers(
-                                        "/", "/auth/**",
-                                        "/auth/send-verification-code",
-                                        "/auth/resend-verification-code",
-                                        "/auth/verify-code",
-                                        "/auth/check-email",
-                                        "/auth/username/**/exists"
+                                        "/", "/api/auth/**",
+                                        "/api/auth/send-verification-code",
+                                        "/api/auth/resend-verification-code",
+                                        "/api/auth/verify-code",
+                                        "/api/auth/check-email",
+                                        "/api/auth/username/**/exists"
                                 ).permitAll()
                                 .antMatchers(
-                                        "/admin/users/**"
+                                        "/api/admin/users/**"
                                 )
                                 .hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated()
