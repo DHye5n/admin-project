@@ -3,16 +3,26 @@ import './style.css';
 import {CommentListItem} from 'types/interface';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
 
+/**
+ *  TODO: interface: Comment List Item 컴포넌트 Properties
+ * */
 interface Props {
     commentListItem: CommentListItem;
 }
 
-// component: Comment List Item 컴포넌트 //
+/**
+ *  TODO: component: Comment List Item 컴포넌트
+ * */
 export default function CommentItem({ commentListItem }: Props) {
-// properties //
-const { username, profileImage, createdAt, content } = commentListItem;
 
-// render: Comment List Item 렌더링 //
+    /**
+     *  TODO: state: properties
+     * */
+    const { username, profileImage, createdAt, content } = commentListItem;
+
+    /**
+     *  TODO: render: Comment List Item 렌더링
+     * */
     return (
         <div className='comment-list-item'>
             <div className='comment-list-item-top'>

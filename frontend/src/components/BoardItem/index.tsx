@@ -4,26 +4,40 @@ import { BoardListItem } from 'types/interface';
 import { useNavigate } from 'react-router-dom';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
 
+/**
+ *  TODO: interface: Board List Item 컴포넌트 Properties
+ * */
 interface Props {
     boardListItem: BoardListItem
 }
 
-// component: Board List Item 컴포넌트 //
+/**
+ *  TODO: component: Board List Item 컴포넌트
+ * */
 export default function BoardItem({ boardListItem }: Props) {
-// properties //
-const { boardId, title, content, boardTitleImage } = boardListItem;
-const { likeCount, commentCount, viewCount } = boardListItem;
-const { createdAt, username, profileImage } = boardListItem;
 
-// function: navigate 함수 //
+    /**
+     *  TODO: state: properties
+     * */
+    const { boardId, title, content, boardTitleImage } = boardListItem;
+    const { likeCount, commentCount, viewCount } = boardListItem;
+    const { createdAt, username, profileImage } = boardListItem;
+
+    /**
+     *  TODO: function: navigate 함수
+     * */
 // const navigator = useNavigate();
 
-// event handler: 게시물 아이템 클릭 이벤트 처리 함수 //
-const onClickHandler = () => {
-    // navigator(boardId);
-}
+    /**
+     *  TODO: event handler: 게시물 아이템 클릭 이벤트 처리 함수
+     * */
+    const onClickHandler = () => {
+        // navigator(boardId);
+    }
 
-// render: Board List Item 컴포넌트 렌더링 //
+    /**
+     *  TODO: render: Board List Item 컴포넌트 렌더링
+     * */
     return (
         <div className='board-list-item' onClick={onClickHandler}>
             <div className='board-list-item-main-box'>
