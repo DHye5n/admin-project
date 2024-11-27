@@ -1,6 +1,5 @@
-package dh.project.backend.domain.user;
+package dh.project.backend.domain;
 
-import dh.project.backend.domain.BaseTime;
 import dh.project.backend.enums.Role;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,6 +9,8 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "user",
         indexes = {
@@ -17,11 +18,11 @@ import javax.persistence.*;
                 @Index(name = "user_email_idx", columnList = "email", unique = true)
         }
 )
-@SQLDelete(sql = "UPDATE user SET deleted_date = CURRENT_TIMESTAMP WHERE userid = ?")
+@SQLDelete(sql = "UPDATE \"user\" SET deleted_date = CURRENT_TIMESTAMP WHERE user_id = ?")
 @Where(clause = "deleted_date IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Entity
+@Entity(name = "user")
 public class UserEntity extends BaseTime {
 
     @Id
@@ -52,6 +53,9 @@ public class UserEntity extends BaseTime {
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private Role role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<BoardEntity> boards = new ArrayList<>();
 
 
     @Builder

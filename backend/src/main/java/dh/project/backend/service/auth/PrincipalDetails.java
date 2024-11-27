@@ -1,6 +1,6 @@
 package dh.project.backend.service.auth;
 
-import dh.project.backend.domain.user.UserEntity;
+import dh.project.backend.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

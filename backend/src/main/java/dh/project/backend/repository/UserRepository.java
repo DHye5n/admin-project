@@ -1,6 +1,6 @@
 package dh.project.backend.repository;
 
-import dh.project.backend.domain.user.UserEntity;
+import dh.project.backend.domain.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
