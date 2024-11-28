@@ -1,5 +1,6 @@
 package dh.project.backend.service;
 
+import dh.project.backend.dto.response.auth.SignInResponseDto;
 import dh.project.backend.service.auth.PrincipalDetails;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -35,8 +36,10 @@ public class JwtService {
                 .compact();
     }
 
-    public String generateAccessToken(PrincipalDetails principalDetails) {
-        return generateToken(principalDetails.getUsername());
+    public SignInResponseDto generateAccessToken(PrincipalDetails principalDetails) {
+        String token = generateToken(principalDetails.getUsername());
+        int expirationTimeInSeconds = 3600;
+        return SignInResponseDto.fromEntity(token, expirationTimeInSeconds);
     }
 
     public String getUsername(String accessToken) {

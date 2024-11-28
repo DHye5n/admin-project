@@ -19,6 +19,10 @@ public class ApiResponseDto<T> {
         return new ApiResponseDto<>(true, status.getStatus(), status.getMessage(), null, status.getCode());
     }
 
+    public static <T> ApiResponseDto<T> success(ResponseStatus status, T data) {
+        return new ApiResponseDto<>(true, status.getStatus(), status.getMessage(), data, status.getCode());
+    }
+
     // 실패 응답 생성
     public static <T> ApiResponseDto<T> failure(ResponseStatus status) {
         return new ApiResponseDto<>(false, status.getStatus(), status.getMessage(), null, status.getCode());
