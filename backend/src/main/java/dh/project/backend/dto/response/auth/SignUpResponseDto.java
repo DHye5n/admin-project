@@ -1,4 +1,4 @@
-package dh.project.backend.dto.response.user;
+package dh.project.backend.dto.response.auth;
 
 import dh.project.backend.domain.UserEntity;
 import lombok.Builder;

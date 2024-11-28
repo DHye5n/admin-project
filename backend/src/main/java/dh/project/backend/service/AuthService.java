@@ -2,7 +2,7 @@ package dh.project.backend.service;
 
 import dh.project.backend.domain.UserEntity;
 import dh.project.backend.dto.ApiResponseDto;
-import dh.project.backend.dto.request.user.SignUpRequestDto;
+import dh.project.backend.dto.request.auth.SignUpRequestDto;
 import dh.project.backend.enums.ResponseStatus;
 import dh.project.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

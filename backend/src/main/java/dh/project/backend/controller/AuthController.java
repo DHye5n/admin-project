@@ -1,7 +1,7 @@
 package dh.project.backend.controller;
 
 import dh.project.backend.dto.ApiResponseDto;
-import dh.project.backend.dto.request.user.SignUpRequestDto;
+import dh.project.backend.dto.request.auth.SignUpRequestDto;
 import dh.project.backend.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
