@@ -1,3 +1,3 @@
-import ApiResponseDto from "./ApiResponse.dto";
+import ApiResponseDto from './ApiResponse.dto';
 
-export type {ApiResponseDto}; 
+export type { ApiResponseDto };

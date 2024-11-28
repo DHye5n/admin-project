@@ -1,5 +1,3 @@
-import SignUpRequestDto from "./sign-up.request.dto";
+import SignUpRequestDto from './sign-up.request.dto';
 
-export type {
-    SignUpRequestDto
-}
+export type { SignUpRequestDto };

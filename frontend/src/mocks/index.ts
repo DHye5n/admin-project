@@ -4,8 +4,8 @@ import commentListMock from './comment-list.mock';
 import likeListMock from './like-list.mock';
 
 export {
-    latestBoardListMock,
-    top3BoardListMock,
-    commentListMock,
-    likeListMock
-}
+  latestBoardListMock,
+  top3BoardListMock,
+  commentListMock,
+  likeListMock,
+};

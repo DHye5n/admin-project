@@ -1,5 +1,3 @@
-import SignUpResponseDto from "./sign-up-response.dto";
+import SignUpResponseDto from './sign-up-response.dto';
 
-export type {
-    SignUpResponseDto
-};
+export type { SignUpResponseDto };
