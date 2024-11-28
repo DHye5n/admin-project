@@ -41,14 +41,20 @@ public class UserEntity extends BaseTime {
     @Column(length = 11, nullable = false)
     private String phone;
 
-    @Column(length = 10)
+    @Column(length = 10, nullable = false)
     private String zonecode;
 
-    @Column(length = 30)
+    @Column(length = 30, nullable = false)
     private String address;
 
-    @Column(length = 30)
+    @Column(length = 30, nullable = false)
     private String addressDetail;
+
+    @Column
+    private String profileImage;
+
+    @Column(nullable = false)
+    private boolean agreedPersonal;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
@@ -60,7 +66,7 @@ public class UserEntity extends BaseTime {
 
     @Builder
     public UserEntity(String email, String password, String username, String phone,
-                      String zonecode, String address, String addressDetail, Role role) {
+                      String zonecode, String address, String addressDetail, boolean agreedPersonal, Role role) {
         this.email = email;
         this.password = password;
         this.username = username;
@@ -68,6 +74,7 @@ public class UserEntity extends BaseTime {
         this.zonecode = zonecode;
         this.address = address;
         this.addressDetail = addressDetail;
+        this.agreedPersonal = agreedPersonal;
         this.role = role != null ? role : Role.USER;
     }
 }

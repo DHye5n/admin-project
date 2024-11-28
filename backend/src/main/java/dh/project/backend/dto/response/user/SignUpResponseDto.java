@@ -7,13 +7,11 @@ import lombok.Getter;
 @Getter
 public class SignUpResponseDto {
 
-    private final Long userId;
     private final String email;
     private final String username;
 
     @Builder
-    public SignUpResponseDto(Long userId, String email, String username) {
-        this.userId = userId;
+    public SignUpResponseDto(String email, String username) {
         this.email = email;
         this.username = username;
 
@@ -21,7 +19,6 @@ public class SignUpResponseDto {
 
     public static SignUpResponseDto fromEntity(UserEntity user) {
         return SignUpResponseDto.builder()
-                .userId(user.getUserId())
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .build();

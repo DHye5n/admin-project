@@ -18,7 +18,7 @@ public class SignUpRequestDto {
 
     @NotBlank
     @Size(min = 8, max = 20, message = "비밀번호는 8자 이상 20자 이하이어야 합니다.")
-    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}", message = "비밀번호는 숫자, 소문자, 대문자를 각각 하나 이상 포함해야 합니다.")
+    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}", message = "비밀번호는 숫자, 소문자, 대문자를 각각 하나 이상 포함해야 합니다.")
     private String password;
 
     @NotBlank
@@ -41,7 +41,7 @@ public class SignUpRequestDto {
     @NotBlank
     private String addressDetail;
 
-    @NotBlank
+    @NotNull
     @AssertTrue
     private Boolean agreedPersonal;
 
@@ -49,7 +49,7 @@ public class SignUpRequestDto {
 
     @Builder
     public SignUpRequestDto(String email, String password, String passwordCheck, String username, String phone,
-                            String zonecode, String address, String addressDetail, Role role) {
+                            String zonecode, String address, String addressDetail, Boolean agreedPersonal, Role role) {
         this.email = email;
         this.password = password;
         this.passwordCheck = passwordCheck;
@@ -58,6 +58,7 @@ public class SignUpRequestDto {
         this.zonecode = zonecode;
         this.address = address;
         this.addressDetail = addressDetail;
+        this.agreedPersonal = agreedPersonal;
         this.role = role != null ? role : Role.USER;
     }
 
@@ -70,6 +71,7 @@ public class SignUpRequestDto {
                 .zonecode(zonecode)
                 .address(address)
                 .addressDetail(addressDetail)
+                .agreedPersonal(agreedPersonal)
                 .role(role != null ? role : Role.USER) 
                 .build();
     }
