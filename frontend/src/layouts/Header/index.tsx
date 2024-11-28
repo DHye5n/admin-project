@@ -80,7 +80,7 @@ export default function Header() {
   const [isUserPage, setUserPage] = useState<boolean>(false);
 
   /**
-   *  TODO:  funtion: navigate 함수
+   *  TODO:  function: navigate 함수
    * */
   const navigate = useNavigate();
 

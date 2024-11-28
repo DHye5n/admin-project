@@ -50,10 +50,10 @@ public class AuthService {
     public ApiResponseDto<SignInResponseDto> signIn(SignInRequestDto dto) {
 
         UserEntity user = userRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new ErrorException(ResponseStatus.SIGN_IN_FAIL, "아이디 또는 비밀번호가 일치하지 않습니다."));
+                .orElseThrow(() -> new ErrorException(ResponseStatus.SIGN_IN_FAIL, "Login information mismatch."));
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new ErrorException(ResponseStatus.SIGN_IN_FAIL, "아이디 또는 비밀번호가 일치하지 않습니다.");
+            throw new ErrorException(ResponseStatus.SIGN_IN_FAIL, "Login information mismatch.");
         }
 
         PrincipalDetails principalDetails = new PrincipalDetails(user);

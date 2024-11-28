@@ -18,7 +18,7 @@ export default function Container() {
    * */
   return (
     <div id='container'>
-      <Header />
+      {pathname !== AUTH_PATH() && <Header />}
       {/*<Aside />*/}
       <Outlet />
       {pathname !== AUTH_PATH() && <Footer />}
