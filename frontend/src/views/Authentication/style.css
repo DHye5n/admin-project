@@ -25,8 +25,93 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 60%;
+    width: 50%;
 }
+
+.auth-card {
+    padding: 50px 50px 30px;
+    width: 80%;
+    height: 100%;
+}
+
+.auth-card-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.auth-card-top {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.auth-card-title-box {
+    display: flex;
+    justify-content: space-between;
+}
+
+.auth-card-title {
+    color: rgba(0, 0, 0, 1);
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 140%;
+}
+
+.remember-find-id-pwd-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.find-id-link { cursor: pointer; }
+.find-pwd-link { cursor: pointer; }
+
+.remember-me-box {
+    color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+}
+
+.find-id-pwd-box {
+    color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    gap: 10px;
+}
+
+.auth-card-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.auth-sign-in-error-box {
+    margin-bottom: -4px;
+}
+
+.auth-sign-in-error-message {
+    color: rgba(255, 0, 0, 0.7);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 140%;
+    white-space: pre-wrap;
+}
+
+.social-login-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+
 
 .toggle-container {
     border-radius: 0 30px 30px 0;
@@ -36,14 +121,17 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 40%;
+    width: 50%;
 }
 
 .toggle-panel-box {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     gap: 20px;
+    width: 80%;
+    height: 100%;
 }
 
 .toggle-panel-text {
