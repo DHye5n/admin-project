@@ -14,12 +14,10 @@ const SIGN_UP_URL = () => `${API_DOMAIN}/auth/sign-up`;
 export const signInRequest = async (requestBody: SignInRequestDto) => {
   const result = await axios.post(SIGN_IN_URL(), requestBody)
     .then(response => {
-      console.log('API Response:', response.data);
       const responseBody: SignInResponseDto = response.data;
       return responseBody;
     })
     .catch(error => {
-      console.log('Error Response:', error.response?.data);
       if (!error.response) return null;
       const responseBody: ApiResponseDto = error.response.data;
       return responseBody;

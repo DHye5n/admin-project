@@ -1,9 +1,7 @@
 import {
   ChangeEvent,
-  Dispatch,
   KeyboardEvent,
   forwardRef,
-  SetStateAction,
 } from 'react';
 import './style.css';
 
@@ -20,6 +18,7 @@ interface Props {
   icon?: 'eye-light-off-icon' | 'eye-light-on-icon' | 'expand-right-light-icon';
   onButtonClick?: () => void;
   message?: string;
+  successMessage?: string;
   onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
 }
 
@@ -30,7 +29,7 @@ const InputBox = forwardRef<HTMLInputElement, Props>((props: Props, ref) => {
   /**
    *  TODO:  state: properties
    * */
-  const { label, type, placeholder, value, error, icon, message } = props;
+  const { label, type, placeholder, value, error, icon, message, successMessage } = props;
   const { onChange, onButtonClick, onKeyDown } = props;
 
 
@@ -50,7 +49,7 @@ const InputBox = forwardRef<HTMLInputElement, Props>((props: Props, ref) => {
       <div className='inputbox-label'>{label}</div>
 
       <div
-        className={error ? 'inputbox-container-error' : 'inputbox-container'}
+        className={error ? 'inputbox-container-error' : successMessage ? 'inputbox-container-success' : 'inputbox-container'}
       >
         <input
           ref={ref}
@@ -69,8 +68,11 @@ const InputBox = forwardRef<HTMLInputElement, Props>((props: Props, ref) => {
       </div>
 
       {message !== undefined && (
-        <div className='inputbox-message'>{message}</div>
+        <div className={error ? 'inputbox-message-error' : 'inputbox-message-success'}>
+          {error ? message : successMessage}
+        </div>
       )}
+
     </div>
   );
 });
