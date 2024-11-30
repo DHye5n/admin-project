@@ -305,14 +305,34 @@ function SignUpCard() {
   const emailRef = useRef<HTMLInputElement | null>(null);
 
   /**
-   *   TODO:  state: 이메일 요소 참조 상태
+   *   TODO:  state: 비밀번호 요소 참조 상태
    */
   const passwordRef = useRef<HTMLInputElement | null>(null);
 
   /**
-   *   TODO:  state: 이메일 요소 참조 상태
+   *   TODO:  state: 비밀번호 확인 요소 참조 상태
    */
   const passwordCheckRef = useRef<HTMLInputElement | null>(null);
+
+  /**
+   *   TODO:  state: 아이디 요소 참조 상태
+   */
+  const usernameRef = useRef<HTMLInputElement | null>(null);
+
+  /**
+   *   TODO:  state: 핸드폰 요소 참조 상태
+   */
+  const phoneRef = useRef<HTMLInputElement | null>(null);
+
+  /**
+   *   TODO:  state: 주소 요소 참조 상태
+   */
+  const addressRef = useRef<HTMLInputElement | null>(null);
+
+  /**
+   *   TODO:  state: 상세 주소 요소 참조 상태
+   */
+  const addressDetailRef = useRef<HTMLInputElement | null>(null);
 
   /**
    *   TODO:  state: 페이지 번호 상태
@@ -333,6 +353,27 @@ function SignUpCard() {
    *   TODO:  state: 비밀번호 확인 상태
    */
   const [passwordCheck, setPasswordCheck] = useState<string>('');
+
+  /**
+   *   TODO:  state: 아이디 상태
+   */
+  const [username, setUsername] = useState<string>('');
+
+  /**
+   *   TODO:  state: 핸드폰 상태
+   */
+  const [phone, setPhone] = useState<string>('');
+
+  /**
+   *   TODO:  state: 주소 상태
+   */
+  const [address, setAddress] = useState<string>('');
+
+  /**
+   *   TODO:  state: 상세 주소 상태
+   */
+  const [addressDetail, setAddressDetail] = useState<string>('');
+
 
   /**
    *   TODO:  state: 비밀번호 타입 상태
@@ -358,6 +399,26 @@ function SignUpCard() {
    *   TODO:  state: 비밀번호 확인 에러 상태
    */
   const [isPasswordCheckError, setPasswordCheckError] = useState<boolean>(false);
+
+  /**
+   *   TODO:  state: 아이디 에러 상태
+   */
+  const [isUsernameError, setUsernameError] = useState<boolean>(false);
+
+  /**
+   *   TODO:  state: 핸드폰 에러 상태
+   */
+  const [isPhoneError, setPhoneError] = useState<boolean>(false);
+
+  /**
+   *   TODO:  state: 주소 에러 상태
+   */
+  const [isAddressError, setAddressError] = useState<boolean>(false);
+
+  /**
+   *   TODO:  state: 상세 주소 에러 상태
+   */
+  const [isAddressDetailError, setAddressDetailError] = useState<boolean>(false);
 
   /**
    *   TODO:  state: 이메일 성공 메시지 상태
@@ -388,6 +449,26 @@ function SignUpCard() {
    *   TODO:  state: 비밀번호 확인 에러 메시지 상태
    */
   const [passwordCheckErrorMessage, setPasswordCheckErrorMessage] = useState<string>('');
+
+  /**
+   *   TODO:  state: 아이디 에러 메시지 상태
+   */
+  const [usernameErrorMessage, setUsernameErrorMessage] = useState<string>('');
+
+  /**
+   *   TODO:  state: 핸드폰 확인 에러 메시지 상태
+   */
+  const [phoneErrorMessage, setPhoneErrorMessage] = useState<string>('');
+
+  /**
+   *   TODO:  state: 주소 확인 에러 메시지 상태
+   */
+  const [addressErrorMessage, setAddressErrorMessage] = useState<string>('');
+
+  /**
+   *   TODO:  state: 상세 주소 확인 에러 메시지 상태
+   */
+  const [addressDetailErrorMessage, setAddressDetailMessage] = useState<string>('');
 
   /**
    *   TODO:  state: 비밀번호 버튼 아이콘 상태
@@ -514,6 +595,38 @@ function SignUpCard() {
   };
 
   /**
+   *   TODO:  event handler: 아이디 변경 이벤트 처리
+   */
+  const onUsernameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setUsername(value);
+  }
+
+  /**
+   *   TODO:  event handler: 핸드폰 변경 이벤트 처리
+   */
+  const onPhoneChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setPhone(value);
+  }
+
+  /**
+   *   TODO:  event handler: 주소 변경 이벤트 처리
+   */
+  const onAddressChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setAddress(value);
+  }
+
+  /**
+   *   TODO:  event handler: 상세 주소 변경 이벤트 처리
+   */
+  const onAddressDetailChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setAddressDetail(value);
+  }
+
+  /**
    *   TODO:  event handler: 비밀번호 버튼 클릭 이벤트 처리
    */
   const onPasswordButtonClickHandler = () => {
@@ -532,41 +645,58 @@ function SignUpCard() {
   const onPasswordCheckButtonClickHandler = () => {
     if (passwordCheckButtonIcon === 'eye-light-off-icon') {
       setPasswordCheckButtonIcon('eye-light-on-icon');
-      setPasswordType('text');
+      setPasswordCheckType('text');
     } else {
       setPasswordCheckButtonIcon('eye-light-off-icon');
-      setPasswordType('password');
+      setPasswordCheckType('password');
     }
   };
 
   /**
    *   TODO:  event handler: 회원가입 버튼 클릭 이벤트 처리
    */
-  const onSignInButtonClickHandler = () => {
+  const onSignUpButtonClickHandler = () => {
+    let isFormValid = true;
+
+    // 이메일 검증
     const isEmailValid = validateEmail(email).isValid;
-    const isPasswordValid = validatePassword(password).isValid;
-    const isPasswordCheckValid = passwordCheck === password;
-
-    if (!isEmailValid) {
+    if (!email || !isEmailValid) {
       setEmailError(true);
-      setEmailErrorMessage("올바른 이메일 형식을 입력해주세요.");
-      return;
+      setEmailErrorMessage(email ? "올바른 이메일 형식을 입력해주세요." : "이메일을 입력해주세요.");
+      isFormValid = false;
+    } else {
+      setEmailError(false);
+      setEmailErrorMessage("");
     }
 
-    if (!isPasswordValid) {
+    // 비밀번호 검증
+    const isPasswordValid = validatePassword(password).isValid;
+    if (!password || !isPasswordValid) {
       setPasswordError(true);
-      setPasswordErrorMessage("비밀번호는 8자 이상 20자 이하이어야 하며 숫자, 소문자, 대문자를 포함해야 합니다.");
-      return;
+      setPasswordErrorMessage(password ? "비밀번호는 8자 이상 20자 이하이어야 하며 숫자, 소문자, 대문자를 포함해야 합니다." : "비밀번호를 입력해주세요.");
+      isFormValid = false;
+    } else {
+      setPasswordError(false);
+      setPasswordErrorMessage("");
     }
 
-    if (!isPasswordCheckValid) {
+    // 비밀번호 확인 검증
+    const isPasswordCheckValid = passwordCheck === password;
+    if (!passwordCheck || !isPasswordCheckValid) {
       setPasswordCheckError(true);
-      setPasswordCheckErrorMessage("비밀번호가 일치하지 않습니다.");
-      return;
+      setPasswordCheckErrorMessage(passwordCheck ? "비밀번호가 일치하지 않습니다." : "비밀번호 확인을 입력해주세요.");
+      isFormValid = false;
+    } else {
+      setPasswordCheckError(false);
+      setPasswordCheckErrorMessage("");
     }
-    alert("회원가입이 완료되었습니다.");
-    setPage(1);
-  }
+
+    // 모든 입력이 유효하면 처리
+    if (isFormValid) {
+      alert("회원가입이 완료되었습니다.");
+      setPage(1);
+    }
+  };
 
 
 
@@ -584,18 +714,44 @@ function SignUpCard() {
           <InputBox ref={emailRef} label='이메일*' type='text'
                     placeholder='이메일 주소를 입력해주세요.' value={email} onChange={onEmailChangeHandler}
                     error={isEmailError} message={emailErrorMessage} successMessage={emailSuccessMessage} />
+
           <InputBox ref={passwordRef} label='비밀번호*' type={passwordType}
                     placeholder='비밀번호를 입력해주세요.' value={password} onChange={onPasswordChangeHandler}
                     error={isPassword} message={passwordErrorMessage} successMessage={passwordSuccessMessage}
                     icon={passwordButtonIcon} onButtonClick={onPasswordButtonClickHandler}/>
+
           <InputBox ref={passwordCheckRef} label='비밀번호 확인*' type={passwordCheckType}
                     placeholder='비밀번호를 다시 입력해주세요.' value={passwordCheck} onChange={onPasswordCheckChangeHandler}
                     error={isPasswordCheckError} message={passwordCheckErrorMessage} successMessage={passwordCheckSuccessMessage}
                     icon={passwordCheckButtonIcon} onButtonClick={onPasswordCheckButtonClickHandler}/>
+
+          <InputBox ref={usernameRef} label='아이디*' type='text'
+                    placeholder='아이디를 입력해주세요.' value={username} onChange={onUsernameChangeHandler}
+                    error={isUsernameError} message={usernameErrorMessage} />
+
+          <InputBox ref={phoneRef} label='핸드폰 번호*' type='text'
+                    placeholder='핸드폰 번호를 입력해주세요.' value={phone} onChange={onPhoneChangeHandler}
+                    error={isPhoneError} message={phoneErrorMessage} />
+
+          <InputBox ref={addressRef} label='주소*' type='text'
+                    placeholder='주소를 입력해주세요.' value={address} onChange={onAddressChangeHandler}
+                    error={isAddressError} message={addressErrorMessage} />
+
+          <InputBox ref={addressDetailRef} label='상세 주소*' type='text'
+                    placeholder='상세 주소를 입력해주세요.' value={addressDetail} onChange={onAddressDetailChangeHandler}
+                    error={isAddressDetailError} message={addressDetailErrorMessage} />
+        </div>
+
+        <div className='auth-consent-box'>
+          <div className='auth-check-box'>
+            <div className='check-round-light-icon'></div>
+          </div>
+          <div className='auth-consent-title'>{'개인정보동의'}</div>
+          <div className='auth-consent-link'>{'더보기 >'}</div>
         </div>
 
         <div className="auth-card-bottom">
-          <div className="auth-button" onClick={onSignInButtonClickHandler}>{'회원가입'}</div>
+          <div className="auth-button" onClick={onSignUpButtonClickHandler}>{'회원가입'}</div>
         </div>
       </div>
     </div>

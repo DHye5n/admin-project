@@ -44,7 +44,7 @@
 .auth-card-top {
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 15px;
 }
 
 .auth-card-title-box {
@@ -54,6 +54,13 @@
 
 .auth-card-title {
     color: rgba(0, 0, 0, 1);
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 140%;
+}
+
+.auth-card-page {
+    color: rgba(0, 0, 0, 0.7);
     font-size: 24px;
     font-weight: 500;
     line-height: 140%;
