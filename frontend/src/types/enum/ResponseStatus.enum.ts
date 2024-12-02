@@ -11,6 +11,9 @@ enum ResponseStatus {
   NO_PERMISSION = 'NP',
   DATABASE_ERROR = 'DBE',
   JWT_ERROR = 'JE',
+  INVALID_EMAIL = 'IE',
+  EXPIRED_VERIFICATION_CODE = 'EVC',
+  INCORRECT_VERIFICATION_CODE = 'IVC'
 }
 
 export default ResponseStatus;

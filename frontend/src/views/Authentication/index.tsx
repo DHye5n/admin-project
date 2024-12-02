@@ -2,12 +2,15 @@ import './style.css';
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import InputBox from 'components/InputBox';
 import { SignInRequestDto } from 'apis/request/auth';
-import { signInRequest } from 'apis';
+import { signInRequest, signUpRequest } from 'apis';
 import { ApiResponseDto } from 'apis/response';
 import { SignInResponseDto } from 'apis/response/auth';
 import { useCookies } from 'react-cookie';
 import { MAIN_PATH } from 'constant';
 import { useNavigate } from 'react-router-dom';
+import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
+import { SignUpRequestDto } from 'apis/request/auth';
+import { SignUpResponseDto } from 'apis/response/auth';
 
 /**
  *   TODO:  component: Main Authentication 컴포넌트
@@ -54,54 +57,33 @@ export default function Authentication() {
     </div>
   );
 }
-
 /**
  *   TODO:  component: 로그인 컴포넌트
  */
 function SignInCard() {
-  /**
-   *   TODO:  state: 쿠키 상태
-   */
-  const [cookie, setCookie] = useCookies();
-
   /**
    *   TODO:  funtion: navitate 함수
    */
   const navigator = useNavigate();
 
   /**
-   *   TODO:  state: 아이디 요소 참조 상태
+   *   TODO:  state: 요소 참조 상태
    */
   const usernameRef = useRef<HTMLInputElement | null>(null);
 
-  /**
-   *   TODO:  state: 비밀번호 요소 참조 상태
-   */
   const passwordRef = useRef<HTMLInputElement | null>(null);
 
   /**
-   *   TODO:  state: 페이지 번호 상태
+   *   TODO:  state: 상태
    */
-  const [page, setPage] = useState<1 | 2>(1);
+  const [cookie, setCookie] = useCookies();
 
-  /**
-   *   TODO:  state: 아이디 상태
-   */
   const [username, setUsername] = useState<string>('');
 
-  /**
-   *   TODO:  state: 비밀번호 상태
-   */
   const [password, setPassword] = useState<string>('');
 
-  /**
-   *   TODO:  state: 비밀번호 타입 상태
-   */
   const [passwordType, setPasswordType] = useState<'text' | 'password'>('password');
 
-  /**
-   *   TODO:  state: 비밀번호 아이콘 상태
-   */
   const [passwordButtonIcon, setPasswordButtonIcon] = useState<'eye-light-off-icon' | 'eye-light-on-icon'>('eye-light-off-icon');
 
   /**
@@ -228,7 +210,7 @@ function SignInCard() {
   };
 
   /**
-   *   TODO:  event handler: 아이디 인풋 키 다운 이벤트 처리
+   *   TODO:  event handler: 인풋 키 다운 이벤트 처리
    */
   const onUsernameKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== 'Enter') return;
@@ -236,9 +218,6 @@ function SignInCard() {
     passwordRef.current.focus();
   };
 
-  /**
-   *   TODO:  event handler: 아이디 인풋 키 다운 이벤트 처리
-   */
   const onPasswordKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== 'Enter') return;
     onSignInButtonClickHandler();
@@ -253,7 +232,6 @@ function SignInCard() {
         <div className="auth-card-top">
           <div className="auth-card-title-box">
             <div className="auth-card-title">{'로그인'}</div>
-            <div className="auth-card-page">{`${page}/2`}</div>
           </div>
           <InputBox ref={usernameRef} label="아이디" type="text" placeholder="아이디를 입력해주세요."
                     error={error} value={username} onChange={onUsernameChangeHandler} onKeyDown={onUsernameKeyDownHandler} />
@@ -300,335 +278,361 @@ function SignInCard() {
  */
 function SignUpCard() {
   /**
-   *   TODO:  state: 이메일 요소 참조 상태
+   *   TODO:  funtion: navitate 함수
+   */
+  const navigator = useNavigate();
+
+  /**
+   *   TODO:  state: 요소 참조 상태
    */
   const emailRef = useRef<HTMLInputElement | null>(null);
 
-  /**
-   *   TODO:  state: 비밀번호 요소 참조 상태
-   */
   const passwordRef = useRef<HTMLInputElement | null>(null);
 
-  /**
-   *   TODO:  state: 비밀번호 확인 요소 참조 상태
-   */
   const passwordCheckRef = useRef<HTMLInputElement | null>(null);
 
-  /**
-   *   TODO:  state: 아이디 요소 참조 상태
-   */
   const usernameRef = useRef<HTMLInputElement | null>(null);
 
-  /**
-   *   TODO:  state: 핸드폰 요소 참조 상태
-   */
   const phoneRef = useRef<HTMLInputElement | null>(null);
 
-  /**
-   *   TODO:  state: 주소 요소 참조 상태
-   */
+  const zonecodeRef = useRef<HTMLInputElement | null>(null);
+
   const addressRef = useRef<HTMLInputElement | null>(null);
 
-  /**
-   *   TODO:  state: 상세 주소 요소 참조 상태
-   */
   const addressDetailRef = useRef<HTMLInputElement | null>(null);
 
   /**
-   *   TODO:  state: 페이지 번호 상태
+   *   TODO:  state: 상태
    */
-  const [page, setPage] = useState<1 | 2>(2);
 
-  /**
-   *   TODO:  state: 이메일 상태
-   */
+  const [view, setView] = useState<'sign-in' | 'sign-up'>('sign-in');
+
+  const [page, setPage] = useState<1 | 2>(1);
+
   const [email, setEmail] = useState<string>('');
 
-  /**
-   *   TODO:  state: 비밀번호 상태
-   */
+  const [verificationCode, setVerificationCode] = useState<string>('');
+
   const [password, setPassword] = useState<string>('');
 
-  /**
-   *   TODO:  state: 비밀번호 확인 상태
-   */
   const [passwordCheck, setPasswordCheck] = useState<string>('');
 
-  /**
-   *   TODO:  state: 아이디 상태
-   */
   const [username, setUsername] = useState<string>('');
 
-  /**
-   *   TODO:  state: 핸드폰 상태
-   */
   const [phone, setPhone] = useState<string>('');
 
-  /**
-   *   TODO:  state: 주소 상태
-   */
+  const [zonecode, setZonecode] = useState<string>('');
+
   const [address, setAddress] = useState<string>('');
 
-  /**
-   *   TODO:  state: 상세 주소 상태
-   */
   const [addressDetail, setAddressDetail] = useState<string>('');
 
+  const [agreedPersonal, setAgreedPersonal] = useState<boolean>(false);
 
-  /**
-   *   TODO:  state: 비밀번호 타입 상태
-   */
   const [passwordType, setPasswordType] = useState<'text' | 'password'>('password');
 
-  /**
-   *   TODO:  state: 비밀번호 체크 타입 상태
-   */
   const [passwordCheckType, setPasswordCheckType] = useState<'text' | 'password'>('password');
 
   /**
-   *   TODO:  state: 이메일 에러 상태
+   *   TODO:  state: 에러 상태
    */
   const [isEmailError, setEmailError] = useState<boolean>(false);
 
-  /**
-   *   TODO:  state: 비밀번호 에러 상태
-   */
+  const [isVerificationCodeError, setVerificationCodeError] = useState<boolean>(false);
+
   const [isPassword, setPasswordError] = useState<boolean>(false);
 
-  /**
-   *   TODO:  state: 비밀번호 확인 에러 상태
-   */
   const [isPasswordCheckError, setPasswordCheckError] = useState<boolean>(false);
 
-  /**
-   *   TODO:  state: 아이디 에러 상태
-   */
   const [isUsernameError, setUsernameError] = useState<boolean>(false);
 
-  /**
-   *   TODO:  state: 핸드폰 에러 상태
-   */
   const [isPhoneError, setPhoneError] = useState<boolean>(false);
 
-  /**
-   *   TODO:  state: 주소 에러 상태
-   */
+  const [isZonecodeError, setZonecodeError] = useState<boolean>(false);
+
   const [isAddressError, setAddressError] = useState<boolean>(false);
 
-  /**
-   *   TODO:  state: 상세 주소 에러 상태
-   */
   const [isAddressDetailError, setAddressDetailError] = useState<boolean>(false);
 
+  const [isAgreedPersonalError, setAgreedPersonalError] = useState<boolean>(false);
+
   /**
-   *   TODO:  state: 이메일 성공 메시지 상태
+   *   TODO:  state: 성공 메시지 상태
    */
   const [emailSuccessMessage, setEmailSuccessMessage] = useState<string>('');
 
+  const [verificationCodeSuccessMessage, setVerificationCodeSuccessMessage] = useState<string>('');
+
+  const [passwordSuccessMessage, setPasswordSuccessMessage] = useState<string>('');
+
+  const [passwordCheckSuccessMessage, setPasswordCheckSuccessMessage] = useState<string>('');
+
+  const [usernameSuccessMessage, setUsernameSuccessMessage] = useState<string>('');
+
+  const [phoneSuccessMessage, setPhoneSuccessMessage] = useState<string>('');
+
   /**
-   *   TODO:  state: 이메일 에러 메시지 상태
+   *   TODO:  state: 에러 메시지 상태
    */
   const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
 
-  /**
-   *   TODO:  state: 패스워드 성공 메시지 상태
-   */
-  const [passwordSuccessMessage, setPasswordSuccessMessage] = useState<string>('');
+  const [verificationCodeErrorMessage, setVerificationCodeErrorMessage] = useState<string>('');
 
-  /**
-   *   TODO:  state: 비밀번호 에러 메시지 상태
-   */
   const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>('');
 
-  /**
-   *   TODO:  state: 패스워드 성공 메시지 상태
-   */
-  const [passwordCheckSuccessMessage, setPasswordCheckSuccessMessage] = useState<string>('');
-
-  /**
-   *   TODO:  state: 비밀번호 확인 에러 메시지 상태
-   */
   const [passwordCheckErrorMessage, setPasswordCheckErrorMessage] = useState<string>('');
 
-  /**
-   *   TODO:  state: 아이디 에러 메시지 상태
-   */
   const [usernameErrorMessage, setUsernameErrorMessage] = useState<string>('');
 
-  /**
-   *   TODO:  state: 핸드폰 확인 에러 메시지 상태
-   */
   const [phoneErrorMessage, setPhoneErrorMessage] = useState<string>('');
 
-  /**
-   *   TODO:  state: 주소 확인 에러 메시지 상태
-   */
+  const [zonecodeErrorMessage, setZonecodeErrorMessage] = useState<string>('');
+
   const [addressErrorMessage, setAddressErrorMessage] = useState<string>('');
 
-  /**
-   *   TODO:  state: 상세 주소 확인 에러 메시지 상태
-   */
-  const [addressDetailErrorMessage, setAddressDetailMessage] = useState<string>('');
+  const [addressDetailErrorMessage, setAddressDetailErrorMessage] = useState<string>('');
 
   /**
-   *   TODO:  state: 비밀번호 버튼 아이콘 상태
+   *   TODO:  state: 버튼 아이콘 상태
    */
+  const [emailButtonIcon, setEmailButtonIcon] = useState<'email-gray-icon' | undefined>('email-gray-icon');
+
+  const [emailCheckButtonIcon, setEmailCheckButtonIcon] = useState<'auth-icon' | undefined>('auth-icon');
+
   const [passwordButtonIcon, setPasswordButtonIcon] = useState<'eye-light-off-icon' | 'eye-light-on-icon'>('eye-light-off-icon');
 
-  /**
-   *   TODO:  state: 비밀번호 확인 버튼 아이콘 상태
-   */
   const [passwordCheckButtonIcon, setPasswordCheckButtonIcon] = useState<'eye-light-off-icon' | 'eye-light-on-icon'>('eye-light-off-icon');
 
+  const [addressButtonIcon, setAddressButtonIcon] = useState<'home-gray-icon' | undefined>('home-gray-icon');
+
   /**
-   *   TODO:  이메일 유효성 검사 함수
+   *   TODO:  function:  다음 주소 검색 팝업 오픈 함수
+   */
+  const open = useDaumPostcodePopup();
+
+  /**
+   *   TODO:  function:  회원가입 response 처리 함수
+   */
+  const signUpResponse = (responseBody: SignUpResponseDto | ApiResponseDto | null) => {
+    if (!responseBody) {
+      alert('네트워크 이상입니다.');
+      return;
+    }
+
+    const {code} = responseBody;
+    if (code === 'DE') {
+      setEmailError(true);
+      setEmailErrorMessage('중복되는 이메일입니다.');
+    }
+    if (code === 'DU') {
+      setUsernameError(true);
+      setEmailErrorMessage('중복되는 아이디입니다.');
+    }
+    if (code === 'DP') {
+      setPhoneError(true);
+      setPhoneErrorMessage('중복되는 핸드폰 번호입니다.');
+    }
+    if (code === 'VF') alert('모든 값을 입력하세요.');
+    if (code === 'DBE') alert('데이터베이스 오류입니다.');
+    if (code !== 'SU') return;
+
+    setView('sign-in');
+
+  }
+
+  /**
+   *   TODO:  function:  유효성 검사 함수
    */
   const validateEmail = (email: string): { isValid: boolean; errorMessage: string } => {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailPattern.test(email)) {
       return {
         isValid: false,
-        errorMessage: "올바른 이메일 형식을 입력해주세요."
+        errorMessage: '올바른 이메일 형식을 입력해주세요.'
       };
     }
     return {
       isValid: true,
-      errorMessage: ""
+      errorMessage: ''
     };
   };
 
-  /**
-   *   TODO:  event handler: 이메일 변경 이벤트 처리
-   */
-  const onEmailChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setEmail(value);
-
-    if (value === "") {
-      setEmailError(false);
-      setEmailErrorMessage("");
-      setEmailSuccessMessage("");
-    } else {
-      const { isValid, errorMessage } = validateEmail(value);
-      setEmailError(!isValid);
-      setEmailErrorMessage(errorMessage);
-
-      if (isValid) {
-        setEmailSuccessMessage("사용 가능한 이메일 주소입니다.");
-      } else {
-        setEmailSuccessMessage("");
-      }
-    }
-  };
-
-  /**
-   *   TODO:  비밀번호 유효성 검사 함수
-   */
   const validatePassword = (password: string): { isValid: boolean; errorMessage: string } => {
     const trimmedPassword = password.trim();
 
     if (trimmedPassword.length < 8 || trimmedPassword.length > 20) {
       return {
         isValid: false,
-        errorMessage: "비밀번호는 8자 이상 20자 이하이어야 합니다."
+        errorMessage: '비밀번호는 8자 이상 20자 이하이어야 합니다.'
       };
     }
 
-    const passwordPattern = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
+    const passwordPattern = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,20}$/;
     if (!passwordPattern.test(trimmedPassword)) {
       return {
         isValid: false,
-        errorMessage: "비밀번호는 숫자, 소문자, 대문자를 각각 하나 이상 포함해야 합니다."
+        errorMessage: '비밀번호는 숫자, 소문자, 대문자, 특수문자를 각각 하나 이상 포함해야 합니다.'
       };
     }
 
     return {
       isValid: true,
-      errorMessage: ""
+      errorMessage: ''
     };
   };
 
   /**
-   *   TODO:  event handler: 비밀번호 변경 이벤트 처리
+   *   TODO:  event handler: 변경 이벤트 처리
    */
+  const onEmailChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setEmail(value);
+
+    if (value === '') {
+      setEmailError(false);
+      setEmailErrorMessage('');
+      setEmailSuccessMessage('');
+    } else {
+      const { isValid, errorMessage } = validateEmail(value);
+      setEmailError(!isValid);
+      setEmailErrorMessage(errorMessage);
+
+      if (isValid) {
+        setEmailSuccessMessage('사용 가능한 이메일 주소입니다.');
+      } else {
+        setEmailSuccessMessage('');
+      }
+    }
+  };
+
+  const onVerificationCodeChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setVerificationCode(value);
+
+    if (value === '') {
+      setVerificationCodeError(false);
+      setVerificationCodeErrorMessage('');
+      setVerificationCodeSuccessMessage('');
+    } else {
+      setVerificationCodeError(true);
+      setVerificationCodeErrorMessage('인증번호가 잘못되었습니다.');
+      setVerificationCodeSuccessMessage('');
+    }
+  };
+
   const onPasswordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setPassword(value);
 
-    if (value === "") {
+    if (value === '') {
       setPasswordError(false);
-      setPasswordErrorMessage("");
-      setPasswordSuccessMessage("");
+      setPasswordErrorMessage('');
+      setPasswordSuccessMessage('');
     } else {
       const { isValid, errorMessage } = validatePassword(value);
       setPasswordError(!isValid);
       setPasswordErrorMessage(errorMessage);
 
       if (isValid) {
-        setPasswordSuccessMessage("사용 가능한 비밀번호입니다.");
+        setPasswordSuccessMessage('사용 가능한 비밀번호입니다.');
       } else {
-        setPasswordSuccessMessage("");
+        setPasswordSuccessMessage('');
       }
     }
   };
 
-  /**
-   *   TODO:  event handler: 비밀번호 확인 변경 이벤트 처리
-   */
   const onPasswordCheckChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setPasswordCheck(value);
 
-    if (value === "") {
+    if (value === '') {
       setPasswordCheckError(false);
-      setPasswordCheckErrorMessage("");
-      setPasswordCheckSuccessMessage("");
+      setPasswordCheckErrorMessage('');
+      setPasswordCheckSuccessMessage('');
     } else if (value !== password) {
       setPasswordCheckError(true);
-      setPasswordCheckErrorMessage("비밀번호가 일치하지 않습니다.");
-      setPasswordCheckSuccessMessage("");
+      setPasswordCheckErrorMessage('비밀번호가 일치하지 않습니다.');
+      setPasswordCheckSuccessMessage('');
     } else {
       setPasswordCheckError(false);
-      setPasswordCheckErrorMessage("");
-      setPasswordCheckSuccessMessage("비밀번호가 일치합니다.");
+      setPasswordCheckErrorMessage('');
+      setPasswordCheckSuccessMessage('비밀번호가 일치합니다.');
     }
   };
 
-  /**
-   *   TODO:  event handler: 아이디 변경 이벤트 처리
-   */
   const onUsernameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setUsername(value);
-  }
 
-  /**
-   *   TODO:  event handler: 핸드폰 변경 이벤트 처리
-   */
+    if (value === '') {
+      setUsernameError(false);
+      setUsernameErrorMessage('');
+      setUsernameSuccessMessage('');
+    } else if (value.length < 3 || value.length > 10) {
+      setUsernameError(true);
+      setUsernameErrorMessage('아이디는 3자 이상, 10자 이하로 입력해주세요.');
+      setUsernameSuccessMessage('');
+    } else {
+      setUsernameError(false);
+      setUsernameErrorMessage('');
+      setUsernameSuccessMessage('사용 가능한 아이디입니다.');
+    }
+  };
+
   const onPhoneChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setPhone(value);
+
+    const phoneValid = /^010\d{4}\d{4}$/;
+
+    if (value === '') {
+      setPhoneError(false);
+      setPhoneErrorMessage('');
+      setPhoneSuccessMessage('');
+    } else if (!phoneValid.test(value)) {
+      setPhoneError(true);
+      setPhoneErrorMessage('올바른 핸드폰 번호 형식으로 입력해주세요.');
+      setUsernameSuccessMessage('');
+    } else {
+      setPhoneError(false);
+      setPhoneErrorMessage('');
+      setPhoneSuccessMessage('사용 가능한 핸드폰 번호입니다.')
+    }
+  };
+
+  const onZonecodeChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setZonecode(value);
+    setZonecodeError(false);
+    setZonecodeErrorMessage('주소를 입력 바랍니다.');
   }
 
-  /**
-   *   TODO:  event handler: 주소 변경 이벤트 처리
-   */
   const onAddressChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setAddress(value);
-  }
+    setAddressError(false);
+    setAddressErrorMessage('주소를 입력 바랍니다.');
+  };
 
-  /**
-   *   TODO:  event handler: 상세 주소 변경 이벤트 처리
-   */
   const onAddressDetailChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setAddressDetail(value);
-  }
+    setAddressDetailError(false);
+    setAddressDetailErrorMessage('상세 주소를 입력 바랍니다.');
+  };
 
   /**
-   *   TODO:  event handler: 비밀번호 버튼 클릭 이벤트 처리
+   *   TODO:  event handler:  버튼 클릭 이벤트 처리
    */
+  const onAgreedPersonalClickHandler = () => {
+    setAgreedPersonal(!agreedPersonal);
+    setAgreedPersonalError(false);
+  };
+
+  const onEmailButtonClickHandler = () => {};
+
+  const onEmailCheckButtonClickHandler = () => {};
+
   const onPasswordButtonClickHandler = () => {
     if (passwordButtonIcon === 'eye-light-off-icon') {
       setPasswordButtonIcon('eye-light-on-icon');
@@ -639,9 +643,6 @@ function SignUpCard() {
     }
   };
 
-  /**
-   *   TODO:  event handler: 비밀번호 확인 버튼 클릭 이벤트 처리
-   */
   const onPasswordCheckButtonClickHandler = () => {
     if (passwordCheckButtonIcon === 'eye-light-off-icon') {
       setPasswordCheckButtonIcon('eye-light-on-icon');
@@ -652,6 +653,75 @@ function SignUpCard() {
     }
   };
 
+  const onAddressButtonClickHandler = () => {
+    open({onComplete});
+  };
+
+  const onNextButtonClickHandler = () => {
+    let isFormValid1 = true;
+
+    // 이메일 검증
+    const isEmailValid1 = validateEmail(email).isValid;
+    if (!email || email.trim().length === 0 || !isEmailValid1) {
+      setEmailError(true);
+      setEmailErrorMessage(email ? "올바른 이메일 형식을 입력해주세요." : "이메일을 입력해주세요.");
+      isFormValid1 = false;
+    } else {
+      setEmailError(false);
+      setEmailErrorMessage("");
+    }
+
+    // 아이디 검증
+    if (!username || username.trim().length === 0 || username.length < 3 || username.length > 10) {
+      setUsernameError(true);
+      setUsernameErrorMessage(username ? "아이디는 3자 이상, 10자 이하로 입력해주세요." : "아이디를 입력해주세요.");
+      isFormValid1 = false;
+    } else {
+      setUsernameError(false);
+      setUsernameErrorMessage("");
+    }
+
+    // 비밀번호 검증
+    const isPasswordValid = validatePassword(password).isValid;
+    if (!password || password.trim().length === 0 || !isPasswordValid) {
+      setPasswordError(true);
+      setPasswordErrorMessage(password ? "비밀번호는 8자 이상 20자 이하이어야 하며 숫자, 소문자, 대문자를 포함해야 합니다." : "비밀번호를 입력해주세요.");
+      isFormValid1 = false;
+    } else {
+      setPasswordError(false);
+      setPasswordErrorMessage("");
+    }
+
+    // 비밀번호 확인 검증
+    const isPasswordCheckValid = passwordCheck === password;
+    if (!passwordCheck || passwordCheck.trim().length === 0 || !isPasswordCheckValid) {
+      setPasswordCheckError(true);
+      setPasswordCheckErrorMessage(passwordCheck ? "비밀번호가 일치하지 않습니다." : "비밀번호 확인을 입력해주세요.");
+      isFormValid1 = false;
+    } else {
+      setPasswordCheckError(false);
+      setPasswordCheckErrorMessage("");
+    }
+
+    if (isFormValid1) {
+      setPage(2);
+      setTimeout(() => {
+        phoneRef.current?.focus();
+      }, 0);
+    }
+  };
+
+  /**
+   *   TODO:  event handler: 다음 주소 검색 완료 이벤트 처리
+   */
+  const onComplete = (data:Address) => {
+    const {zonecode, address} = data;
+    setZonecode(zonecode);
+    setAddress(address);
+    if (!addressDetailRef.current) return;
+    addressDetailRef.current.focus();
+  }
+
   /**
    *   TODO:  event handler: 회원가입 버튼 클릭 이벤트 처리
    */
@@ -660,7 +730,7 @@ function SignUpCard() {
 
     // 이메일 검증
     const isEmailValid = validateEmail(email).isValid;
-    if (!email || !isEmailValid) {
+    if (!email || email.trim().length === 0 || !isEmailValid) {
       setEmailError(true);
       setEmailErrorMessage(email ? "올바른 이메일 형식을 입력해주세요." : "이메일을 입력해주세요.");
       isFormValid = false;
@@ -669,9 +739,19 @@ function SignUpCard() {
       setEmailErrorMessage("");
     }
 
+    // 아이디 검증
+    if (!username || username.trim().length === 0 || username.length < 3 || username.length > 10) {
+      setUsernameError(true);
+      setUsernameErrorMessage(username ? "아이디는 3자 이상, 10자 이하로 입력해주세요." : "아이디를 입력해주세요.");
+      isFormValid = false;
+    } else {
+      setUsernameError(false);
+      setUsernameErrorMessage("");
+    }
+
     // 비밀번호 검증
     const isPasswordValid = validatePassword(password).isValid;
-    if (!password || !isPasswordValid) {
+    if (!password || password.trim().length === 0 || !isPasswordValid) {
       setPasswordError(true);
       setPasswordErrorMessage(password ? "비밀번호는 8자 이상 20자 이하이어야 하며 숫자, 소문자, 대문자를 포함해야 합니다." : "비밀번호를 입력해주세요.");
       isFormValid = false;
@@ -682,7 +762,7 @@ function SignUpCard() {
 
     // 비밀번호 확인 검증
     const isPasswordCheckValid = passwordCheck === password;
-    if (!passwordCheck || !isPasswordCheckValid) {
+    if (!passwordCheck || passwordCheck.trim().length === 0 || !isPasswordCheckValid) {
       setPasswordCheckError(true);
       setPasswordCheckErrorMessage(passwordCheck ? "비밀번호가 일치하지 않습니다." : "비밀번호 확인을 입력해주세요.");
       isFormValid = false;
@@ -691,14 +771,85 @@ function SignUpCard() {
       setPasswordCheckErrorMessage("");
     }
 
+    // 핸드폰 번호 검증
+    const phoneValid = /^010\d{4}\d{4}$/;
+    if (!phone || phone.trim().length === 0 || !phoneValid.test(phone)) {
+      setPhoneError(true);
+      setPhoneErrorMessage(phone ? "올바른 핸드폰 번호 형식으로 입력해주세요." : "핸드폰 번호를 입력해주세요.");
+      isFormValid = false;
+    } else {
+      setPhoneError(false);
+      setPhoneErrorMessage("");
+    }
+
+    // 우편번호 검증
+    if (!zonecode || zonecode.trim().length === 0) {
+      setAddressError(true);
+      setAddressErrorMessage("주소를 입력해주세요.");
+      isFormValid = false;
+    } else {
+      setZonecodeError(false);
+      setZonecodeErrorMessage("");
+    }
+
+    // 주소 검증
+    if (!address || address.trim().length === 0) {
+      setAddressError(true);
+      setAddressErrorMessage("주소를 입력해주세요.");
+      isFormValid = false;
+    } else {
+      setAddressError(false);
+      setAddressErrorMessage("");
+    }
+
+    // 상세 주소 검증
+    if (!addressDetail || addressDetail.trim().length === 0) {
+      setAddressDetailError(true);
+      setAddressDetailErrorMessage("상세 주소를 입력해주세요.");
+      isFormValid = false;
+    } else {
+      setAddressDetailError(false);
+      setAddressDetailErrorMessage("");
+    }
+
+    // 개인 정보 동의 검증
+    if (!agreedPersonal) {
+      setAgreedPersonalError(true);
+      isFormValid = false;
+    } else {
+      setAgreedPersonalError(false);
+    }
+
     // 모든 입력이 유효하면 처리
     if (isFormValid) {
-      alert("회원가입이 완료되었습니다.");
-      setPage(1);
+      const requestBody: SignUpRequestDto = {
+        email, username, password, passwordCheck, phone, zonecode, address, addressDetail, agreedPersonal
+      };
+
+      signUpRequest(requestBody).then(signUpResponse);
     }
+    alert("회원가입이 완료되었습니다.");
+    navigator("/");
   };
 
+  /**
+   *   TODO:  event handler: 인풋 키 다운 이벤트 처리
+   */
+  const onPasswordKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== 'Enter') return;
+    if (!passwordCheckRef.current) return;
+    passwordCheckRef.current.focus();
+  };
 
+  const onPasswordCheckKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== 'Enter') return;
+    onNextButtonClickHandler();
+  };
+
+  const onAddressDetailKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== 'Enter') return;
+    onSignUpButtonClickHandler();
+  };
 
   /**
    *   TODO:  render: 회원가입 컴포넌트 렌더링
@@ -711,47 +862,75 @@ function SignUpCard() {
             <div className='auth-card-title'>{'회원가입'}</div>
             <div className='auth-card-page'>{`${page}/2`}</div>
           </div>
-          <InputBox ref={emailRef} label='이메일*' type='text'
-                    placeholder='이메일 주소를 입력해주세요.' value={email} onChange={onEmailChangeHandler}
-                    error={isEmailError} message={emailErrorMessage} successMessage={emailSuccessMessage} />
+          {page === 1 && (
+            <>
+              <InputBox ref={emailRef} label='이메일*' type='text'
+                        placeholder='이메일 주소를 입력해주세요.' value={email} onChange={onEmailChangeHandler}
+                        error={isEmailError} message={emailErrorMessage} successMessage={emailSuccessMessage}
+                        icon={emailButtonIcon} onButtonClick={onEmailButtonClickHandler} />
 
-          <InputBox ref={passwordRef} label='비밀번호*' type={passwordType}
-                    placeholder='비밀번호를 입력해주세요.' value={password} onChange={onPasswordChangeHandler}
-                    error={isPassword} message={passwordErrorMessage} successMessage={passwordSuccessMessage}
-                    icon={passwordButtonIcon} onButtonClick={onPasswordButtonClickHandler}/>
+              {/*<InputBox ref={emailRef} label='인증번호*' type='text'*/}
+              {/*          placeholder='인증번호를 입력해주세요.' value={verificationCode} onChange={onVerificationCodeChangeHandler}*/}
+              {/*          error={isVerificationCodeError} message={verificationCodeErrorMessage} successMessage={verificationCodeSuccessMessage}*/}
+              {/*          icon={emailCheckButtonIcon} onButtonClick={onEmailCheckButtonClickHandler} />*/}
 
-          <InputBox ref={passwordCheckRef} label='비밀번호 확인*' type={passwordCheckType}
-                    placeholder='비밀번호를 다시 입력해주세요.' value={passwordCheck} onChange={onPasswordCheckChangeHandler}
-                    error={isPasswordCheckError} message={passwordCheckErrorMessage} successMessage={passwordCheckSuccessMessage}
-                    icon={passwordCheckButtonIcon} onButtonClick={onPasswordCheckButtonClickHandler}/>
+              <InputBox ref={usernameRef} label='아이디*' type='text'
+                        placeholder='아이디를 입력해주세요.' value={username} onChange={onUsernameChangeHandler}
+                        error={isUsernameError} message={usernameErrorMessage} successMessage={usernameSuccessMessage} />
 
-          <InputBox ref={usernameRef} label='아이디*' type='text'
-                    placeholder='아이디를 입력해주세요.' value={username} onChange={onUsernameChangeHandler}
-                    error={isUsernameError} message={usernameErrorMessage} />
+              <InputBox ref={passwordRef} label='비밀번호*' type={passwordType}
+                        placeholder='비밀번호를 입력해주세요.' value={password} onChange={onPasswordChangeHandler}
+                        error={isPassword} message={passwordErrorMessage} successMessage={passwordSuccessMessage}
+                        icon={passwordButtonIcon} onButtonClick={onPasswordButtonClickHandler} onKeyDown={onPasswordKeyDownHandler}/>
 
-          <InputBox ref={phoneRef} label='핸드폰 번호*' type='text'
-                    placeholder='핸드폰 번호를 입력해주세요.' value={phone} onChange={onPhoneChangeHandler}
-                    error={isPhoneError} message={phoneErrorMessage} />
+              <InputBox ref={passwordCheckRef} label='비밀번호 확인*' type={passwordCheckType}
+                        placeholder='비밀번호를 다시 입력해주세요.' value={passwordCheck} onChange={onPasswordCheckChangeHandler}
+                        error={isPasswordCheckError} message={passwordCheckErrorMessage} successMessage={passwordCheckSuccessMessage}
+                        icon={passwordCheckButtonIcon} onButtonClick={onPasswordCheckButtonClickHandler} onKeyDown={onPasswordCheckKeyDownHandler}/>
+            </>
+          )}
+          {page === 2 && (
+            <>
+              <InputBox ref={phoneRef} label='핸드폰 번호*' type='text'
+                        placeholder='핸드폰 번호를 입력해주세요.' value={phone} onChange={onPhoneChangeHandler}
+                        error={isPhoneError} message={phoneErrorMessage} successMessage={phoneSuccessMessage} />
 
-          <InputBox ref={addressRef} label='주소*' type='text'
-                    placeholder='주소를 입력해주세요.' value={address} onChange={onAddressChangeHandler}
-                    error={isAddressError} message={addressErrorMessage} />
+              <InputBox ref={zonecodeRef} label='우편번호*' type='text'
+                        placeholder='주소 찾기' value={zonecode} onChange={onZonecodeChangeHandler}
+                        error={isZonecodeError} message={zonecodeErrorMessage} icon={addressButtonIcon}
+                        onButtonClick={onAddressButtonClickHandler} />
 
-          <InputBox ref={addressDetailRef} label='상세 주소*' type='text'
-                    placeholder='상세 주소를 입력해주세요.' value={addressDetail} onChange={onAddressDetailChangeHandler}
-                    error={isAddressDetailError} message={addressDetailErrorMessage} />
-        </div>
+              <InputBox ref={addressRef} label='주소*' type='text'
+                        placeholder='주소를 입력해주세요.' value={address} onChange={onAddressChangeHandler}
+                        error={isAddressError} message={addressErrorMessage} />
 
-        <div className='auth-consent-box'>
-          <div className='auth-check-box'>
-            <div className='check-round-light-icon'></div>
-          </div>
-          <div className='auth-consent-title'>{'개인정보동의'}</div>
-          <div className='auth-consent-link'>{'더보기 >'}</div>
+              <InputBox ref={addressDetailRef} label='상세 주소*' type='text'
+                        placeholder='상세 주소를 입력해주세요.' value={addressDetail} onChange={onAddressDetailChangeHandler}
+                        error={isAddressDetailError} message={addressDetailErrorMessage} onKeyDown={onAddressDetailKeyDownHandler} />
+            </>
+          )}
         </div>
 
         <div className="auth-card-bottom">
-          <div className="auth-button" onClick={onSignUpButtonClickHandler}>{'회원가입'}</div>
+          {page === 1 && (
+            <div className="auth-button" onClick={onNextButtonClickHandler}>{'다음단계'}</div>
+          )}
+
+          {page === 2 && (
+            <>
+              <div className='auth-consent-box'>
+                <div className='auth-check-box' onClick={onAgreedPersonalClickHandler}>
+                  <div className={`icon ${agreedPersonal ? 'check-round-fill-icon' : 'check-round-light-icon'}`}></div>
+                </div>
+                <div
+                  className={isAgreedPersonalError ? 'auth-consent-title-error' : 'auth-consent-title'}>{'개인정보동의'}</div>
+                <div className='auth-consent-link'>{'더보기 >'}</div>
+              </div>
+
+              <div className="auth-button" onClick={onSignUpButtonClickHandler}>{'회원가입'}</div>
+            </>
+          )}
+
         </div>
       </div>
     </div>

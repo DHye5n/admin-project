@@ -141,8 +141,8 @@
   background-image: url(assets/image/blog-icon.png);
 }
 
-.email-icon {
-  background-image: url(assets/image/email-icon.png);
+.email-white-icon {
+  background-image: url(assets/image/email-white-icon.png);
 }
 
 .logo-dark-icon {
@@ -172,4 +172,28 @@
   width: 36px;
   height: 32px;
   cursor: pointer;
+}
+
+.home-gray-icon {
+  background-image: url(assets/image/home-gray-icon.png);
+}
+
+.email-gray-icon {
+  background-image: url(assets/image/email-gray-icon.png);
+}
+
+.email-check-icon {
+  background-image: url(assets/image/email-check-icon.png);
+}
+
+.check-round-light-icon {
+  background-image: url(assets/image/check-round-light.png);
+}
+
+.check-round-fill-icon  {
+  background-image: url(assets/image/check-round-fill.png);
+}
+
+.auth-icon {
+  background-image: url(assets/image/auth-icon.png);
 }
