@@ -27,4 +27,14 @@ public class ApiResponseDto<T> {
     public static <T> ApiResponseDto<T> failure(ResponseStatus status) {
         return new ApiResponseDto<>(false, status.getStatus(), status.getMessage(), null, status.getCode());
     }
+
+    // boolean 타입을 포함한 성공 응답 생성
+    public static ApiResponseDto<Boolean> success(boolean result) {
+        return new ApiResponseDto<>(true, ResponseStatus.SUCCESS.getStatus(), ResponseStatus.SUCCESS.getMessage(), result, ResponseStatus.SUCCESS.getCode());
+    }
+
+    // boolean 타입을 포함한 실패 응답 생성
+    public static ApiResponseDto<Boolean> failure(boolean result, ResponseStatus status) {
+        return new ApiResponseDto<>(false, status.getStatus(), status.getMessage(), result, status.getCode());
+    }
 }

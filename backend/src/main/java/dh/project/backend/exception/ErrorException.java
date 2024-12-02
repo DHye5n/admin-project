@@ -8,8 +8,8 @@ public class ErrorException extends RuntimeException {
 
     private final ResponseStatus status;
 
-    public ErrorException(ResponseStatus status, String detailedMessage) {
-        super(detailedMessage != null ? detailedMessage : status.getMessage());
+    public ErrorException(ResponseStatus status) {
+        super(status.getMessage());
         this.status = status;
     }
 

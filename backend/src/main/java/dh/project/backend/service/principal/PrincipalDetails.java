@@ -1,4 +1,4 @@
-package dh.project.backend.service.auth;
+package dh.project.backend.service.principal;
 
 import dh.project.backend.domain.UserEntity;
 import lombok.RequiredArgsConstructor;

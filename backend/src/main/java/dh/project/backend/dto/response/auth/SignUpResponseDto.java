@@ -14,7 +14,6 @@ public class SignUpResponseDto {
     public SignUpResponseDto(String email, String username) {
         this.email = email;
         this.username = username;
-
     }
 
     public static SignUpResponseDto fromEntity(UserEntity user) {

@@ -19,7 +19,11 @@ public enum ResponseStatus {
     AUTHORIZATION_FAIL(401,"AF", "Authorization Failed."),
     NO_PERMISSION(403,"NP", "Do not have permission."),
     DATABASE_ERROR(500,"DBE", "Database Error."),
-    JWT_ERROR(401,"JE", "JWT Error.");
+    JWT_ERROR(401,"JE", "JWT Error."),
+    INVALID_EMAIL(400, "IE", "Invalid email address."),
+    EXPIRED_VERIFICATION_CODE(400, "EVC", "Verification code has expired."),
+    INCORRECT_VERIFICATION_CODE(400, "IVC", "Incorrect verification code.");
+
 
     private final int status;
     private final String code;

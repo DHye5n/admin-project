@@ -1,6 +1,5 @@
 package dh.project.backend.config;
 
-import dh.project.backend.enums.Role;
 import dh.project.backend.filter.JwtAuthenticationFilter;
 import dh.project.backend.filter.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
@@ -34,16 +33,12 @@ public class SecurityConfig {
                         authorizeRequests
                                 .antMatchers(
                                         "/","/api/v1/auth/**",
-                                        "/api/auth/send-verification-code",
-                                        "/api/auth/resend-verification-code",
-                                        "/api/auth/verify-code",
-                                        "/api/auth/check-email",
-                                        "/api/auth/username/**/exists"
+                                        "/api/v1/auth/send-verification-code",
+                                        "/api/v1/auth/resend-verification-code",
+                                        "/api/v1/auth/verify-code",
+                                        "/api/v1/auth/check-email",
+                                        "/api/v1/auth/username/**/exists"
                                 ).permitAll()
-                                .antMatchers(
-                                        "/api/admin/users/**"
-                                )
-                                .hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated()
                 )
 

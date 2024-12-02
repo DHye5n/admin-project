@@ -1,7 +1,7 @@
 package dh.project.backend.service;
 
 import dh.project.backend.dto.response.auth.SignInResponseDto;
-import dh.project.backend.service.auth.PrincipalDetails;
+import dh.project.backend.service.principal.PrincipalDetails;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;

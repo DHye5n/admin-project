@@ -49,7 +49,7 @@ export default function Footer() {
                 className='icon-button'
                 onClick={onEmailIconButtonClickHandler}
               >
-                <div className='icon email-icon'></div>
+                <div className='icon email-white-icon'></div>
               </div>
               <div className='footer-logo-link-text'>{'sai4875@naver.com'}</div>
             </div>

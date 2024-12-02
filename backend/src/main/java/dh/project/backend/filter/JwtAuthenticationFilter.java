@@ -1,7 +1,7 @@
 package dh.project.backend.filter;
 
 import dh.project.backend.service.JwtService;
-import dh.project.backend.service.auth.PrincipalDetailsService;
+import dh.project.backend.service.principal.PrincipalDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
