@@ -69,7 +69,7 @@ function SignInCard() {
   /**
    *   TODO:  state: 요소 참조 상태
    */
-  const emailRef = useRef<HTMLInputElement | null>(null);
+  const usernameRef = useRef<HTMLInputElement | null>(null);
 
   const passwordRef = useRef<HTMLInputElement | null>(null);
 
@@ -78,7 +78,7 @@ function SignInCard() {
    */
   const [cookie, setCookie] = useCookies();
 
-  const [email, setEmail] = useState<string>('');
+  const [username, setUsername] = useState<string>('');
 
   const [password, setPassword] = useState<string>('');
 
@@ -100,9 +100,9 @@ function SignInCard() {
    *   TODO:  effect: 컴포넌트 마운트 시 localStorage에서 아이디 불러오기
    */
   useEffect(() => {
-    const savedEmail = localStorage.getItem('savedEmail');
-    if (savedEmail) {
-      setEmail(savedEmail);
+    const savedUsername = localStorage.getItem('savedEmail');
+    if (savedUsername) {
+      setUsername(savedUsername);
       setRememberMe(true);
     }
   }, []);
@@ -139,10 +139,10 @@ function SignInCard() {
   /**
    *   TODO:  event handler: 아이디 변경 이벤트 처리
    */
-  const onEmailChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+  const onUsernameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     setError(false);
     const { value } = event.target;
-    setEmail(value);
+    setUsername(value);
   }
 
   /**
@@ -158,19 +158,19 @@ function SignInCard() {
    *   TODO:  event handler: 로그인 버튼 클릭 이벤트 처리
    */
   const onSignInButtonClickHandler = () => {
-    if (!email || !password) {
+    if (!username || !password) {
       setError(true);
       return;
     }
 
-    const requestBody: SignInRequestDto = { email, password };
+    const requestBody: SignInRequestDto = { username, password };
     signInRequest(requestBody).then(signInResponse);
 
 
     if (rememberMe) {
-      localStorage.setItem('savedEmail', email);
+      localStorage.setItem('savedUsername', username);
     } else {
-      localStorage.removeItem('savedEmail');
+      localStorage.removeItem('savedUsername');
     }
   };
 
@@ -212,7 +212,7 @@ function SignInCard() {
   /**
    *   TODO:  event handler: 인풋 키 다운 이벤트 처리
    */
-  const onEmailKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+  const onUsernameKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== 'Enter') return;
     if (!passwordRef.current) return;
     passwordRef.current.focus();
@@ -233,19 +233,19 @@ function SignInCard() {
           <div className="auth-card-title-box">
             <div className="auth-card-title">{'로그인'}</div>
           </div>
-          <InputBox ref={emailRef} label="이메일" type="text" placeholder="이메일을 입력해주세요."
-                    error={error} value={email} onChange={onEmailChangeHandler} onKeyDown={onEmailKeyDownHandler} />
+          <InputBox ref={usernameRef} label="아이디" type="text" placeholder="아이디를 입력해주세요."
+                    error={error} value={username} onChange={onUsernameChangeHandler} onKeyDown={onUsernameKeyDownHandler} />
           <InputBox ref={passwordRef} label="비밀번호" type={passwordType} placeholder="비밀번호를 입력해주세요."
                     error={error} value={password} onChange={onPasswordChangeHandler} icon={passwordButtonIcon}
                     onButtonClick={onPasswordButtonClickHandler} onKeyDown={onPasswordKeyDownHandler} />
           <div className='remember-find-id-pwd-box'>
             <div className="remember-me-box">
               <input type="checkbox" id="rememberMe" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />
-              <label htmlFor="rememberMe">{'이메일 저장'}</label>
+              <label htmlFor="rememberMe">{'아이디 저장'}</label>
             </div>
-            <div className="find-email-pwd-box">
+            <div className="find-id-pwd-box">
               <div> |</div>
-              <div className='find-email-link'>{'이메일 찾기'}</div>
+              <div className='find-id-link'>{'아이디 찾기'}</div>
               <div> |</div>
               <div className='find-pwd-link'>{'비밀번호 찾기'}</div>
             </div>
