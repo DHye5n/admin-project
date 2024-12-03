@@ -16,7 +16,8 @@ interface Props {
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   error: boolean;
   icon?: 'eye-light-off-icon' | 'eye-light-on-icon' | 'expand-right-light-icon' |
-    'email-gray-icon' | 'email-check-icon' | 'home-gray-icon' | 'auth-icon';
+    'email-gray-icon' | 'email-check-icon' | 'email-send-icon' | 'email-resend-icon' |
+    'home-gray-icon' | 'auth-icon' | 'person-icon';
   onButtonClick?: () => void;
   message?: string;
   successMessage?: string;

@@ -40,6 +40,10 @@ public class AuthService {
             return ApiResponseDto.failure(ResponseStatus.DUPLICATE_USERNAME);
         }
 
+//        if (userRepository.existsByPhone(dto.getPhone())) {
+//            return ApiResponseDto.failure(ResponseStatus.DUPLICATE_PHONE);
+//        }
+
         if (!dto.isPasswordMatching()) {
             return ApiResponseDto.failure(ResponseStatus.PASSWORD_MISMATCH);
         }

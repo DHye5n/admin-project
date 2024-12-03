@@ -9,4 +9,5 @@ export default interface SignUpRequestDto {
   address: string;
   addressDetail: string;
   agreedPersonal: boolean;
+  verificationCode: string;
 }

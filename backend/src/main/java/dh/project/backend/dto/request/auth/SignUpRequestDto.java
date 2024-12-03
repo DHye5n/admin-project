@@ -47,9 +47,13 @@ public class SignUpRequestDto {
 
     private Role role = Role.USER;
 
+    @NotBlank
+    private String verificationCode;
+
     @Builder
     public SignUpRequestDto(String email, String password, String passwordCheck, String username, String phone,
-                            String zonecode, String address, String addressDetail, Boolean agreedPersonal, Role role) {
+                            String zonecode, String address, String addressDetail,
+                            Boolean agreedPersonal, Role role, String verificationCode) {
         this.email = email;
         this.password = password;
         this.passwordCheck = passwordCheck;
@@ -60,6 +64,7 @@ public class SignUpRequestDto {
         this.addressDetail = addressDetail;
         this.agreedPersonal = agreedPersonal;
         this.role = role != null ? role : Role.USER;
+        this.verificationCode = verificationCode;
     }
 
     public UserEntity toEntity(String encodedPassword) {
