@@ -173,19 +173,9 @@ export default function Header() {
      * */
     return (
       <div className='header-search-input-box'>
-        <input
-          className='header-search-input'
-          type='text'
-          placeholder='검색어를 입력해주세요.'
-          value={word}
-          onChange={onSearchWordChangeHandler}
-          onKeyDown={onSearchWordKeyDownHandler}
-        />
-        <div
-          ref={searchButtonRef}
-          className='icon-button'
-          onClick={onSearchButtonClickHandler}
-        >
+        <input className='header-search-input' type='text' placeholder='검색어를 입력해주세요.' value={word}
+          onChange={onSearchWordChangeHandler} onKeyDown={onSearchWordKeyDownHandler} />
+        <div ref={searchButtonRef} className='icon-button' onClick={onSearchButtonClickHandler}>
           <div className='icon search-light-icon'></div>
         </div>
       </div>
@@ -249,7 +239,7 @@ export default function Header() {
      *  TODO: render: 로그인 버튼 컴포넌트 렌더링
      * */
     return (
-      <div className='black-button' onClick={onSignInButtonClickHandler}>
+      <div className='blue-button' onClick={onSignInButtonClickHandler}>
         {'로그인'}
       </div>
     );

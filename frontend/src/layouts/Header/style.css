@@ -1,11 +1,17 @@
 #header {
-  padding: 20px 0;
+  padding: 20px;
   display: flex;
   justify-content: center;
+  position: relative;
+  left: 200px;
+  width: calc(100% - 200px);
+  border-bottom: 1px solid var(--gray);
+  z-index: 10;
 }
 
 .header-container {
-  width: 1200px;
+  position: relative;
+  width: calc(100% - 200px);
   display: flex;
   justify-content: space-between;
   align-items: center;
