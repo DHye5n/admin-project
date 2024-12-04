@@ -264,7 +264,7 @@ export default function Header() {
      * */
     if (title && content)
       return (
-        <div className='black-button' onClick={onUploadButtonClickHandler}>
+        <div className='blue-button' onClick={onUploadButtonClickHandler}>
           {'업로드'}
         </div>
       );

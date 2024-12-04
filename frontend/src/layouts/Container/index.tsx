@@ -22,7 +22,7 @@ export default function Container() {
       <div className='dashboard-main'>
         {pathname !== AUTH_PATH() && <Header />}
         {pathname !== AUTH_PATH() && <Content />}
-        {/*<Outlet />*/}
+        <Outlet />
       </div>
     </div>
   );
