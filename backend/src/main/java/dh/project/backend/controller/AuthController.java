@@ -10,13 +10,11 @@ import dh.project.backend.dto.response.auth.SignUpResponseDto;
 import dh.project.backend.service.auth.AuthService;
 import dh.project.backend.service.auth.EmailCodeService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
 @RestController
@@ -66,7 +64,6 @@ public class AuthController {
      * */
     @PostMapping("/verify-code")
     public ResponseEntity<ApiResponseDto<Boolean>> verifyCode(@RequestBody EmailCodeRequestDto dto) {
-        log.info("Received DTO: {}", dto);
         ApiResponseDto<Boolean> responseDto = emailCodeService.verifyCode(dto);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }

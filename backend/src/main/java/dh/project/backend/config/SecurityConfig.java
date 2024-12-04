@@ -39,6 +39,9 @@ public class SecurityConfig {
                                         "/api/v1/auth/check-email",
                                         "/api/v1/auth/username/**/exists"
                                 ).permitAll()
+                                .antMatchers(
+                                        "/api/v1/user/**"
+                                ).authenticated()
                                 .anyRequest().authenticated()
                 )
 

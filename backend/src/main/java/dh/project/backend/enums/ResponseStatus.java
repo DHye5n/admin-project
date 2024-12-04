@@ -13,6 +13,7 @@ public enum ResponseStatus {
     DUPLICATE_USERNAME(409,"DU", "Duplication Username."),
     PASSWORD_MISMATCH(400, "PM", "Password does not match."),
     DUPLICATE_PHONE(409,"DP", "Duplication Phone."),
+    NOT_FOUND_USER(404, "NFU", "User Not Found."),
     NOT_EXISTED_USER(404,"NEU", "This user does not exist."),
     NOT_EXISTED_BOARD(404,"NEB", "This board does not exist."),
     SIGN_IN_FAIL(401,"SF", "Login information mismatch."),
