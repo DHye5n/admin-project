@@ -19,7 +19,7 @@
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 20px;
+  padding: 20px 20px 20px 30px;
   gap: 20px;
   margin-bottom: -200px;
   cursor: pointer;
@@ -60,11 +60,23 @@
 
 .aside-nav-links-box:hover { background-color: var(--white); }
 
+.aside-nav-bottom {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 20px;
+}
+
+.aside-nav-bottom-box {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+}
+
 .aside-nav-bottom-box div, a {
   display: flex;
-  align-items: center;
+  /*align-items: center;*/
   gap: 10px;
-  padding-bottom: 20px;
   cursor: pointer;
 }
 
