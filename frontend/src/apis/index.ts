@@ -2,10 +2,17 @@ import { SignInRequestDto, SignUpRequestDto } from './request/auth';
 import axios from 'axios';
 import { DuplicateCheckResponseDto, SignInResponseDto, SignUpResponseDto } from './response/auth';
 import { ApiResponseDto } from './response';
+import { SignInUserResponseDto } from './response/user';
 
 const DOMAIN = 'http://localhost:9994';
 
 const API_DOMAIN = `${DOMAIN}/api/v1`;
+
+const authorization = (accessToken: string) => {
+  return {
+    headers: { Authorization: `Bearer ${accessToken}` }
+  }
+};
 
 const SIGN_IN_URL = () => `${API_DOMAIN}/auth/sign-in`;
 
@@ -20,6 +27,8 @@ const SEND_VERIFICATION_CODE_URL = (email: string) => `${API_DOMAIN}/auth/send-v
 const RESEND_VERIFICATION_CODE_URL = (email: string) => `${API_DOMAIN}/auth/resend-verification-code?email=${email}`;
 
 const VERIFY_CODE_URL = () => `${API_DOMAIN}/auth/verify-code`;
+
+const SIGN_IN_USER_URL = () => `${API_DOMAIN}/user`;
 
 // 로그인
 export const signInRequest = async (requestBody: SignInRequestDto) => {
@@ -122,6 +131,21 @@ export const verifyCode = async (email: string, verificationCode: string): Promi
     .catch(error => {
       if (!error.response) return null;
       const responseBody: ApiResponseDto<boolean> = error.response.data;
+      return responseBody;
+    });
+  return result;
+}
+
+// 유저 정보 반환
+export const signInUserRequest = async (accessToken: string): Promise<ApiResponseDto<SignInUserResponseDto> | null> => {
+  const result = await axios.get(SIGN_IN_USER_URL(), authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<SignInUserResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<SignInUserResponseDto> = error.response.data;
       return responseBody;
     });
   return result;

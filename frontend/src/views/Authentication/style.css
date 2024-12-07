@@ -73,6 +73,7 @@
 }
 
 .find-id-link { cursor: pointer; }
+
 .find-pwd-link { cursor: pointer; }
 
 .remember-me-box {
@@ -81,6 +82,7 @@
     justify-content: center;
     align-items: center;
     font-size: 12px;
+    gap: 5px;
 }
 
 .find-id-pwd-box {

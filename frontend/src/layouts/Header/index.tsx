@@ -18,65 +18,36 @@ import {
   USER_PATH,
 } from 'constant';
 import { useCookies } from 'react-cookie';
-import { useBoardStore, useLoginUserStore } from 'stores';
+import { useBoardStore } from 'stores';
+import useSignInUserStore from 'stores/login-user.store';
 
 /**
  *  TODO: component: Header 레이아웃 컴포넌트
  * */
 export default function Header() {
   /**
-   *  TODO:  state: 로그인 유저 상태
+   *  TODO:  state: 상태
    * */
-  const { loginUser, setLoginUser, resetLoginUser } = useLoginUserStore();
+  const { signInUser, setSignInUser, resetSignInUser } = useSignInUserStore();
 
-  /**
-   *  TODO:  state: path 상태
-   * */
   const { pathname } = useLocation();
 
-  /**
-   *  TODO:  state: cookie 상태
-   * */
   const [cookie, setCookie] = useCookies();
 
-  /**
-   *  TODO:  state: 로그인 상태
-   * */
-  const [isLogin, setLogin] = useState<boolean>(false);
+  const [isSignIn, setSignIn] = useState<boolean>(false);
 
-  /**
-   *  TODO:  state: 인증 페이지 상태
-   * */
   const [isAuthPage, setAuthPage] = useState<boolean>(false);
 
-  /**
-   *  TODO:  state: 메인 페이지 상태
-   * */
   const [isMainPage, setMainPage] = useState<boolean>(false);
 
-  /**
-   *  TODO:  state: 검색 페이지 상태
-   * */
   const [isSearchPage, setSearchPage] = useState<boolean>(false);
 
-  /**
-   *  TODO:  state: 게시물 작성 페이지 상태
-   * */
   const [isBoardWritePage, setBoardWritePage] = useState<boolean>(false);
 
-  /**
-   *  TODO:  state: 게시물 상세 페이지 상태
-   * */
   const [isBoardDetailPage, setBoardDetailPage] = useState<boolean>(false);
 
-  /**
-   *  TODO:  state: 게시물 수정 페이지 상태
-   * */
   const [isBoardUpdatePage, setBoardUpdatePage] = useState<boolean>(false);
 
-  /**
-   *  TODO:  state: 유저 페이지 상태
-   * */
   const [isUserPage, setUserPage] = useState<boolean>(false);
 
   /**
@@ -189,23 +160,23 @@ export default function Header() {
     /**
      *  TODO: state: USER email path 상태
      * */
-    const { email } = useParams();
+    const { email } = useParams<{ email: string }>();
 
     /**
      *  TODO: event handler: 마이페이지 버튼 클릭 이벤트 처리 함수
      * */
     const onMyPageButtonClickHandler = () => {
-      if (!loginUser) return;
-      const { email } = loginUser;
-      navigate(USER_PATH(email));
+      if (!signInUser) return;
+      navigate(USER_PATH(signInUser.email));
     };
 
     /**
      *  TODO: event handler: 로그아웃 버튼 클릭 이벤트 처리 함수
      * */
-    const onMySignOutButtonClickHandler = () => {
-      resetLoginUser();
-      navigate(MAIN_PATH());
+    const onSignOutButtonClickHandler = () => {
+      resetSignInUser();
+      setCookie('accessToken', '', { path: MAIN_PATH(), expires: new Date() });
+      navigate(AUTH_PATH());
     };
 
     /**
@@ -215,20 +186,24 @@ export default function Header() {
       navigate(AUTH_PATH());
     };
 
+    console.log('email:', email);
+    console.log('signInUser.email:', signInUser?.email);
+    console.log('signInUser:', signInUser);
+
     /**
      *  TODO: render: 로그아웃 버튼 컴포넌트 렌더링
      * */
-    if (isLogin && email === loginUser?.email)
+    if (isSignIn && email && signInUser?.email && email === signInUser?.email)
       return (
-        <div className='white-button' onClick={onMySignOutButtonClickHandler}>
+        <div className='white-button' onClick={onSignOutButtonClickHandler}>
           {'로그아웃'}
         </div>
       );
 
-    if (isLogin)
-      /**
-       *  TODO: render: 마이페이지 버튼 컴포넌트 렌더링
-       * */
+    /**
+     *  TODO: render: 마이페이지 버튼 컴포넌트 렌더링
+     * */
+    if (isSignIn)
       return (
         <div className='white-button' onClick={onMyPageButtonClickHandler}>
           {'마이페이지'}
@@ -238,11 +213,11 @@ export default function Header() {
     /**
      *  TODO: render: 로그인 버튼 컴포넌트 렌더링
      * */
-    return (
-      <div className='blue-button' onClick={onSignInButtonClickHandler}>
-        {'로그인'}
-      </div>
-    );
+      return (
+        <div className='blue-button' onClick={onSignInButtonClickHandler}>
+          {'로그인'}
+        </div>
+      );
   };
 
   /**
@@ -281,25 +256,30 @@ export default function Header() {
   useEffect(() => {
     const isAuthPage = pathname.startsWith(AUTH_PATH());
     setAuthPage(isAuthPage);
+
     const isMainPage = pathname === MAIN_PATH();
     setMainPage(isMainPage);
+
     const isSearchPage = pathname.startsWith(SEARCH_PATH(''));
     setSearchPage(isSearchPage);
-    const isBoardWritePage = pathname.startsWith(
-      BOARD_PATH() + '/' + BOARD_WRITE_PATH()
-    );
+
+    const isBoardWritePage = pathname.startsWith(BOARD_PATH() + '/' + BOARD_WRITE_PATH());
     setBoardWritePage(isBoardWritePage);
-    const isBoardDetailPage = pathname.startsWith(
-      BOARD_PATH() + '/' + BOARD_DETAIL_PATH('')
-    );
+
+    const isBoardDetailPage = pathname.startsWith(BOARD_PATH() + '/' + BOARD_DETAIL_PATH(''));
     setBoardDetailPage(isBoardDetailPage);
-    const isBoardUpdatePage = pathname.startsWith(
-      BOARD_PATH() + '/' + BOARD_UPDATE_PATH('')
-    );
+
+    const isBoardUpdatePage = pathname.startsWith(BOARD_PATH() + '/' + BOARD_UPDATE_PATH(''));
     setBoardUpdatePage(isBoardUpdatePage);
+
     const isUserPage = pathname.startsWith(USER_PATH(''));
     setUserPage(isUserPage);
   }, [pathname]);
+
+  useEffect(() => {
+    console.log(signInUser);
+    setSignIn(signInUser !== null);
+  }, [signInUser]);
 
   /**
    *  TODO:  render: Header 레이아웃 컴포넌트 렌더링

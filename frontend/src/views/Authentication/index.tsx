@@ -107,7 +107,7 @@ function SignInCard() {
    *   TODO:  effect: 컴포넌트 마운트 시 localStorage에서 아이디 불러오기
    */
   useEffect(() => {
-    const savedUsername = localStorage.getItem('savedEmail');
+    const savedUsername = localStorage.getItem('savedUsername');
     if (savedUsername) {
       setUsername(savedUsername);
       setRememberMe(true);
@@ -430,11 +430,7 @@ function SignUpCard() {
       return;
     }
 
-    console.log(responseBody);
-
-    const {code} = responseBody;
-
-    console.log('Response Code:', code);
+    const { code } = responseBody;
 
     if (code === 'DE') {
       setPage(1);
