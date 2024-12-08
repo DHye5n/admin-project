@@ -301,6 +301,16 @@ export default function Header() {
             <MyPageButton />
           )}
           {(isBoardWritePage || isBoardUpdatePage) && <UploadButton />}
+          {isSignIn && signInUser && (
+            <div className="user-info">
+              <div className='user-info-profile-image'>
+                {signInUser.profileImage}
+              </div>
+              <div className='user-info-username'>
+                <span>{signInUser.username}</span>
+              </div>
+            </div>
+              )}
         </div>
       </div>
     </div>

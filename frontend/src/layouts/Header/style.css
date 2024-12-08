@@ -61,3 +61,25 @@
   font-weight: 400;
   line-height: 140%;
 }
+
+.user-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.user-info-username {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 140%;
+  color: var(--black);
+}
+
+.user-info-profile-image {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #ccc;
+}
