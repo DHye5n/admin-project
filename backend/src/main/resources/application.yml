@@ -8,7 +8,6 @@ spring:
     password: ENC(15rwtWiFfquvgJpwQsZEZw==)
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-
   jpa:
     open-in-view: false
     defer-datasource-initialization: true
@@ -45,3 +44,7 @@ logging:
 
 jwt:
   secret-key: X2NyYXNoX3NlcnZpY2Vfc3VwZXJfc2VjcmV0X2tldF8=
+
+file:
+  path: C:/fileUpload/
+  url: http://localhost:9994/file/

@@ -8,6 +8,8 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "board",
         indexes = { @Index(name = "board_userid_idx", columnList = "user_id", unique = true) }
@@ -17,7 +19,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity(name = "board")
-public class BoardEntity extends BaseTime{
+public class BoardEntity extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +40,12 @@ public class BoardEntity extends BaseTime{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<CommentEntity> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<FileEntity> files = new ArrayList<>();
 
     @Builder
     public BoardEntity(String title, String content, int likeCount, int commentCount, int viewCount, UserEntity user) {

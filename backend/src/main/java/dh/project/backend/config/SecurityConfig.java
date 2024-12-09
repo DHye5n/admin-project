@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
                                 .antMatchers(
-                                        "/","/api/v1/auth/**",
+                                        "/","/api/v1/auth/**", "/file/**",
                                         "/api/v1/auth/send-verification-code",
                                         "/api/v1/auth/resend-verification-code",
                                         "/api/v1/auth/verify-code",
