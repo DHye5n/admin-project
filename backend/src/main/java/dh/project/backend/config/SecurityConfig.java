@@ -23,7 +23,7 @@ public class SecurityConfig {
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        
+
         http
                 .cors().and()
                 .csrf().disable()
@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
                                 .antMatchers(
-                                        "/","/api/v1/auth/**", "/file/**",
+                                        "/","/api/v1/auth/**",
                                         "/api/v1/auth/send-verification-code",
                                         "/api/v1/auth/resend-verification-code",
                                         "/api/v1/auth/verify-code",
@@ -40,7 +40,9 @@ public class SecurityConfig {
                                         "/api/v1/auth/username/**/exists"
                                 ).permitAll()
                                 .antMatchers(
-                                        "/api/v1/user/**"
+                                        "/api/v1/user/**",
+                                        "/api/v1/board/**",
+                                        "/api/v1/file/**"
                                 ).authenticated()
                                 .anyRequest().authenticated()
                 )

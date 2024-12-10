@@ -3,14 +3,12 @@ package dh.project.backend.controller;
 import dh.project.backend.dto.ApiResponseDto;
 import dh.project.backend.service.FileService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/file")
 @RestController

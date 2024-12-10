@@ -2,6 +2,7 @@ package dh.project.backend.dto.request.auth;
 
 import dh.project.backend.domain.UserEntity;
 import dh.project.backend.enums.Role;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.*;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SignUpRequestDto {
 
     @NotBlank

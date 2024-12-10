@@ -32,29 +32,15 @@ public class AuthService {
     @Transactional
     public ApiResponseDto<SignUpResponseDto> signUp(SignUpRequestDto dto) {
 
-        if (userRepository.existsByEmail(dto.getEmail())) {
-            return ApiResponseDto.failure(ResponseStatus.DUPLICATE_EMAIL);
-        }
-
-        if (userRepository.existsByUsername(dto.getUsername())) {
-            return ApiResponseDto.failure(ResponseStatus.DUPLICATE_USERNAME);
-        }
-
-//        if (userRepository.existsByPhone(dto.getPhone())) {
-//            return ApiResponseDto.failure(ResponseStatus.DUPLICATE_PHONE);
-//        }
-
-        if (!dto.isPasswordMatching()) {
-            return ApiResponseDto.failure(ResponseStatus.PASSWORD_MISMATCH);
-        }
+        validateSignUp(dto);
 
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
 
         UserEntity user = dto.toEntity(encodedPassword);
 
-        userRepository.save(user);
+        UserEntity saveUser = userRepository.save(user);
 
-        SignUpResponseDto responseDto = SignUpResponseDto.fromEntity(user);
+        SignUpResponseDto responseDto = SignUpResponseDto.fromEntity(saveUser);
 
         return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
     }
@@ -65,7 +51,7 @@ public class AuthService {
     public ApiResponseDto<SignInResponseDto> signIn(SignInRequestDto dto) {
 
         UserEntity user = userRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new ErrorException(ResponseStatus.SIGN_IN_FAIL));
+                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new ErrorException(ResponseStatus.SIGN_IN_FAIL);
@@ -99,6 +85,26 @@ public class AuthService {
         DuplicateCheckResponseDto responseDto = new DuplicateCheckResponseDto(exists);
         ResponseStatus status = exists ? ResponseStatus.DUPLICATE_USERNAME : ResponseStatus.SUCCESS;
         return ApiResponseDto.success(status, responseDto);
+    }
+
+    /**
+     *   TODO: 회원가입 유효성 검사
+     * */
+    private void validateSignUp(SignUpRequestDto dto) {
+
+        if (userRepository.existsByEmail(dto.getEmail())) {
+            throw new ErrorException(ResponseStatus.DUPLICATE_EMAIL);
+        }
+        if (userRepository.existsByUsername(dto.getUsername())) {
+            throw new ErrorException(ResponseStatus.DUPLICATE_USERNAME);
+        }
+//      if (userRepository.existsByPhone(dto.getPhone())) {
+//          return ApiResponseDto.failure(ResponseStatus.DUPLICATE_PHONE);
+//      }
+
+        if (!dto.isPasswordMatching()) {
+            throw new ErrorException(ResponseStatus.PASSWORD_MISMATCH);
+        }
     }
 
 }

@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Table(name = "\"like\"",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "board_id"})
-)
+@Table(name = "\"like\"")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity(name = "like")
@@ -20,11 +18,11 @@ public class LikeEntity {
     private Long likeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id", nullable = false)
+    @JoinColumn(name = "board_id")
     private BoardEntity board;
 
     @Builder

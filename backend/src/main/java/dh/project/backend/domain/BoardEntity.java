@@ -11,9 +11,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(name = "board",
-        indexes = { @Index(name = "board_userid_idx", columnList = "user_id", unique = true) }
-)
+@Table(name = "board")
 @SQLDelete(sql = "UPDATE \"board\" SET deleted_date = CURRENT_TIMESTAMP WHERE board_id = ?")
 @Where(clause = "deleted_date IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,21 +29,21 @@ public class BoardEntity extends BaseTime {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    private int likeCount;
+    private int likeCount = 0;
 
-    private int commentCount;
+    private int commentCount = 0;
 
-    private int viewCount;
+    private int viewCount = 0;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<CommentEntity> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<FileEntity> files = new ArrayList<>();
+    private final List<ImageEntity> images = new ArrayList<>();
 
     @Builder
     public BoardEntity(String title, String content, int likeCount, int commentCount, int viewCount, UserEntity user) {

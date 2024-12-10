@@ -125,6 +125,7 @@ function SignInCard() {
 
     const { code } = responseBody;
     if (code === 'DBE') alert('데이터베이스 오류입니다.');
+    if (code === 'NFU') alert('존재하지 않는 아이디입니다.');
     if (code === 'SF' || code === 'VF') setError(true);
     if (code !== 'SU') return;
 

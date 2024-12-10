@@ -3,7 +3,7 @@ package dh.project.backend.controller;
 import dh.project.backend.dto.ApiResponseDto;
 import dh.project.backend.dto.response.user.SignInUserResponseDto;
 import dh.project.backend.service.principal.PrincipalDetails;
-import dh.project.backend.service.user.UserService;
+import dh.project.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
