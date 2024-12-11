@@ -184,6 +184,15 @@
 
 .person-icon {background-image: url(assets/image/person-icon.png);}
 
+.image-box-light-icon {background-image: url(assets/image/image-box-light.png);}
+
+.close-icon {background-image: url(assets/image/close.png);}
+
+.divider {
+  width: 100%;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+
 /* COMMON Layout Style */
 
 #dashboard-layout {
