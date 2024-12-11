@@ -4,11 +4,14 @@
     background-color: rgba(255, 255, 255, 1);
     width: 100%;
     height: auto;
+    min-height: 100%;
 }
 
 .board-write-container {
     padding: 40px 20px;
     width: 80%;
+    height: auto;
+    min-height: 100%;
 }
 
 .board-write-box {
@@ -37,6 +40,7 @@
     width: 100%;
     display: flex;
     gap: 16px;
+    flex-wrap: wrap;
 }
 
 .board-write-content-textarea {
