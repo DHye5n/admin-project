@@ -60,12 +60,8 @@ public class UserEntity extends BaseTime {
     @Column(length = 20)
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<BoardEntity> boards = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<CommentEntity> comments = new ArrayList<>();
-
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<BoardEntity> boards = new ArrayList<>();
 
     @Builder
     public UserEntity(String email, String password, String username, String phone,

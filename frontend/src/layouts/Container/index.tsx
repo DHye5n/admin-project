@@ -1,5 +1,5 @@
 import Header from 'layouts/Header';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { AUTH_PATH } from 'constant';
 import Aside from 'layouts/Aside';
 import Content from 'layouts/Content';
@@ -13,6 +13,10 @@ export default function Container() {
    * */
   const { pathname } = useLocation();
 
+  if (pathname === '/') {
+    return <Navigate to={AUTH_PATH()} replace />;
+  }
+
   /**
    *  TODO:  render: 레이아웃 렌더링
    * */
@@ -22,7 +26,7 @@ export default function Container() {
       <div className='dashboard-main'>
         {pathname !== AUTH_PATH() && <Header />}
         {pathname !== AUTH_PATH() && <Content />}
-        {/*<Outlet />*/}
+        {pathname === AUTH_PATH() && <Outlet />}
       </div>
     </div>
   );

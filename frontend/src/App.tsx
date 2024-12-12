@@ -47,7 +47,7 @@ function App() {
 
     const { code, data } = responseBody;
 
-    if (code == 'AF' || code == 'NFU' || code == 'DBE') {
+    if (code === 'AF' || code === 'NFU' || code === 'DBE') {
       resetSignInUser();
       return;
     }
@@ -77,21 +77,15 @@ function App() {
   return (
     <Routes>
       <Route element={<Container />}>
-        <Route path="/" element={<Navigate to="/auth" replace />} />
+        <Route path='/' element={<Navigate to={AUTH_PATH()} replace />} />
         <Route path={MAIN_PATH()} element={<Main />} />
         <Route path={AUTH_PATH()} element={<Authentication />} />
         <Route path={SEARCH_PATH(':searchWord')} element={<Search />} />
         <Route path={USER_PATH(':email')} element={<UserP />} />
         <Route path={BOARD_PATH()}>
           <Route path={BOARD_WRITE_PATH()} element={<BoardWrite />} />
-          <Route
-            path={BOARD_DETAIL_PATH(':boardId')}
-            element={<BoardDetail />}
-          />
-          <Route
-            path={BOARD_UPDATE_PATH(':boardId')}
-            element={<BoardUpdate />}
-          />
+          <Route path={BOARD_DETAIL_PATH(':boardId')} element={<BoardDetail />} />
+          <Route path={BOARD_UPDATE_PATH(':boardId')} element={<BoardUpdate />} />
         </Route>
         <Route path='*' element={<h1>404 NOT FOUND</h1>} />
       </Route>
