@@ -30,6 +30,7 @@ public enum ResponseStatus {
     NOT_EXISTED_USER(404,"NEU", "This user does not exist."),
     NOT_EXISTED_BOARD(404,"NEB", "This board does not exist."),
     NOT_FOUND_FILE(404, "NFF", "File not found."),
+    NOT_FOUND_BOARD(404, "NFB", "Board not found."),
 
     // DUPLICATE: 409
     DUPLICATE_EMAIL(409,"DE", "Duplication Email."),

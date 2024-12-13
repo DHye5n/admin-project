@@ -20,7 +20,8 @@ enum ResponseStatus {
   INVALID_FILE_NAME = 'IFN',
   NOT_FOUNT_FILE = 'NFF',
   FILE_READ_FAIL = 'FRF',
-  INVALID_FILE_EXTENSION = 'IFE'
+  INVALID_FILE_EXTENSION = 'IFE',
+  NOT_FOUND_BOARD = 'NFB'
 }
 
 export default ResponseStatus;

@@ -25,9 +25,7 @@ interface Props {
   value: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   error: boolean;
-  icon?: 'eye-light-off-icon' | 'eye-light-on-icon' | 'expand-right-light-icon' |
-    'email-gray-icon' | 'email-check-icon' | 'email-send-icon' | 'email-resend-icon' |
-    'home-gray-icon' | 'auth-icon' | 'person-icon' | 'eyeOff' | 'eyeOn' | 'email' | 'home' | 'person' | 'shield' |
+  icon?: 'expand-right-light-icon' | 'eyeOff' | 'eyeOn' | 'email' | 'home' | 'person' | 'shield' |
     'emailError' | 'emailSuccess' | 'shieldError' | 'shieldSuccess' | 'personError' | 'personSuccess';
   onButtonClick?: () => void;
   message?: string;

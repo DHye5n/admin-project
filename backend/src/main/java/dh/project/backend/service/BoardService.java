@@ -5,6 +5,7 @@ import dh.project.backend.domain.ImageEntity;
 import dh.project.backend.domain.UserEntity;
 import dh.project.backend.dto.ApiResponseDto;
 import dh.project.backend.dto.request.board.BoardPostRequestDto;
+import dh.project.backend.dto.response.board.BoardGetResponseDto;
 import dh.project.backend.dto.response.board.BoardPostResponseDto;
 import dh.project.backend.enums.ResponseStatus;
 import dh.project.backend.exception.ErrorException;
@@ -52,5 +53,31 @@ public class BoardService {
                         .board(board)
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public ApiResponseDto<BoardGetResponseDto> getBoard(Long boardId) {
+
+        BoardEntity boardEntity = boardRepository.findByBoardId(boardId)
+                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
+
+//        increaseViewCount(boardId);
+
+        List<ImageEntity> imageEntities = imageRepository.findByBoard_BoardId(boardId);
+
+        BoardGetResponseDto boardGetResponseDto = BoardGetResponseDto.fromEntity(boardEntity, imageEntities);
+
+        return ApiResponseDto.success(ResponseStatus.SUCCESS, boardGetResponseDto);
+    }
+
+    @Transactional
+    public void increaseViewCount(Long boardId) {
+
+        BoardEntity boardEntity = boardRepository.findByBoardId(boardId)
+                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
+
+        boardRepository.updateViewCount(boardId);
+
+        boardRepository.save(boardEntity);
     }
 }
