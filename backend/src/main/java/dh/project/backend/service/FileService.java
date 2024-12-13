@@ -81,7 +81,7 @@ public class FileService {
         return ApiResponseDto.success(ResponseStatus.SUCCESS, url);
     }
 
-    public ResponseEntity<Resource> getFile(String fileName) {
+    public ResponseEntity<Resource> getImage(String fileName) {
 
         // 파일 경로 설정
         String filePath = Paths.get(this.filePath, fileName).toString();

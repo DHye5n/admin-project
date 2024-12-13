@@ -3,6 +3,8 @@ import axios from 'axios';
 import { DuplicateCheckResponseDto, SignInResponseDto, SignUpResponseDto } from './response/auth';
 import { ApiResponseDto } from './response';
 import { SignInUserResponseDto } from './response/user';
+import { BoardPostResponseDto } from './response/board';
+import { BoardPostRequestDto } from './request/board';
 
 const DOMAIN = 'http://localhost:9994';
 
@@ -11,6 +13,12 @@ const API_DOMAIN = `${DOMAIN}/api/v1`;
 const authorization = (accessToken: string) => {
   return {
     headers: { Authorization: `Bearer ${accessToken}` }
+  }
+};
+
+const multipartFormData = {
+  headers: {
+    'Content-Type': 'multipart/form-data'
   }
 };
 
@@ -29,6 +37,12 @@ const RESEND_VERIFICATION_CODE_URL = (email: string) => `${API_DOMAIN}/auth/rese
 const VERIFY_CODE_URL = () => `${API_DOMAIN}/auth/verify-code`;
 
 const SIGN_IN_USER_URL = () => `${API_DOMAIN}/user`;
+
+const BOARD_POST_URL = () => `${API_DOMAIN}/board`;
+
+const FILE_DOMAIN = `${DOMAIN}/file`;
+
+const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
 
 // 로그인
 export const signInRequest = async (requestBody: SignInRequestDto) => {
@@ -148,5 +162,39 @@ export const signInUserRequest = async (accessToken: string): Promise<ApiRespons
       const responseBody: ApiResponseDto<SignInUserResponseDto> = error.response.data;
       return responseBody;
     });
+  return result;
+}
+
+// 게시물 작성
+export const boardPostRequest = async (requestBody: BoardPostRequestDto, accessToken: string): Promise<ApiResponseDto<BoardPostResponseDto> | null> => {
+  const result = await axios.post(BOARD_POST_URL(), requestBody, authorization(accessToken))
+    .then(response => {
+      const responseBody: BoardPostResponseDto = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<BoardPostResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+}
+
+// 파일 업로드
+export const fileUploadRequest = async (data: FormData, accessToken: string) => {
+
+  const headers = {
+    ...multipartFormData.headers,
+    ...authorization(accessToken).headers
+  };
+
+  const result = await axios.post(FILE_UPLOAD_URL(), data, { headers })
+    .then(response => {
+      const responseBody: ApiResponseDto<string> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      return null;
+    })
   return result;
 }

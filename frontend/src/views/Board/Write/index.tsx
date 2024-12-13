@@ -1,6 +1,9 @@
 import './style.css';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useBoardStore } from 'stores';
+import { useNavigate } from 'react-router-dom';
+import { MAIN_PATH } from 'constant';
+import { useCookies } from 'react-cookie';
 
 /**
  *  TODO: component: BoardWrite 컴포넌트
@@ -23,7 +26,14 @@ export default function BoardWrite() {
   const { boardImageFileList, setBoardImageFileList } = useBoardStore();
   const { resetBoard } = useBoardStore();
 
+  const [cookie, setCookie] = useCookies();
+
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+
+  /**
+   *  TODO:  function: 네비게이트 함수
+   * */
+  const navigator = useNavigate();
 
   /**
    *  TODO:  event handler: 변경 이벤트 처리
@@ -50,12 +60,17 @@ export default function BoardWrite() {
     if (!event.target.files || !event.target.files.length) return;
 
     const files = Array.from(event.target.files);
+
+    console.log("Selected files:", files);
+
     // 미리보기
     const newImageUrls = [...files.map(file => URL.createObjectURL(file)), ...imageUrls];
     setImageUrls(newImageUrls);
     // 업로드
-    const newBoardImageFileList = [...files, ...boardImageFileList];
-    setBoardImageFileList(newBoardImageFileList);
+    const newBoardImageList = [...files, ...boardImageFileList];
+    setBoardImageFileList(newBoardImageList);
+
+    console.log("Updated boardImageList:", newBoardImageList);
 
     if (!imageInputRef.current) return;
     imageInputRef.current.value = '';
@@ -84,6 +99,11 @@ export default function BoardWrite() {
    *  TODO:  effect: 마운트 시 실행할 함수
    * */
   useEffect(() => {
+    const accessToken = cookie.accessToken;
+    if (!accessToken) {
+      navigator(MAIN_PATH());
+      return;
+    }
     resetBoard();
   }, []);
 
@@ -113,9 +133,9 @@ export default function BoardWrite() {
 
           <div className='board-write-images-box'>
             {imageUrls.map((imageUrl, index) =>
-            <div className='board-write-image-box'>
+            <div className='board-write-image-box' key={imageUrl}>
               <img className='board-write-image'
-                   src={imageUrl} />
+                   src={imageUrl} alt={`image-${index}`} />
               <div className='icon-button image-close' onClick={() => onImageCloseButtonClickHandler(index)}>
                 <div className='icon close-icon'></div>
               </div>

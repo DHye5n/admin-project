@@ -20,6 +20,10 @@ import {
 import { useCookies } from 'react-cookie';
 import { useBoardStore } from 'stores';
 import useSignInUserStore from 'stores/login-user.store';
+import { boardPostRequest, fileUploadRequest } from '../../apis';
+import { BoardPostRequestDto } from 'apis/request/board';
+import { BoardPostResponseDto } from 'apis/response/board';
+import { ApiResponseDto } from 'apis/response';
 
 /**
  *  TODO: component: Header 레이아웃 컴포넌트
@@ -53,13 +57,13 @@ export default function Header() {
   /**
    *  TODO:  function: navigate 함수
    * */
-  const navigate = useNavigate();
+  const navigator = useNavigate();
 
   /**
    *  TODO:  event handler: 로고 클릭 이벤트 처리 함수
    * */
   const onLogoClickHandler = () => {
-    navigate(MAIN_PATH());
+    navigator(MAIN_PATH());
   };
 
   /**
@@ -116,7 +120,7 @@ export default function Header() {
         return;
       }
       if (word) {
-        navigate(SEARCH_PATH(word));
+        navigator(SEARCH_PATH(word));
       }
     };
 
@@ -167,7 +171,7 @@ export default function Header() {
      * */
     const onMyPageButtonClickHandler = () => {
       if (!signInUser) return;
-      navigate(USER_PATH(signInUser.email));
+      navigator(USER_PATH(signInUser.email));
     };
 
     /**
@@ -176,19 +180,15 @@ export default function Header() {
     const onSignOutButtonClickHandler = () => {
       resetSignInUser();
       setCookie('accessToken', '', { path: MAIN_PATH(), expires: new Date() });
-      navigate(AUTH_PATH());
+      navigator(AUTH_PATH());
     };
 
     /**
      *  TODO: event handler: 로그인 버튼 클릭 이벤트 처리 함수
      * */
     const onSignInButtonClickHandler = () => {
-      navigate(AUTH_PATH());
+      navigator(AUTH_PATH());
     };
-
-    console.log('email:', email);
-    console.log('signInUser.email:', signInUser?.email);
-    console.log('signInUser:', signInUser);
 
     /**
      *  TODO: render: 로그아웃 버튼 컴포넌트 렌더링
@@ -230,9 +230,52 @@ export default function Header() {
     const { title, content, boardImageFileList, resetBoard } = useBoardStore();
 
     /**
+     *  TODO: function: board post response 처리 함수
+     * */
+    const boardPostResponse = (responseBody: BoardPostResponseDto | ApiResponseDto<BoardPostResponseDto> | null) => {
+      if (!responseBody) return;
+
+      const { code } = responseBody;
+
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code === 'AF' || code === 'NFU') navigator(AUTH_PATH());
+      if (code === 'VF') alert('제목과 내용은 필수입니다.');
+      if (code !== 'SU') return;
+
+      resetBoard();
+
+      if (!signInUser) return;
+      const { email } = signInUser;
+      navigator(USER_PATH(email));
+    }
+
+    /**
      *  TODO: event handler: 업로드 버튼 클릭 이벤트 처리 함수
      * */
-    const onUploadButtonClickHandler = () => {};
+    const onUploadButtonClickHandler = async () => {
+      const accessToken = cookie.accessToken;
+      if (!accessToken) return;
+
+      const boardImageList: string[] = [];
+
+      for (const file of boardImageFileList) {
+        const data = new FormData();
+        data.append('file', file);
+
+        const url = await fileUploadRequest(data, accessToken);
+
+        if (url && url.data) {
+          console.log("URL successfully uploaded:", url.data);
+          boardImageList.push(url.data);
+        } else {
+          console.log("No URL data in the response.");
+        }
+      }
+
+      const requestBody: BoardPostRequestDto = { title, content, boardImageList };
+
+      boardPostRequest(requestBody, accessToken).then(boardPostResponse);
+    };
 
     /**
      *  TODO: render: 업로드 버튼 컴포넌트 렌더링
@@ -277,7 +320,6 @@ export default function Header() {
   }, [pathname]);
 
   useEffect(() => {
-    console.log(signInUser);
     setSignIn(signInUser !== null);
   }, [signInUser]);
 
@@ -310,7 +352,7 @@ export default function Header() {
                 <span>{signInUser.username}</span>
               </div>
             </div>
-              )}
+          )}
         </div>
       </div>
     </div>

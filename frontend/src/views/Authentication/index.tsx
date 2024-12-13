@@ -91,7 +91,7 @@ function SignInCard() {
 
   const [passwordType, setPasswordType] = useState<'text' | 'password'>('password');
 
-  const [passwordButtonIcon, setPasswordButtonIcon] = useState<'eye-light-off-icon' | 'eye-light-on-icon'>('eye-light-off-icon');
+  const [passwordButtonIcon, setPasswordButtonIcon] = useState<'eyeOff' | 'eyeOn'>('eyeOff');
 
   /**
    *   TODO:  state: 에러 상태
@@ -137,7 +137,7 @@ function SignInCard() {
       const now = new Date().getTime();
       const expires = new Date(now + expirationTime * 1000);
 
-      setCookie('accessToken', token, { expires, path: MAIN_PATH() });
+      setCookie('accessToken', token, { expires, path: '/' });
       navigator(MAIN_PATH());
     } else {
       alert('Invalid response format.');
@@ -210,10 +210,10 @@ function SignInCard() {
   const onPasswordButtonClickHandler = () => {
     if (passwordType === 'text') {
       setPasswordType('password');
-      setPasswordButtonIcon('eye-light-off-icon');
+      setPasswordButtonIcon('eyeOff');
     } else {
       setPasswordType('text');
-      setPasswordButtonIcon('eye-light-on-icon');
+      setPasswordButtonIcon('eyeOn');
     }
   };
 
@@ -405,17 +405,17 @@ function SignUpCard() {
   /**
    *   TODO:  state: 버튼 아이콘 상태
    */
-  const [emailButtonIcon, setEmailButtonIcon] = useState<'email-gray-icon' | 'email-send-icon' | 'email-resend-icon'>('email-gray-icon');
+  const [emailButtonIcon, setEmailButtonIcon] = useState<'email' | 'emailError' | 'emailSuccess'>('email');
 
-  const [emailCheckButtonIcon, setEmailCheckButtonIcon] = useState<'auth-icon' | undefined>('auth-icon');
+  const [emailCheckButtonIcon, setEmailCheckButtonIcon] = useState<'shield' | 'shieldError' | 'shieldSuccess'>('shield');
 
-  const [usernameButtonIcon, setUsernameButtonIcon] = useState<'person-icon' | undefined>('person-icon');
+  const [usernameButtonIcon, setUsernameButtonIcon] = useState<'person' | 'personError' | 'personSuccess'>('person');
 
-  const [passwordButtonIcon, setPasswordButtonIcon] = useState<'eye-light-off-icon' | 'eye-light-on-icon'>('eye-light-off-icon');
+  const [passwordButtonIcon, setPasswordButtonIcon] = useState<'eyeOff' | 'eyeOn'>('eyeOff');
 
-  const [passwordCheckButtonIcon, setPasswordCheckButtonIcon] = useState<'eye-light-off-icon' | 'eye-light-on-icon'>('eye-light-off-icon');
+  const [passwordCheckButtonIcon, setPasswordCheckButtonIcon] = useState<'eyeOff' | 'eyeOn'>('eyeOff');
 
-  const [addressButtonIcon, setAddressButtonIcon] = useState<'home-gray-icon' | undefined>('home-gray-icon');
+  const [addressButtonIcon, setAddressButtonIcon] = useState<'home' | undefined>('home');
 
   /**
    *   TODO:  function:  다음 주소 검색 팝업 오픈 함수
@@ -518,6 +518,7 @@ function SignUpCard() {
       setEmailError(false);
       setEmailErrorMessage('');
       setEmailSuccessMessage('');
+      setEmailButtonIcon('email');
     } else {
       const { isValid, errorMessage } = validateEmail(value);
       setEmailError(!isValid);
@@ -525,8 +526,10 @@ function SignUpCard() {
 
       if (isValid) {
         setEmailSuccessMessage('이메일 중복 인증을 해주세요.');
+        setEmailButtonIcon('email');
       } else {
         setEmailSuccessMessage('');
+        setEmailButtonIcon('emailError');
       }
     }
   };
@@ -541,6 +544,7 @@ function SignUpCard() {
       setVerificationCodeError(false);
       setVerificationCodeErrorMessage('');
       setVerificationCodeSuccessMessage('');
+      setEmailCheckButtonIcon('shield');
     } else if (isValidCode) {
       setVerificationCodeError(false);
       setVerificationCodeErrorMessage('');
@@ -549,6 +553,7 @@ function SignUpCard() {
       setVerificationCodeError(true);
       setVerificationCodeErrorMessage('인증번호는 4자리 숫자입니다.');
       setVerificationCodeSuccessMessage('');
+      setEmailCheckButtonIcon('shieldError');
     }
   };
 
@@ -600,14 +605,17 @@ function SignUpCard() {
       setUsernameError(false);
       setUsernameErrorMessage('');
       setUsernameSuccessMessage('');
+      setUsernameButtonIcon('person');
     } else if (value.length < 3 || value.length > 10) {
       setUsernameError(true);
       setUsernameErrorMessage('아이디는 3자 이상, 10자 이하로 입력해주세요.');
       setUsernameSuccessMessage('');
+      setUsernameButtonIcon('personError');
     } else {
       setUsernameError(false);
       setUsernameErrorMessage('');
       setUsernameSuccessMessage('아이디 중복 인증을 해주세요.');
+      setUsernameButtonIcon('person');
     }
   };
 
@@ -662,43 +670,53 @@ function SignUpCard() {
   };
 
   const onEmailButtonClickHandler = async () => {
-    if (emailButtonIcon === 'email-gray-icon') {
+    if (!email) {
+      alert('이메일을 입력해 주세요.');
+      setEmailError(true);
+      setEmailErrorMessage('이메일을 입력해주세요.');
+      setEmailSuccessMessage('');
+      setEmailButtonIcon('email');
+      return;
+    }
+    if (emailButtonIcon === 'email') {
       // 이메일 중복 체크
       const response = await checkEmailExists(email);
 
       if (response && response.code === 'DE') {
         setEmailError(true);
         setEmailErrorMessage('중복되는 이메일입니다.');
+        setEmailButtonIcon('emailError');
       } else if (response && response.code === 'SU') {
         setEmailError(false);
         setEmailErrorMessage('');
         setEmailSuccessMessage('사용 가능한 이메일입니다.');
+        setEmailButtonIcon('emailSuccess');
 
         // 이메일이 사용 가능하면 인증 코드 발송
         const sendCodeResponse = await sendVerificationCode(email);
         if (sendCodeResponse && sendCodeResponse.code === 'SU') {
           alert('인증 코드가 발송되었습니다.');
-          setEmailButtonIcon('email-send-icon');  // 발송 후 재발송 아이콘으로 변경
         } else {
           alert('인증 코드 발송에 실패했습니다.');
         }
       } else {
         alert('이메일 중복 체크에 실패했습니다.');
       }
-    } else if (emailButtonIcon === 'email-send-icon') {
+    } else if (emailButtonIcon === 'emailSuccess' || emailButtonIcon === 'emailError') {
       // 인증 코드 발송
       const sendCodeResponse = await sendVerificationCode(email);
       if (sendCodeResponse && sendCodeResponse.code === 'SU') {
         alert('인증 코드가 발송되었습니다.');
-        setEmailButtonIcon('email-resend-icon');  // 발송 후 재발송 아이콘으로 변경
+        setEmailButtonIcon('email');
       } else {
         alert('인증 코드 발송에 실패했습니다.');
       }
-    } else if (emailButtonIcon === 'email-resend-icon') {
+    } else if (emailButtonIcon === 'emailSuccess') {
       // 인증 코드 재발송
       const resendResponse = await resendVerificationCode(email);
       if (resendResponse && resendResponse.code === 'SU') {
         alert('인증 코드가 재발송되었습니다.');
+        setEmailButtonIcon('email');
       } else {
         alert('인증 코드 재발송에 실패했습니다.');
       }
@@ -706,28 +724,38 @@ function SignUpCard() {
   };
 
   const onEmailCheckButtonClickHandler = async () => {
-    console.log("Email:", email);
-    console.log("Verification Code:", verificationCode);
 
     const response = await verifyCode(email, verificationCode);
+
+    if (!verificationCode) {
+      alert('인증코드를 입력해주세요.');
+      setVerificationCodeError(true);
+      setVerificationCodeErrorMessage('인증코드를 입력해주세요.');
+      setVerificationCodeSuccessMessage('');
+      setEmailCheckButtonIcon('shieldError');
+      return;
+    }
 
     if (response && response.code === 'SU') {
       setVerificationCodeError(false);
       setVerificationCodeErrorMessage('');
       setVerificationCodeSuccessMessage('인증이 완료되었습니다.');
-      // 인증 코드 검증 후 성공 처리 (예: 상태 업데이트, 화면 전환 등)
+      setEmailCheckButtonIcon('shieldSuccess');
     } else if (response && response.code === 'IE') {
       setVerificationCodeError(true);
       setVerificationCodeErrorMessage('');
-      setVerificationCodeErrorMessage('유효하지 않은 이메일입니다.');
+      setVerificationCodeErrorMessage('유효하지 않은 인증코드입니다..');
+      setEmailCheckButtonIcon('shieldError');
     } else if (response && response.code === 'EVC') {
       setVerificationCodeError(true);
       setVerificationCodeErrorMessage('');
       setVerificationCodeErrorMessage('인증 코드가 만료되었습니다.');
+      setEmailCheckButtonIcon('shieldError');
     } else if (response && response.code === 'IVC') {
       setVerificationCodeError(true);
       setVerificationCodeErrorMessage('');
       setVerificationCodeErrorMessage('인증 코드가 정확하지 않습니다.');
+      setEmailCheckButtonIcon('shieldError');
     } else {
       // 검증 요청 실패
       alert('인증 코드 검증에 실패했습니다.');
@@ -738,34 +766,45 @@ function SignUpCard() {
 
     const response = await checkUsernameExists(username);
 
+    if (!username) {
+      alert('아이디를 입력해주세요.');
+      setUsernameError(true);
+      setUsernameErrorMessage('아이디를 입력해주세요.');
+      setUsernameSuccessMessage('');
+      setUsernameButtonIcon('personError');
+      return;
+    }
+
     if (response && response.code === 'DU') {
       setUsernameError(true);
       setUsernameErrorMessage('중복되는 아이디입니다.');
+      setUsernameButtonIcon('personError');
     } else if (response && response.code === 'SU') {
       setUsernameError(false);
       setUsernameErrorMessage('');
       setUsernameSuccessMessage('사용 가능한 아이디입니다.');
+      setUsernameButtonIcon('personSuccess');
     } else {
       alert('아이디 중복 체크에 실패했습니다.');
     }
   };
 
   const onPasswordButtonClickHandler = () => {
-    if (passwordButtonIcon === 'eye-light-off-icon') {
-      setPasswordButtonIcon('eye-light-on-icon');
+    if (passwordButtonIcon === 'eyeOff') {
+      setPasswordButtonIcon('eyeOn');
       setPasswordType('text');
     } else {
-      setPasswordButtonIcon('eye-light-off-icon');
+      setPasswordButtonIcon('eyeOff');
       setPasswordType('password');
     }
   };
 
   const onPasswordCheckButtonClickHandler = () => {
-    if (passwordCheckButtonIcon === 'eye-light-off-icon') {
-      setPasswordCheckButtonIcon('eye-light-on-icon');
+    if (passwordCheckButtonIcon === 'eyeOff') {
+      setPasswordCheckButtonIcon('eyeOn');
       setPasswordCheckType('text');
     } else {
-      setPasswordCheckButtonIcon('eye-light-off-icon');
+      setPasswordCheckButtonIcon('eyeOff');
       setPasswordCheckType('password');
     }
   };
@@ -782,16 +821,29 @@ function SignUpCard() {
     if (!email || email.trim().length === 0 || !isEmailValid1) {
       setEmailError(true);
       setEmailErrorMessage(email ? "올바른 이메일 형식을 입력해주세요." : "이메일을 입력해주세요.");
+      setEmailButtonIcon('emailError');
       isFormValid1 = false;
     } else {
       setEmailError(false);
       setEmailErrorMessage("");
     }
 
+    // 인증번호 검증
+    if (!verificationCode || verificationCode.trim().length === 0 || verificationCode.trim().length !== 4) {
+      setVerificationCodeError(true);
+      setVerificationCodeErrorMessage(email ? "인증코드는 4자리 숫자입니다." : "인증코드를 입력해주세요.");
+      setEmailCheckButtonIcon('shieldError');
+      isFormValid1 = false;
+    } else {
+      setVerificationCodeError(false);
+      setVerificationCodeErrorMessage("");
+    }
+
     // 아이디 검증
     if (!username || username.trim().length === 0 || username.length < 3 || username.length > 10) {
       setUsernameError(true);
       setUsernameErrorMessage(username ? "아이디는 3자 이상, 10자 이하로 입력해주세요." : "아이디를 입력해주세요.");
+      setUsernameButtonIcon('personError');
       isFormValid1 = false;
     } else {
       setUsernameError(false);
@@ -996,7 +1048,7 @@ function SignUpCard() {
                         error={isEmailError} message={emailErrorMessage} successMessage={emailSuccessMessage}
                         icon={emailButtonIcon} onButtonClick={onEmailButtonClickHandler} />
 
-              <InputBox ref={verificationCodeRef} label='인증번호*' type='text'
+              <InputBox ref={verificationCodeRef} label='인증코드*' type='text'
                         placeholder='인증번호를 입력해주세요.' value={verificationCode} onChange={onVerificationCodeChangeHandler}
                         error={isVerificationCodeError} message={verificationCodeErrorMessage} successMessage={verificationCodeSuccessMessage}
                         icon={emailCheckButtonIcon} onButtonClick={onEmailCheckButtonClickHandler} />
@@ -1004,17 +1056,17 @@ function SignUpCard() {
               <InputBox ref={usernameRef} label='아이디*' type='text'
                         placeholder='아이디를 입력해주세요.' value={username} onChange={onUsernameChangeHandler}
                         error={isUsernameError} message={usernameErrorMessage} successMessage={usernameSuccessMessage} 
-                        icon={usernameButtonIcon} onButtonClick={onUsernameButtonClickHandler}/>
+                        icon={usernameButtonIcon} onButtonClick={onUsernameButtonClickHandler} />
 
               <InputBox ref={passwordRef} label='비밀번호*' type={passwordType}
                         placeholder='비밀번호를 입력해주세요.' value={password} onChange={onPasswordChangeHandler}
                         error={isPassword} message={passwordErrorMessage} successMessage={passwordSuccessMessage}
-                        icon={passwordButtonIcon} onButtonClick={onPasswordButtonClickHandler} onKeyDown={onPasswordKeyDownHandler}/>
+                        icon={passwordButtonIcon} onButtonClick={onPasswordButtonClickHandler} onKeyDown={onPasswordKeyDownHandler} />
 
               <InputBox ref={passwordCheckRef} label='비밀번호 확인*' type={passwordCheckType}
                         placeholder='비밀번호를 다시 입력해주세요.' value={passwordCheck} onChange={onPasswordCheckChangeHandler}
                         error={isPasswordCheckError} message={passwordCheckErrorMessage} successMessage={passwordCheckSuccessMessage}
-                        icon={passwordCheckButtonIcon} onButtonClick={onPasswordCheckButtonClickHandler} onKeyDown={onPasswordCheckKeyDownHandler}/>
+                        icon={passwordCheckButtonIcon} onButtonClick={onPasswordCheckButtonClickHandler} onKeyDown={onPasswordCheckKeyDownHandler} />
             </>
           )}
           {page === 2 && (

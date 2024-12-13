@@ -23,7 +23,7 @@ public class FileController {
     }
 
     @GetMapping(value = "/{fileName}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
-    public ResponseEntity<Resource> getFile(@PathVariable("fileName") String fileName) {
-        return fileService.getFile(fileName);
+    public ResponseEntity<Resource> getImage(@PathVariable("fileName") String fileName) {
+        return fileService.getImage(fileName);
     }
 }

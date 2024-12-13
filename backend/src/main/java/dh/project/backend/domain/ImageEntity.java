@@ -21,15 +21,15 @@ public class ImageEntity extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long imageId;
 
-    private String image;
+    private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private BoardEntity board;
 
     @Builder
-    public ImageEntity(String image, BoardEntity board) {
-        this.image = image;
+    public ImageEntity(String imageUrl, BoardEntity board) {
+        this.imageUrl = imageUrl;
         this.board = board;
     }
 }

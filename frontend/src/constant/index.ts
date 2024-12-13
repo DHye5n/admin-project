@@ -9,5 +9,3 @@ export const BOARD_DETAIL_PATH = (boardId: string | number) =>
 export const BOARD_UPDATE_PATH = (boardId: string | number) =>
   `update/${boardId}`;
 
-
-console.log(AUTH_PATH());

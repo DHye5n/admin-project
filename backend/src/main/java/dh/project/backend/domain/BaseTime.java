@@ -1,5 +1,6 @@
 package dh.project.backend.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -18,14 +19,17 @@ public class BaseTime {
 
     @CreatedDate
     @Column(name = "created_date", nullable = false, updatable = false)
+    @JsonFormat(pattern = "yy-MM-dd HH:mm:ss")
     protected LocalDateTime createdDate;
 
 
     @LastModifiedDate
     @Column(name = "modified_date", nullable = false)
+    @JsonFormat(pattern = "yy-MM-dd HH:mm:ss")
     protected LocalDateTime modifiedDate;
 
 
     @Column(name = "deleted_date")
+    @JsonFormat(pattern = "yy-MM-dd HH:mm:ss")
     protected LocalDateTime deletedDate;
 }

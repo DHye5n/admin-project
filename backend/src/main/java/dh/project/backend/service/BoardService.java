@@ -32,23 +32,25 @@ public class BoardService {
         UserEntity userEntity = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
 
-
         BoardEntity board = requestDto.toEntity(userEntity);
 
         BoardEntity savedBoard = boardRepository.save(board);
 
-        List<ImageEntity> imageEntities = requestDto.getBoardImageList().stream()
-                .map(image -> ImageEntity.builder()
-                        .image(image)
-                        .board(board) // 연관 관계 설정
-                        .build())
-                        .collect(Collectors.toList());
+        List<ImageEntity> imageEntities = saveImage(requestDto, savedBoard);
 
         imageRepository.saveAll(imageEntities);
-
 
         BoardPostResponseDto responseDto = BoardPostResponseDto.fromEntity(savedBoard);
 
         return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
+    }
+
+    private List<ImageEntity> saveImage(BoardPostRequestDto requestDto, BoardEntity board) {
+        return requestDto.getBoardImageList().stream()
+                .map(imageUrl -> ImageEntity.builder()
+                        .imageUrl(imageUrl)
+                        .board(board)
+                        .build())
+                .collect(Collectors.toList());
     }
 }
