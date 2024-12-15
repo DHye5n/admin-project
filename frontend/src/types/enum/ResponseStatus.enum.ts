@@ -21,7 +21,8 @@ enum ResponseStatus {
   NOT_FOUNT_FILE = 'NFF',
   FILE_READ_FAIL = 'FRF',
   INVALID_FILE_EXTENSION = 'IFE',
-  NOT_FOUND_BOARD = 'NFB'
+  NOT_FOUND_BOARD = 'NFB',
+  NOT_FOUND_BOARD_USER = 'NFBU'
 }
 
 export default ResponseStatus;

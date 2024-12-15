@@ -33,7 +33,6 @@ public class BoardEntity extends BaseTime {
 
     private int commentCount = 0;
 
-    @Column
     private int viewCount = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
