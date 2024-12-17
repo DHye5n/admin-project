@@ -22,5 +22,5 @@ public interface LikeRepository extends JpaRepository<LikeEntity, Long> {
     void decreaseLikeCount(@Param("boardId") Long boardId);
 
     @Query("SELECT l FROM like l JOIN FETCH l.user u WHERE l.board.boardId = :boardId")
-    List<LikeEntity> getLikeListByBoard_BoardId(@Param("boardId") Long boardId);
+    List<LikeEntity> findLikesWithUserByBoardId(@Param("boardId") Long boardId);
 }

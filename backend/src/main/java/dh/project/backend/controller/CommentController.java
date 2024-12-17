@@ -2,6 +2,7 @@ package dh.project.backend.controller;
 
 import dh.project.backend.dto.ApiResponseDto;
 import dh.project.backend.dto.request.comment.PostCommentRequestDto;
+import dh.project.backend.dto.response.comment.GetCommentListResponseDto;
 import dh.project.backend.dto.response.comment.PostCommentResponseDto;
 import dh.project.backend.service.CommentService;
 import dh.project.backend.service.principal.PrincipalDetails;
@@ -29,6 +30,15 @@ public class CommentController {
             @AuthenticationPrincipal PrincipalDetails user
             ) {
         ApiResponseDto<PostCommentResponseDto> responseDto = commentService.createComment(dto, boardId, user.getUserId());
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
+    /**
+     *   TODO: 댓글 리스트
+     * */
+    @GetMapping("/{boardId}/comments")
+    public ResponseEntity<ApiResponseDto<GetCommentListResponseDto>> getCommentList(@PathVariable("boardId") Long boardId) {
+        ApiResponseDto<GetCommentListResponseDto> responseDto = commentService.getCommentList(boardId);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 }

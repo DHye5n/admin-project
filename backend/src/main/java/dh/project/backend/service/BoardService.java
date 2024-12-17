@@ -149,7 +149,7 @@ public class BoardService {
         BoardEntity boardEntity = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
 
-        List<LikeEntity> likeEntities = likeRepository.getLikeListByBoard_BoardId(boardId);
+        List<LikeEntity> likeEntities = likeRepository.findLikesWithUserByBoardId(boardId);
 
         GetLikeListResponseDto responseDto = GetLikeListResponseDto.fromEntity(boardEntity, likeEntities);
 

@@ -25,11 +25,11 @@ public class LikeListItem {
         this.profileImage = profileImage;
     }
 
-    public static LikeListItem fromEntity(LikeEntity likeEntity) {
+    public static LikeListItem fromEntity(LikeEntity like) {
         return LikeListItem.builder()
-                .email(likeEntity.getUser().getEmail())
-                .username(likeEntity.getUser().getUsername())
-                .profileImage(likeEntity.getUser().getProfileImage())
+                .email(like.getUser().getEmail())
+                .username(like.getUser().getUsername())
+                .profileImage(like.getUser().getProfileImage())
                 .build();
     }
 }
