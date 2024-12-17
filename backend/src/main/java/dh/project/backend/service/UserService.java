@@ -18,7 +18,7 @@ public class UserService {
     private final JwtService jwtService;
 
     /**
-     *   TODO: 유저 정보 반환
+     *   TODO: 유저 정보
      * */
     public ApiResponseDto<SignInUserResponseDto> getSignInUser(PrincipalDetails user) {
 

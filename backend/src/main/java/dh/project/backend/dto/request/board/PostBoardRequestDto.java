@@ -13,7 +13,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BoardPostRequestDto {
+public class PostBoardRequestDto {
 
     @NotBlank
     private String title;
@@ -25,7 +25,7 @@ public class BoardPostRequestDto {
     private List<String> boardImageList;
 
     @Builder
-    public BoardPostRequestDto(String title, String content, List<String> boardImageList) {
+    public PostBoardRequestDto(String title, String content, List<String> boardImageList) {
         this.title = title;
         this.content = content;
         this.boardImageList = boardImageList;

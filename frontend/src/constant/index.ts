@@ -1,8 +1,8 @@
 export const MAIN_PATH = () => '/dashboard';
 export const AUTH_PATH = () => '/auth';
 export const SEARCH_PATH = (searchWord: string) => `/search/${searchWord}`;
-export const USER_PATH = (email: string) => `/user/${email}`;
-export const BOARD_PATH = () => '/board';
+export const USER_PATH = (email: string) => `/users/${email}`;
+export const BOARD_PATH = () => '/boards';
 export const BOARD_WRITE_PATH = () => 'write';
 export const BOARD_DETAIL_PATH = (boardId: string | number) =>
   `detail/${boardId}`;

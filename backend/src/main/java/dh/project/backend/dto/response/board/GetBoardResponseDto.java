@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-public class BoardGetResponseDto {
+public class GetBoardResponseDto {
 
     private final Long boardId;
 
@@ -31,7 +31,7 @@ public class BoardGetResponseDto {
     private final String profileImage;
 
     @Builder
-    public BoardGetResponseDto(Long boardId, String title, String content, List<String> boardImageList,
+    public GetBoardResponseDto(Long boardId, String title, String content, List<String> boardImageList,
                                LocalDateTime createdDate, LocalDateTime modifiedDate,
                                String email, String username, String profileImage) {
         this.boardId = boardId;
@@ -45,12 +45,12 @@ public class BoardGetResponseDto {
         this.profileImage = profileImage;
     }
 
-    public static BoardGetResponseDto fromEntity(BoardEntity board , List<ImageEntity> images) {
+    public static GetBoardResponseDto fromEntity(BoardEntity board , List<ImageEntity> images) {
         List<String> boardImageList = images.stream()
                 .map(ImageEntity::getImageUrl)
                 .collect(Collectors.toList());
 
-        return BoardGetResponseDto.builder()
+        return GetBoardResponseDto.builder()
                 .boardId(board.getBoardId())
                 .title(board.getTitle())
                 .content(board.getContent())

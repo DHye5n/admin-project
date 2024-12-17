@@ -5,19 +5,19 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class BoardPutResponseDto {
+public class PutBoardResponseDto {
 
     private final Long boardId;
     private final boolean isLiking;
 
     @Builder
-    public BoardPutResponseDto(Long boardId, boolean isLiking) {
+    public PutBoardResponseDto(Long boardId, boolean isLiking) {
         this.boardId = boardId;
         this.isLiking = isLiking;
     }
 
-    public static BoardPutResponseDto fromEntity(BoardEntity board, boolean isLiking) {
-        return BoardPutResponseDto.builder()
+    public static PutBoardResponseDto fromEntity(BoardEntity board, boolean isLiking) {
+        return PutBoardResponseDto.builder()
                 .boardId(board.getBoardId())
                 .isLiking(isLiking)
                 .build();

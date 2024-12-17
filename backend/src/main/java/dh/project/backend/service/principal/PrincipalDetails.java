@@ -14,6 +14,10 @@ public class PrincipalDetails implements UserDetails {
 
     private final UserEntity user;
 
+    public Long getUserId() {
+        return user.getUserId();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));

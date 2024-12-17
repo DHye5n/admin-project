@@ -28,6 +28,9 @@ public class FileService {
     @Value("${file.url}")
     private String fileUrl;
 
+    /**
+     *   TODO: 이미지 업로드
+     * */
     public ApiResponseDto<String> upload(MultipartFile file) {
 
         if (file.isEmpty()) {
@@ -81,6 +84,9 @@ public class FileService {
         return ApiResponseDto.success(ResponseStatus.SUCCESS, url);
     }
 
+    /**
+     *   TODO: 이미지 불러오기
+     * */
     public ResponseEntity<Resource> getImage(String fileName) {
 
         // 파일 경로 설정

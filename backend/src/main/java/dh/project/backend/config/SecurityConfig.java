@@ -40,9 +40,10 @@ public class SecurityConfig {
                                         "/api/v1/auth/username/**/exists"
                                 ).permitAll()
                                 .antMatchers(
-                                        "/api/v1/user/**",
-                                        "/api/v1/board/**",
-                                        "/file/**"
+                                        "/api/v1/users/**",
+                                        "/api/v1/boards/**",
+                                        "/api/v1/comments/**/comment",
+                                        "/files/**"
                                 ).authenticated()
                                 .anyRequest().authenticated()
                 )

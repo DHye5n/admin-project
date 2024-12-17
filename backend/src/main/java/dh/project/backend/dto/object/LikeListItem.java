@@ -1,5 +1,6 @@
 package dh.project.backend.dto.object;
 
+import dh.project.backend.domain.LikeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,5 +23,13 @@ public class LikeListItem {
         this.email = email;
         this.username = username;
         this.profileImage = profileImage;
+    }
+
+    public static LikeListItem fromEntity(LikeEntity likeEntity) {
+        return LikeListItem.builder()
+                .email(likeEntity.getUser().getEmail())
+                .username(likeEntity.getUser().getUsername())
+                .profileImage(likeEntity.getUser().getProfileImage())
+                .build();
     }
 }

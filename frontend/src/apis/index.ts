@@ -36,11 +36,11 @@ const RESEND_VERIFICATION_CODE_URL = (email: string) => `${API_DOMAIN}/auth/rese
 
 const VERIFY_CODE_URL = () => `${API_DOMAIN}/auth/verify-code`;
 
-const SIGN_IN_USER_URL = () => `${API_DOMAIN}/user`;
+const SIGN_IN_USER_URL = () => `${API_DOMAIN}/users`;
 
-const BOARD_POST_URL = () => `${API_DOMAIN}/board`;
+const BOARD_POST_URL = () => `${API_DOMAIN}/boards`;
 
-const FILE_DOMAIN = `${DOMAIN}/file`;
+const FILE_DOMAIN = `${DOMAIN}/files`;
 
 const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
 

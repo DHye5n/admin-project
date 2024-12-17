@@ -17,6 +17,7 @@ public enum ResponseStatus {
     INVALID_FILE_EXTENSION(400, "IFE", "Invalid file extension."),
     FILE_EMPTY(400, "FE", "File is empty."),
     PASSWORD_MISMATCH(400, "PM", "Password does not match."),
+    NOT_EMPTY(400, "NE", "Not empty."),
 
     // Authorization: 401
     SIGN_IN_FAIL(401,"SF", "Login information mismatch."),

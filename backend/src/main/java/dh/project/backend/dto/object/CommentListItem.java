@@ -17,14 +17,14 @@ public class CommentListItem {
 
     private String username;
     private String profileImage;
-    private LocalDateTime createdAt;
+    private LocalDateTime createdDate;
     private String comment;
 
     @Builder
-    public CommentListItem(String username, String profileImage, LocalDateTime createdAt, String comment) {
+    public CommentListItem(String username, String profileImage, LocalDateTime createdDate, String comment) {
         this.username = username;
         this.profileImage = profileImage;
-        this.createdAt = createdAt;
+        this.createdDate = createdDate;
         this.comment = comment;
     }
 }
