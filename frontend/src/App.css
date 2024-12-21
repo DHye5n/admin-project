@@ -188,10 +188,19 @@
 
 .close-icon {background-image: url(assets/image/close.png);}
 
+.more-icon {background-image: url(assets/image/more-icon.png);}
+
+.up-light-icon {background-image: url(assets/image/expand-up-light.png);}
+
+.down-light-icon {background-image: url(assets/image/expand-down-light.png);}
+
+
 .divider {
   width: 100%;
   border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
+
+.emphasis {font-weight: bolder;}
 
 /* COMMON Layout Style */
 

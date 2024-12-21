@@ -1,0 +1,256 @@
+#board-detail-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 1);
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+}
+
+.board-detail-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 40px 20px;
+    width: 80%;
+    /*height: 100%;*/
+}
+
+#board-detail-top {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    /*align-items: flex-start; !* 공간 분배 제거 *!*/
+    /*justify-content: flex-start; !* 위쪽으로 내용 배치 *!*/
+    margin-bottom: 20px;
+}
+
+/* Board Detail Top */
+
+.board-detail-top-header {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.board-detail-title {
+    color: var(--black);
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 140%;
+}
+
+.board-detail-top-sub-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.board-detail-write-info-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.board-detail-writer-profile-image {
+    border-radius: 50% 50%;
+    width: 24px;
+    height: 24px;
+    background-position: 50% 50%;
+    background-size: 100% 100%;
+}
+
+.board-detail-writer-username {
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 140%;
+    cursor: pointer;
+}
+
+.board-detail-info-divider, .board-detail-write-date {
+    color: rgba(0, 0, 0, 0.4);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 140%;
+}
+
+.board-detail-more-box {
+    position: absolute;
+    right: 0;
+    background-color: var(--white);
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.25);
+    top: 40px;
+}
+
+.board-detail-update-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 120px;
+    height: 40px;
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 140%;
+}
+
+.board-detail-update-button:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.board-detail-delete-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 120px;
+    height: 40px;
+    color: rgba(255, 0, 0, 0.5);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 140%;
+}
+
+.board-detail-delete-button:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.board-detail-top-main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+    width: 100%;
+}
+
+/* Board Detail Main */
+
+.board-detail-main-text {
+    color: var(--black);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 140%;
+    white-space: pre-wrap;
+}
+
+.board-detail-main-image {
+    width: 100%;
+    height: 100%;
+}
+
+/* Board Detail Bottom */
+
+#board-detail-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.board-detail-bottom-button-box {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}
+
+.board-detail-bottom-button-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.board-detail-bottom-button-text {
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 140%;
+}
+
+.board-detail-bottom-like-box {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 20px 20px 40px;
+}
+
+.board-detail-bottom-like-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.board-detail-bottom-like-title {
+    color: var(--black);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 140%;
+}
+
+.board-detail-bottom-like-contents {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 20px;
+    column-gap: 30px;
+}
+
+.board-detail-bottom-comment-box {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.board-detail-bottom-comment-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0 20px;
+}
+
+.board-detail-bottom-comment-title {
+    color: var(--black);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 140%;
+}
+
+.board-detail-bottom-comment-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.board-detail-bottom-comment-pagination-box {
+    display: flex;
+    justify-content: center;
+}
+
+.board-detail-bottom-comment-input-box {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 20px;
+}
+
+.board-detail-bottom-comment-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.board-detail-bottom-comment-textarea {
+    border: none;
+    outline: none;
+    background: none;
+    resize: none;
+    color: var(--black);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 140%;
+    overflow: hidden;
+}
+
+.board-detail-bottom-comment-button-box {
+    display: flex;
+    justify-content: flex-end;
+}

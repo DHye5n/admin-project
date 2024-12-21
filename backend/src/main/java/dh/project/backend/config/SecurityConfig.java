@@ -42,7 +42,7 @@ public class SecurityConfig {
                                 .antMatchers(
                                         "/api/v1/users/**",
                                         "/api/v1/boards/**",
-                                        "/api/v1/comments/**/comment",
+                                        "/api/v1/comments/**/**",
                                         "/files/**"
                                 ).authenticated()
                                 .anyRequest().authenticated()

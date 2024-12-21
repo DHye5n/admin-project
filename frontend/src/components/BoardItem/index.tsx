@@ -1,6 +1,5 @@
 import './style.css';
 import { BoardListItem } from 'types/interface';
-import { useNavigate } from 'react-router-dom';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
 
 /**

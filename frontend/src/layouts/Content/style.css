@@ -5,7 +5,7 @@
     padding: 15px;
     left: 250px;
     width: calc(100% - 250px);
-    height: calc(100% - 80px);
+    height: 100%;
     top: 80px;
     background-color: rgba(245, 245, 245, 1);
 }

@@ -1,7 +1,9 @@
 import './style.css';
 import BoardWrite from 'views/Board/Write';
 import { useLocation } from 'react-router-dom';
-import { BOARD_WRITE_PATH, MAIN_PATH } from '../../constant';
+import { BOARD_WRITE_PATH, MAIN_PATH } from 'constant';
+import React from 'react';
+import BoardDetail from 'views/Board/Detail';
 
 export default function Content() {
   /**
@@ -11,7 +13,8 @@ export default function Content() {
 
   return (
     <div id='content'>
-      {pathname.startsWith('/board/write') && <BoardWrite />}
+      {pathname.startsWith('/boards/write') && <BoardWrite />}
+      {pathname.startsWith('/boards/detail') && <BoardDetail />}
       {pathname === MAIN_PATH() && <div>메인페이지</div>}
     </div>
   );
