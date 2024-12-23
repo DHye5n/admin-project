@@ -11,6 +11,7 @@ import dh.project.backend.enums.ResponseStatus;
 import dh.project.backend.exception.ErrorException;
 import dh.project.backend.repository.BoardRepository;
 import dh.project.backend.repository.CommentRepository;
+import dh.project.backend.repository.UserRepository;
 import dh.project.backend.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class CommentService {
     private final AuthService authService;
 
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
     private final CommentRepository commentRepository;
 
     /**
@@ -33,10 +35,11 @@ public class CommentService {
     @Transactional
     public ApiResponseDto<PostCommentResponseDto> createComment(PostCommentRequestDto requestDto, Long boardId, Long userId) {
 
-        UserEntity userEntity = authService.checkUserAuthorization(userId);
-
         BoardEntity boardEntity = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
+
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
 
         if ((requestDto.getComment() == null || requestDto.getComment().trim().isEmpty())) {
             throw new ErrorException(ResponseStatus.NOT_EMPTY);

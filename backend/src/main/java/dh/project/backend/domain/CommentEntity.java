@@ -10,7 +10,7 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 
 @Table(name = "comment")
-@SQLDelete(sql = "UPDATE \"comment\" SET deleted_date = CURRENT_TIMESTAMP WHERE comment_id = ?")
+@SQLDelete(sql = "UPDATE `comment` SET deleted_date = CURRENT_TIMESTAMP WHERE comment_id = ?")
 @Where(clause = "deleted_date IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

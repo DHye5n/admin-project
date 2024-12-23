@@ -12,6 +12,7 @@ import dh.project.backend.exception.ErrorException;
 import dh.project.backend.repository.BoardRepository;
 import dh.project.backend.repository.ImageRepository;
 import dh.project.backend.repository.LikeRepository;
+import dh.project.backend.repository.UserRepository;
 import dh.project.backend.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
     private final ImageRepository imageRepository;
     private final LikeRepository likeRepository;
     private final AuthService authService;
@@ -36,12 +38,13 @@ public class BoardService {
     @Transactional
     public ApiResponseDto<PostBoardResponseDto> createBoard(PostBoardRequestDto requestDto, Long userId) {
 
-        UserEntity userEntity = authService.checkUserAuthorization(userId);
-
         if ((requestDto.getTitle() == null || requestDto.getTitle().trim().isEmpty()) ||
                 (requestDto.getContent() == null || requestDto.getContent().trim().isEmpty())) {
             throw new ErrorException(ResponseStatus.NOT_EMPTY);
         }
+
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
 
         BoardEntity boardEntity = requestDto.toEntity(userEntity);
 
@@ -105,10 +108,11 @@ public class BoardService {
     @Transactional
     public ApiResponseDto<PutLikeResponseDto> toggleLike(Long boardId, Long userId) {
 
-        UserEntity userEntity = authService.checkUserAuthorization(userId);
-
         BoardEntity boardEntity = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
+
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
 
         Optional<LikeEntity> likeEntity = likeRepository.findByBoard_BoardIdAndUser_UserId(boardId, userId);
 
@@ -152,5 +156,24 @@ public class BoardService {
         GetLikeListResponseDto responseDto = GetLikeListResponseDto.fromEntity(boardEntity, likeEntities);
 
         return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
+    }
+
+    /**
+     *   TODO: 게시물 삭제
+     * */
+    @Transactional
+    public ApiResponseDto<DeleteBoardResponseDto> deleteBoard(Long boardId, Long userId) {
+
+        BoardEntity boardEntity = boardRepository.findById(boardId)
+                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
+
+        authService.checkUserAuthorization(boardEntity.getUser().getUserId(), userId);
+
+        boardRepository.delete(boardEntity);
+
+        DeleteBoardResponseDto responseDto = DeleteBoardResponseDto.fromEntity(boardEntity);
+
+        return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
+
     }
 }

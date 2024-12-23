@@ -72,4 +72,15 @@ public class BoardController {
         ApiResponseDto<GetLikeListResponseDto> responseDto = boardService.getLikeList(boardId);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
+
+    /**
+     *   TODO: 게시물 삭제
+     * */
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<ApiResponseDto<DeleteBoardResponseDto>> deleteBoard(
+            @PathVariable("boardId") Long boardId,
+            @AuthenticationPrincipal PrincipalDetails user) {
+        ApiResponseDto<DeleteBoardResponseDto> responseDto = boardService.deleteBoard(boardId, user.getUserId());
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
 }

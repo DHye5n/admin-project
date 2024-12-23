@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "board")
-@SQLDelete(sql = "UPDATE \"board\" SET deleted_date = CURRENT_TIMESTAMP WHERE board_id = ?")
+@SQLDelete(sql = "UPDATE `board` SET deleted_date = CURRENT_TIMESTAMP WHERE board_id = ?")
 @Where(clause = "deleted_date IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

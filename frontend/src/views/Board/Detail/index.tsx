@@ -100,17 +100,35 @@ export default function BoardDetail() {
       if (!responseBody) return;
 
       const { code } = responseBody;
-      if (code === 'NFB') alert('존재하지 않는 게시물입니다.');
-      if (code === 'DBE') alert('데이터베이스 오류입니다.');
-      if (code === 'VF') alert('잘못된 접근입니다.');
-      if (code === 'NFU') alert('존재하지 않는 유저입니다.');
-      if (code === 'AF') alert('인증에 실패했습니다.');
-      if (code === 'NP') alert('권한이 없습니다.');
-      if (code !== 'SU') return;
-
-      alert('게시물이 삭제되었습니다.');
-      navigator(MAIN_PATH());
-    }
+      if (code === 'NFB') {
+        alert('존재하지 않는 게시물입니다.');
+        navigator(MAIN_PATH());  
+      }
+      if (code === 'DBE') {
+        alert('데이터베이스 오류입니다.');
+        navigator(MAIN_PATH());
+      }
+      if (code === 'VF') {
+        alert('잘못된 접근입니다.');
+        navigator(MAIN_PATH());
+      }
+      if (code === 'NFU') {
+        alert('존재하지 않는 유저입니다.');
+        navigator(MAIN_PATH());
+      }
+      if (code === 'AF') {
+        alert('인증에 실패했습니다.');
+        navigator(MAIN_PATH());
+      }
+      if (code === 'NP') {
+        alert('권한이 없습니다.');
+        navigator(MAIN_PATH());
+      }
+      if (code === 'SU') {
+        alert('게시물이 삭제되었습니다.');
+        navigator(MAIN_PATH());
+      }
+    };
 
     const getFormattedDate = (createdDate: string, modifiedDate: string | null) => {
       return modifiedDate && modifiedDate !== createdDate

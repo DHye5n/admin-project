@@ -10,7 +10,7 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 
 @Table(name = "image")
-@SQLDelete(sql = "UPDATE \"image\" SET deleted_date = CURRENT_TIMESTAMP WHERE image_id = ?")
+@SQLDelete(sql = "UPDATE `image` SET deleted_date = CURRENT_TIMESTAMP WHERE image_id = ?")
 @Where(clause = "deleted_date IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

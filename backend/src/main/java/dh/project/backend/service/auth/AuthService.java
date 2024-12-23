@@ -112,21 +112,23 @@ public class AuthService {
     /**
      *   TODO: 유저 권한 체크
      * */
-    public UserEntity checkUserAuthorization(Long userId) {
-
-        Long currentUserId = getCurrentUserId();
+    public void checkUserAuthorization(Long userId, Long currentUserId) {
 
         if (!userId.equals(currentUserId)) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
     }
 
     private Long getCurrentUserId() {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
+        }
+
+        Object principal = authentication.getPrincipal();
+        if (!(principal instanceof PrincipalDetails)) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
