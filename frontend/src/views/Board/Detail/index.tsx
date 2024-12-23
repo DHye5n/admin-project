@@ -2,9 +2,7 @@ import './style.css';
 import LikeItem from 'components/LikeItem';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { LikeListItem } from 'types/interface';
-import likeListMock from 'mocks/like-list.mock';
 import { CommentListItem } from 'types/interface';
-import { commentListMock } from 'mocks';
 import CommentItem from 'components/CommentItem';
 import Pagination from 'components/Pagination';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
@@ -14,11 +12,12 @@ import useSignInUserStore from 'stores/login-user.store';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AUTH_PATH, BOARD_PATH, BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from 'constant';
 import { Board } from 'types/interface';
-import { getBoardRequest, viewCountRequest } from 'apis';
+import { getBoardRequest, getCommentListRequest, getLikeListRequest, viewCountRequest } from 'apis';
 import { ApiResponseDto } from 'apis/response';
 import { useCookies } from 'react-cookie';
 import { formatDate } from 'utils/dateUtils';
-import { ViewCountResponseDTO, GetBoardResponseDto } from 'apis/response/board';
+import { ViewCountResponseDto, GetBoardResponseDto } from 'apis/response/board';
+import { GetCommentListResponseDto, GetLikeListResponseDto } from 'apis/response/board';
 
 /**
  *  TODO: component: Board Detail 컴포넌트
@@ -40,7 +39,7 @@ export default function BoardDetail() {
    * */
   const navigator = useNavigate();
 
-  const viewCountResponse = (responseBody: ApiResponseDto<ViewCountResponseDTO> | null) => {
+  const viewCountResponse = (responseBody: ApiResponseDto<ViewCountResponseDto> | null) => {
     if (!responseBody) return;
 
     const { code } = responseBody;
@@ -227,12 +226,60 @@ export default function BoardDetail() {
       commentRef.current.style.height = `${commentRef.current.scrollHeight}px`;
     }
 
+    const getLikeListResponse = (responseBody: ApiResponseDto<GetLikeListResponseDto> | null) => {
+      if (!responseBody) return;
+
+      const { code } = responseBody;
+      if (code === 'NFB') alert('존재하지 않는 게시물입니다.');
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code !== 'SU') return;
+
+      const { likeList } = responseBody.data as GetLikeListResponseDto;
+      setLikeList(likeList);
+
+      if (Array.isArray(likeList)) {
+        likeList.forEach(like => {
+          if (!signInUser) {
+            setLike(false);
+            return;
+          }
+          const isLike = likeList.findIndex(like => like.email === signInUser.email) !== -1;
+          setLike(isLike);
+        });
+      }
+    }
+
+    const getCommentListResponse = (responseBody: ApiResponseDto<GetCommentListResponseDto> | null) => {
+      if (!responseBody) return;
+
+      const { code } = responseBody;
+      if (code === 'NFB') alert('존재하지 않는 게시물입니다.');
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code !== 'SU') return;
+
+      console.log('responseBody: ', responseBody);
+
+      const { commentList } = responseBody.data as GetCommentListResponseDto;
+      setCommentList(commentList);
+      console.log('commentList:', commentList);
+    }
+
     /**
      *  TODO: effect: 함수
      * */
     useEffect(() => {
-      setLikeList(likeListMock);
-      setCommentList(commentListMock);
+      const accessToken = cookie.accessToken;
+
+      if (!accessToken) {
+        navigator(AUTH_PATH());
+        return;
+      }
+
+      if (!boardId) return;
+
+      getLikeListRequest(boardId, accessToken).then(getLikeListResponse);
+
+      getCommentListRequest(boardId, accessToken).then(getCommentListResponse);
     }, []);
 
     /**
@@ -248,7 +295,9 @@ export default function BoardDetail() {
                 <IonIcon icon={heartOutline} style={{ width: '24px', height: '24px' }} />
               }
             </div>
-            <div className="board-detail-bottom-button-text">{`좋아요 ${likeList.length}`}</div>
+            <div className="board-detail-bottom-button-text">
+              {`좋아요 ${likeList ? likeList.length : 0}`}
+            </div>
             <div className="icon-button" onClick={onShowLikeListClickHandler}>
               {showLike ?
                 <div className="icon up-light-icon"></div> :
@@ -260,7 +309,9 @@ export default function BoardDetail() {
             <div className="icon-button">
               <IonIcon icon={chatbubbleEllipsesOutline} style={{ width: '24px', height: '24px' }} />
             </div>
-            <div className="board-detail-bottom-button-text">{`댓글 ${commentList.length}`}</div>
+            <div className="board-detail-bottom-button-text">
+              {`댓글 ${commentList ? commentList.length : 0}`}
+            </div>
             <div className="icon-button" onClick={onShowCommentListClickHandler}>
               {showComment ?
                 <div className="icon up-light-icon"></div> :
@@ -273,10 +324,12 @@ export default function BoardDetail() {
           <div className="board-detail-bottom-like-box">
             <div className='board-detail-bottom-like-container'>
               <div className='board-detail-bottom-like-title'>
-                {'좋아요 '}<span className='emphasis'>{likeList.length}</span>
+                {'좋아요 '}<span className='emphasis'>{likeList ? likeList.length : 0}</span>
               </div>
               <div className='board-detail-bottom-like-contents'>
-                {likeList.map(item => <LikeItem likeListItem={item} />)}
+                {likeList.map((item, index) => (
+                  <LikeItem key={item.email || index} likeListItem={item} />
+                ))}
               </div>
             </div>
           </div>
@@ -285,10 +338,12 @@ export default function BoardDetail() {
           <div className='board-detail-bottom-comment-box'>
             <div className='board-detail-bottom-comment-container'>
               <div className="board-detail-bottom-comment-title">
-                {'댓글 '}<span className="emphasis">{commentList.length}</span>
+                {'댓글 '}<span className="emphasis">{commentList ? commentList.length : 0}</span>
               </div>
               <div className='board-detail-bottom-comment-list-container'>
-                {commentList.map(item => <CommentItem commentListItem={item} />)}
+                {commentList.map((item, index) => (
+                  <CommentItem key={item.username || index} commentListItem={item} />
+                ))}
               </div>
             </div>
 
@@ -297,7 +352,7 @@ export default function BoardDetail() {
             <div className='board-detail-bottom-comment-pagination-box'>
               <Pagination />
             </div>
-
+          {signInUser !== null &&
             <div className='board-detail-bottom-comment-input-box'>
               <div className='board-detail-bottom-comment-input-container'>
                 <textarea className='board-detail-bottom-comment-textarea' placeholder='댓글을 작성해주세요.' value={comment}
@@ -307,6 +362,7 @@ export default function BoardDetail() {
                 </div>
               </div>
             </div>
+          }
           </div>
         }
       </div>

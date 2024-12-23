@@ -3,7 +3,12 @@ import axios from 'axios';
 import { DuplicateCheckResponseDto, SignInResponseDto, SignUpResponseDto } from './response/auth';
 import { ApiResponseDto } from './response';
 import { SignInUserResponseDto } from './response/user';
-import { PostBoardResponseDto, GetBoardResponseDto, ViewCountResponseDTO } from './response/board';
+import {
+  PostBoardResponseDto,
+  GetBoardResponseDto,
+  ViewCountResponseDto,
+  GetLikeListResponseDto, GetCommentListResponseDto,
+} from './response/board';
 import { PostBoardRequestDto } from './request/board';
 
 
@@ -44,6 +49,10 @@ const POST_BOARD_URL = () => `${API_DOMAIN}/boards`;
 const GET_BOARD_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}`;
 
 const VIEW_COUNT_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/view-counts`;
+
+const GET_LIKE_LIST_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/likes`;
+
+const GET_COMMENT_LIST_URL = (boardId: number | string) => `${API_DOMAIN}/comments/${boardId}/comments`;
 
 const FILE_DOMAIN = `${DOMAIN}/files`;
 
@@ -222,12 +231,40 @@ export const getBoardRequest = async (boardId: number | string, accessToken: str
 export const viewCountRequest = async (boardId: number | string, accessToken: string) => {
   const result = await axios.get(VIEW_COUNT_URL(boardId), authorization(accessToken))
     .then(response => {
-      const responseBody: ApiResponseDto<ViewCountResponseDTO> = response.data;
+      const responseBody: ApiResponseDto<ViewCountResponseDto> = response.data;
       return responseBody;
     })
     .catch(error => {
       if (!error.response) return null;
-      const responseBody: ApiResponseDto<ViewCountResponseDTO> = error.response.data;
+      const responseBody: ApiResponseDto<ViewCountResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+}
+
+export const getLikeListRequest = async (boardId: number | string, accessToken: string) => {
+  const result = await axios.get(GET_LIKE_LIST_URL(boardId), authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<GetLikeListResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<GetLikeListResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+}
+
+export const getCommentListRequest = async (boardId: number | string, accessToken: string) => {
+  const result = await axios.get(GET_COMMENT_LIST_URL(boardId), authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<GetCommentListResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<GetCommentListResponseDto> = error.response.data;
       return responseBody;
     })
   return result;

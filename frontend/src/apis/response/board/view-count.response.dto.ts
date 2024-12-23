@@ -1,6 +1,6 @@
 import ApiResponseDto from '../ApiResponse.dto';
 
-export default interface ViewCountResponseDTO extends ApiResponseDto {
+export default interface ViewCountResponseDto extends ApiResponseDto {
   boardId: string;
   viewCount: number;
 }

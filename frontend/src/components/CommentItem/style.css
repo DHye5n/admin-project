@@ -11,8 +11,8 @@
 }
 
 .comment-list-item-profile-box {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
 }
 
 .comment-list-item-profile-image {
@@ -25,28 +25,28 @@
 
 .comment-list-item-username {
   color: rgba(0, 0, 0, 0.7);
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 140%;
 }
 
 .comment-list-item-divider {
   color: rgba(0, 0, 0, 0.4);
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 400;
   line-height: 140%;
 }
 
 .comment-list-item-time {
   color: rgba(0, 0, 0, 0.4);
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 400;
   line-height: 140%;
 }
 
 .comment-list-item-content {
   color: rgba(0, 0, 0, 0.7);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
   line-height: 150%;
 }

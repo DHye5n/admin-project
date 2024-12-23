@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 
 /**
  *  공통 객체 DTO 클래스
@@ -18,15 +16,17 @@ public class CommentListItem {
 
     private String username;
     private String profileImage;
-//    private LocalDateTime createdDate;
     private String comment;
+    private String createdDate;
+    private String modifiedDate;
 
     @Builder
-    public CommentListItem(String username, String profileImage, LocalDateTime createdDate, String comment) {
+    public CommentListItem(String username, String profileImage, String comment, String createdDate, String modifiedDate) {
         this.username = username;
         this.profileImage = profileImage;
-//        this.createdDate = createdDate;
         this.comment = comment;
+        this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate;
     }
 
     public static CommentListItem fromEntity(CommentEntity comment) {
@@ -34,6 +34,8 @@ public class CommentListItem {
                 .username(comment.getUser().getUsername())
                 .profileImage(comment.getUser().getProfileImage())
                 .comment(comment.getComment())
+                .createdDate(comment.getCreatedDate())
+                .modifiedDate(comment.getModifiedDate())
                 .build();
     }
 }

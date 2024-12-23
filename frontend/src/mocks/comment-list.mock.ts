@@ -4,20 +4,23 @@ const commentListMock: CommentListItem[] = [
   {
     username: '불로배',
     profileImage: null,
-    createdAt: '3분전',
-    content: 'content',
+    comment: 'content',
+    createdDate: '3분전',
+    modifiedDate: '3분전',
   },
   {
     username: '불로배',
     profileImage: null,
-    createdAt: '3분전',
-    content: 'content',
+    comment: 'content',
+    createdDate: '3분전',
+    modifiedDate: '3분전',
   },
   {
     username: '불로배',
     profileImage: null,
-    createdAt: '3분전',
-    content: 'content',
+    comment: 'content',
+    createdDate: '3분전',
+    modifiedDate: '3분전',
   },
 ];
 

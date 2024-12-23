@@ -12,11 +12,11 @@ import java.util.stream.Collectors;
 @Getter
 public class GetLikeListResponseDto {
 
-    private final List<LikeListItem> likelist;
+    private final List<LikeListItem> likeList;
 
     @Builder
     public GetLikeListResponseDto(List<LikeListItem> likeList) {
-        this.likelist = likeList;
+        this.likeList = likeList;
     }
 
     public static GetLikeListResponseDto fromEntity(BoardEntity board, List<LikeEntity> likeEntities) {
