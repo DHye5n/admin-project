@@ -20,9 +20,9 @@ import {
 import { useCookies } from 'react-cookie';
 import { useBoardStore } from 'stores';
 import useSignInUserStore from 'stores/login-user.store';
-import { boardPostRequest, fileUploadRequest } from '../../apis';
-import { BoardPostRequestDto } from 'apis/request/board';
-import { BoardPostResponseDto } from 'apis/response/board';
+import { fileUploadRequest, postBoardRequest } from 'apis';
+import { PostBoardRequestDto } from 'apis/request/board';
+import { PostBoardResponseDto } from 'apis/response/board';
 import { ApiResponseDto } from 'apis/response';
 
 /**
@@ -232,7 +232,7 @@ export default function Header() {
     /**
      *  TODO: function: board post response 처리 함수
      * */
-    const boardPostResponse = (responseBody: BoardPostResponseDto | ApiResponseDto<BoardPostResponseDto> | null) => {
+    const postBoardResponse = (responseBody: PostBoardResponseDto | ApiResponseDto<PostBoardResponseDto> | null) => {
       if (!responseBody) return;
 
       const { code } = responseBody;
@@ -272,9 +272,9 @@ export default function Header() {
         }
       }
 
-      const requestBody: BoardPostRequestDto = { title, content, boardImageList };
+      const requestBody: PostBoardRequestDto = { title, content, boardImageList };
 
-      boardPostRequest(requestBody, accessToken).then(boardPostResponse);
+      postBoardRequest(requestBody, accessToken).then(postBoardResponse);
     };
 
     /**

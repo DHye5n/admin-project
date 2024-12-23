@@ -5,17 +5,15 @@ import dh.project.backend.dto.response.user.SignInUserResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
-
 @Getter
 public class PostCommentResponseDto {
 
     private final String comment;
     private final SignInUserResponseDto writer;
-    private final LocalDateTime createdDate;
+    private final String createdDate;
 
     @Builder
-    public PostCommentResponseDto(String comment, SignInUserResponseDto writer, LocalDateTime createdDate) {
+    public PostCommentResponseDto(String comment, SignInUserResponseDto writer, String createdDate) {
         this.comment = comment;
         this.writer = writer;
         this.createdDate = createdDate;

@@ -1,6 +1,6 @@
 import ApiResponseDto from '../ApiResponse.dto';
 
-export default interface BoardPostResponseDto extends ApiResponseDto {
+export default interface PostBoardResponseDto extends ApiResponseDto {
   title: string;
   content: string;
   writer: string;

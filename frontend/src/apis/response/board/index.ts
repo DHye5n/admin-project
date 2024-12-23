@@ -1,5 +1,9 @@
-import BoardPostResponseDto from './board-post.response.dto';
+import PostBoardResponseDto from './post-board.response.dto';
+import GetBoardResponseDto from './get-board.response.dto';
+import ViewCountResponseDTO from './view-count.response.dto';
 
 export type {
-  BoardPostResponseDto
+  PostBoardResponseDto,
+  GetBoardResponseDto,
+  ViewCountResponseDTO
 }

@@ -6,7 +6,6 @@ import dh.project.backend.dto.response.user.SignInUserResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,13 +16,13 @@ public class PostBoardResponseDto {
     private final String content;
     private final SignInUserResponseDto writer;
     private final List<String> boardImageList;
-    private final LocalDateTime createdDate;
-    private final LocalDateTime modifiedDate;
+    private final String createdDate;
+    private final String modifiedDate;
 
 
     @Builder
     public PostBoardResponseDto(String title, String content, SignInUserResponseDto writer,
-                                List<String> boardImageList, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+                                List<String> boardImageList, String createdDate, String modifiedDate) {
         this.title = title;
         this.content = content;
         this.writer = writer;

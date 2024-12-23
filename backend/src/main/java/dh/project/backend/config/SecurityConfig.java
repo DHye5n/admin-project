@@ -37,13 +37,13 @@ public class SecurityConfig {
                                         "/api/v1/auth/resend-verification-code",
                                         "/api/v1/auth/verify-code",
                                         "/api/v1/auth/check-email",
-                                        "/api/v1/auth/username/**/exists"
+                                        "/api/v1/auth/username/**/exists",
+                                        "/file/**", "/files/**"
                                 ).permitAll()
                                 .antMatchers(
                                         "/api/v1/users/**",
-                                        "/api/v1/boards/**",
-                                        "/api/v1/comments/**/**",
-                                        "/files/**"
+                                        "/api/v1/boards/**/**",
+                                        "/api/v1/comments/**/**"
                                 ).authenticated()
                                 .anyRequest().authenticated()
                 )

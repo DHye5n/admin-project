@@ -6,10 +6,7 @@ import dh.project.backend.domain.LikeEntity;
 import dh.project.backend.domain.UserEntity;
 import dh.project.backend.dto.ApiResponseDto;
 import dh.project.backend.dto.request.board.PostBoardRequestDto;
-import dh.project.backend.dto.response.board.GetBoardResponseDto;
-import dh.project.backend.dto.response.board.GetLikeListResponseDto;
-import dh.project.backend.dto.response.board.PostBoardResponseDto;
-import dh.project.backend.dto.response.board.PutBoardResponseDto;
+import dh.project.backend.dto.response.board.*;
 import dh.project.backend.enums.ResponseStatus;
 import dh.project.backend.exception.ErrorException;
 import dh.project.backend.repository.BoardRepository;
@@ -86,19 +83,20 @@ public class BoardService {
 
         return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
     }
-
     /**
      *   TODO: 조회수
      * */
     @Transactional
-    public void increaseViewCount(Long boardId) {
+    public ApiResponseDto<ViewCountResponseDto> increaseViewCount(Long boardId) {
 
         BoardEntity boardEntity = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
 
         boardRepository.increaseViewCount(boardId);
 
-        boardRepository.save(boardEntity);
+        ViewCountResponseDto responseDto = ViewCountResponseDto.fromEntity(boardEntity);
+
+        return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
     }
 
     /**

@@ -2,10 +2,8 @@ package dh.project.backend.controller;
 
 import dh.project.backend.dto.ApiResponseDto;
 import dh.project.backend.dto.request.board.PostBoardRequestDto;
-import dh.project.backend.dto.response.board.GetBoardResponseDto;
-import dh.project.backend.dto.response.board.GetLikeListResponseDto;
-import dh.project.backend.dto.response.board.PostBoardResponseDto;
-import dh.project.backend.dto.response.board.PutBoardResponseDto;
+import dh.project.backend.dto.response.board.*;
+import dh.project.backend.repository.BoardRepository;
 import dh.project.backend.service.BoardService;
 import dh.project.backend.service.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +19,7 @@ import javax.validation.Valid;
 public class BoardController {
 
     private final BoardService boardService;
+    private final BoardRepository boardRepository;
 
     /**
      *   TODO: 게시물 작성
@@ -39,8 +38,17 @@ public class BoardController {
      * */
     @GetMapping("/{boardId}")
     public ResponseEntity<ApiResponseDto<GetBoardResponseDto>> getBoard(@PathVariable("boardId") Long boardId) {
-        boardService.increaseViewCount(boardId);
+//        boardRepository.increaseViewCount(boardId);
         ApiResponseDto<GetBoardResponseDto> responseDto = boardService.getBoard(boardId);
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
+    /**
+     *   TODO: 조회수
+     * */
+    @GetMapping("/{boardId}/view-counts")
+    public ResponseEntity<ApiResponseDto<ViewCountResponseDto>> viewCounts(@PathVariable("boardId") Long boardId) {
+        ApiResponseDto<ViewCountResponseDto> responseDto = boardService.increaseViewCount(boardId);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 

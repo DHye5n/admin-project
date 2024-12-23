@@ -1,5 +1,5 @@
-import BoardPostRequestDto from './board-post.request.dto';
+import PostBoardRequestDto from './post-board.request.dto';
 
 export type {
-  BoardPostRequestDto
+  PostBoardRequestDto
 }

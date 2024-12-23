@@ -3,8 +3,9 @@ import axios from 'axios';
 import { DuplicateCheckResponseDto, SignInResponseDto, SignUpResponseDto } from './response/auth';
 import { ApiResponseDto } from './response';
 import { SignInUserResponseDto } from './response/user';
-import { BoardPostResponseDto } from './response/board';
-import { BoardPostRequestDto } from './request/board';
+import { PostBoardResponseDto, GetBoardResponseDto, ViewCountResponseDTO } from './response/board';
+import { PostBoardRequestDto } from './request/board';
+
 
 const DOMAIN = 'http://localhost:9994';
 
@@ -38,7 +39,11 @@ const VERIFY_CODE_URL = () => `${API_DOMAIN}/auth/verify-code`;
 
 const SIGN_IN_USER_URL = () => `${API_DOMAIN}/users`;
 
-const BOARD_POST_URL = () => `${API_DOMAIN}/boards`;
+const POST_BOARD_URL = () => `${API_DOMAIN}/boards`;
+
+const GET_BOARD_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}`;
+
+const VIEW_COUNT_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/view-counts`;
 
 const FILE_DOMAIN = `${DOMAIN}/files`;
 
@@ -166,15 +171,15 @@ export const signInUserRequest = async (accessToken: string): Promise<ApiRespons
 }
 
 // 게시물 작성
-export const boardPostRequest = async (requestBody: BoardPostRequestDto, accessToken: string): Promise<ApiResponseDto<BoardPostResponseDto> | null> => {
-  const result = await axios.post(BOARD_POST_URL(), requestBody, authorization(accessToken))
+export const postBoardRequest = async (requestBody: PostBoardRequestDto, accessToken: string): Promise<ApiResponseDto<PostBoardResponseDto> | null> => {
+  const result = await axios.post(POST_BOARD_URL(), requestBody, authorization(accessToken))
     .then(response => {
-      const responseBody: BoardPostResponseDto = response.data;
+      const responseBody: PostBoardResponseDto = response.data;
       return responseBody;
     })
     .catch(error => {
       if (!error.response) return null;
-      const responseBody: ApiResponseDto<BoardPostResponseDto> = error.response.data;
+      const responseBody: ApiResponseDto<PostBoardResponseDto> = error.response.data;
       return responseBody;
     })
   return result;
@@ -195,6 +200,35 @@ export const fileUploadRequest = async (data: FormData, accessToken: string) => 
     })
     .catch(error => {
       return null;
+    })
+  return result;
+}
+
+// 게시물 상세
+export const getBoardRequest = async (boardId: number | string, accessToken: string) => {
+  const result = await axios.get(GET_BOARD_URL(boardId), authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<GetBoardResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<GetBoardResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+}
+
+export const viewCountRequest = async (boardId: number | string, accessToken: string) => {
+  const result = await axios.get(VIEW_COUNT_URL(boardId), authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<ViewCountResponseDTO> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<ViewCountResponseDTO> = error.response.data;
+      return responseBody;
     })
   return result;
 }

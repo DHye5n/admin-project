@@ -47,4 +47,4 @@ jwt:
 
 file:
   path: C:/fileUpload/
-  url: http://localhost:9994/file/
+  url: http://localhost:9994/files/

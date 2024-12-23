@@ -4,7 +4,7 @@ import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { LikeListItem } from 'types/interface';
 import likeListMock from 'mocks/like-list.mock';
 import { CommentListItem } from 'types/interface';
-import { boardMock, commentListMock } from 'mocks';
+import { commentListMock } from 'mocks';
 import CommentItem from 'components/CommentItem';
 import Pagination from 'components/Pagination';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
@@ -12,8 +12,13 @@ import { chatbubbleEllipsesOutline, heart, heartOutline } from 'ionicons/icons';
 import { IonIcon } from '@ionic/react';
 import useSignInUserStore from 'stores/login-user.store';
 import { useNavigate, useParams } from 'react-router-dom';
-import { BOARD_PATH, BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from 'constant';
+import { AUTH_PATH, BOARD_PATH, BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from 'constant';
 import { Board } from 'types/interface';
+import { getBoardRequest, viewCountRequest } from 'apis';
+import { ApiResponseDto } from 'apis/response';
+import { useCookies } from 'react-cookie';
+import { formatDate } from 'utils/dateUtils';
+import { ViewCountResponseDTO, GetBoardResponseDto } from 'apis/response/board';
 
 /**
  *  TODO: component: Board Detail 컴포넌트
@@ -26,11 +31,22 @@ export default function BoardDetail() {
 
   const { boardId } = useParams();
 
+  const [cookie, setCookie] = useCookies();
+
+  const [effectFlag, setEffectFlag] = useState(true);
+
   /**
    *  TODO: function: 함수
    * */
   const navigator = useNavigate();
 
+  const viewCountResponse = (responseBody: ApiResponseDto<ViewCountResponseDTO> | null) => {
+    if (!responseBody) return;
+
+    const { code } = responseBody;
+    if (code === 'NFB') alert('존재하지 않는 게시물입니다.');
+    if (code === 'DBE') alert('데이터베이스 오류입니다.');
+  }
 
   /**
    *  TODO: component: Board Detail Top 컴포넌트
@@ -42,6 +58,39 @@ export default function BoardDetail() {
     const [showMore, setShowMore] = useState<boolean>(false);
 
     const [board, setBoard] = useState<Board | null>(null);
+
+    const [isWriter, setWriter] = useState<boolean>(false);
+
+    /**
+     *  TODO: function: 함수
+     * */
+    const getBoardResponse = (responseBody: ApiResponseDto<GetBoardResponseDto> | null) => {
+      if (!responseBody) return;
+
+      const { code } = responseBody;
+      if (code === 'NFB') alert('존재하지 않는 게시물입니다.');
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code !== 'SU') {
+        navigator(MAIN_PATH());
+        return;
+      }
+
+      const board: Board = { ...responseBody.data as GetBoardResponseDto };
+      setBoard(board);
+
+      if (!signInUser) {
+        setWriter(false);
+        return;
+      }
+      const isWriter = signInUser.email === board.email;
+      setWriter(isWriter);
+    }
+
+    const getFormattedDate = (createdDate: string, modifiedDate: string | null) => {
+      return modifiedDate && modifiedDate !== createdDate
+        ? `${formatDate(modifiedDate)}`
+        : `${formatDate(createdDate)}`;
+    }
 
     /**
      *  TODO: event handler: 버튼 클릭 이벤트 처리
@@ -68,16 +117,27 @@ export default function BoardDetail() {
     }
 
     /**
-     *  TODO: effect: 버튼 클릭 이벤트 처리
+     *  TODO: effect: 마운트 시 실행할 함수
      * */
     useEffect(() => {
-      setBoard(boardMock);
+      const accessToken = cookie.accessToken;
+      if (!accessToken) {
+        navigator(AUTH_PATH());
+        return;
+      }
+
+      if (!boardId) {
+        navigator(MAIN_PATH());
+        return;
+      }
+
+      getBoardRequest(boardId, accessToken).then(getBoardResponse);
     }, [boardId]);
 
     /**
      *  TODO: render: Board Detail Top 렌더링
      * */
-    if (!board) return <></>
+    if (!board) return <></>;
     return (
       <div id='board-detail-top'>
         <div className='board-detail-top-header'>
@@ -87,17 +147,21 @@ export default function BoardDetail() {
               <div className='board-detail-writer-profile-image' style={{ backgroundImage: `url(${board.profileImage ? board.profileImage : defaultProfileImage})` }}></div>
               <div className='board-detail-writer-username' onClick={onUsernameClickHandler}>{board.username}</div>
               <div className='board-detail-info-divider'>{'\|'}</div>
-              <div className='board-detail-write-date'>{board.createdDate}</div>
+              <div className='board-detail-write-date'>
+                {getFormattedDate(board.createdDate, board.modifiedDate)}
+              </div>
             </div>
-            <div className='icon-button' onClick={onMoreButtonClickHandler}>
-              <div className='icon more-icon'></div>
-            </div>
+            {signInUser && isWriter && (
+              <div className='icon-button' onClick={onMoreButtonClickHandler}>
+                <div className='icon more-icon'></div>
+              </div>
+            )}
             {showMore &&
-            <div className='board-detail-more-box'>
-              <div className='board-detail-update-button' onClick={onUpdateButtonClickHandler}>{'수정'}</div>
-              <div className='divider'></div>
-              <div className='board-detail-delete-button' onClick={onDeleteButtonClickHandler}>{'삭제'}</div>
-            </div>
+              <div className='board-detail-more-box'>
+                <div className='board-detail-update-button' onClick={onUpdateButtonClickHandler}>{'수정'}</div>
+                <div className='divider'></div>
+                <div className='board-detail-delete-button' onClick={onDeleteButtonClickHandler}>{'삭제'}</div>
+              </div>
             }
           </div>
         </div>
@@ -106,9 +170,9 @@ export default function BoardDetail() {
 
         <div className='board-detail-top-main'>
           <div className='board-detail-main-text'>{board.content}</div>
-          {board.boardImageList.map(image =>
-            <img className='board-detail-main-image' src={image} />
-          )}
+          {board.boardImageList.map((image, index) => (
+            <img key={index} className='board-detail-main-image' src={image} />
+          ))}
         </div>
       </div>
     )
@@ -247,7 +311,27 @@ export default function BoardDetail() {
         }
       </div>
     )
-  }
+  };
+
+  /**
+   *  TODO:  effect: 게시물 조회수 증가
+   * */
+  useEffect(() => {
+    const accessToken = cookie.accessToken;
+    if (!accessToken) {
+      navigator(AUTH_PATH());
+      return;
+    }
+
+    if (!boardId) return;
+
+    if (effectFlag) {
+      setEffectFlag(false);
+      return;
+    }
+
+    viewCountRequest(boardId, accessToken).then(viewCountResponse);
+  }, [boardId, effectFlag]);
 
   /**
    *  TODO:  render: Board Detail 컴포넌트 렌더링

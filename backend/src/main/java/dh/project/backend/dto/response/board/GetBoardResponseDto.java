@@ -2,10 +2,10 @@ package dh.project.backend.dto.response.board;
 
 import dh.project.backend.domain.BoardEntity;
 import dh.project.backend.domain.ImageEntity;
+import dh.project.backend.dto.response.user.SignInUserResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,11 +18,13 @@ public class GetBoardResponseDto {
 
     private final String content;
 
+//    private final SignInUserResponseDto writer;
+
     private final List<String> boardImageList;
 
-    private final LocalDateTime createdDate;
+    private final String createdDate;
 
-    private final LocalDateTime modifiedDate;
+    private final String modifiedDate;
 
     private final String email;
 
@@ -31,12 +33,13 @@ public class GetBoardResponseDto {
     private final String profileImage;
 
     @Builder
-    public GetBoardResponseDto(Long boardId, String title, String content, List<String> boardImageList,
-                               LocalDateTime createdDate, LocalDateTime modifiedDate,
+    public GetBoardResponseDto(Long boardId, String title, String content, SignInUserResponseDto writer,
+                               List<String> boardImageList, String createdDate, String modifiedDate,
                                String email, String username, String profileImage) {
         this.boardId = boardId;
         this.title = title;
         this.content = content;
+//        this.writer = writer;
         this.boardImageList = boardImageList;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
@@ -46,6 +49,8 @@ public class GetBoardResponseDto {
     }
 
     public static GetBoardResponseDto fromEntity(BoardEntity board , List<ImageEntity> images) {
+//        SignInUserResponseDto writerDto = SignInUserResponseDto.fromEntity(board.getUser());
+
         List<String> boardImageList = images.stream()
                 .map(ImageEntity::getImageUrl)
                 .collect(Collectors.toList());
@@ -54,6 +59,7 @@ public class GetBoardResponseDto {
                 .boardId(board.getBoardId())
                 .title(board.getTitle())
                 .content(board.getContent())
+//                .writer(writerDto)
                 .boardImageList(boardImageList)
                 .createdDate(board.getCreatedDate())
                 .modifiedDate(board.getModifiedDate())
