@@ -12,12 +12,23 @@ import useSignInUserStore from 'stores/login-user.store';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AUTH_PATH, BOARD_PATH, BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from 'constant';
 import { Board } from 'types/interface';
-import { getBoardRequest, getCommentListRequest, getLikeListRequest, viewCountRequest } from 'apis';
+import {
+  deleteBoardRequest,
+  getBoardRequest,
+  getCommentListRequest,
+  getLikeListRequest,
+  postCommentRequest,
+  putLikeRequest,
+  viewCountRequest,
+} from 'apis';
 import { ApiResponseDto } from 'apis/response';
 import { useCookies } from 'react-cookie';
 import { formatDate } from 'utils/dateUtils';
 import { ViewCountResponseDto, GetBoardResponseDto } from 'apis/response/board';
 import { GetCommentListResponseDto, GetLikeListResponseDto } from 'apis/response/board';
+import { DeleteBoardResponseDTO, PutLikeResponseDto } from '../../../apis/response/board';
+import PostCommentRequestDto from '../../../apis/request/comment/post-comment.request.dto';
+import PostCommentResponseDto from '../../../apis/response/comment/post-comment.response.dto';
 
 /**
  *  TODO: component: Board Detail 컴포넌트
@@ -85,6 +96,22 @@ export default function BoardDetail() {
       setWriter(isWriter);
     }
 
+    const deleteBoardResponse = (responseBody: ApiResponseDto<DeleteBoardResponseDTO> | null) => {
+      if (!responseBody) return;
+
+      const { code } = responseBody;
+      if (code === 'NFB') alert('존재하지 않는 게시물입니다.');
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code === 'VF') alert('잘못된 접근입니다.');
+      if (code === 'NFU') alert('존재하지 않는 유저입니다.');
+      if (code === 'AF') alert('인증에 실패했습니다.');
+      if (code === 'NP') alert('권한이 없습니다.');
+      if (code !== 'SU') return;
+
+      alert('게시물이 삭제되었습니다.');
+      navigator(MAIN_PATH());
+    }
+
     const getFormattedDate = (createdDate: string, modifiedDate: string | null) => {
       return modifiedDate && modifiedDate !== createdDate
         ? `${formatDate(modifiedDate)}`
@@ -110,9 +137,16 @@ export default function BoardDetail() {
     }
 
     const onDeleteButtonClickHandler = () => {
-      if (!board || !signInUser) return;
+      if (!board || !signInUser || !boardId) return;
       if (signInUser.email !== board.email) return;
-      navigator(MAIN_PATH());
+
+      const accessToken = cookie.accessToken;
+      if (!accessToken) {
+        navigator(AUTH_PATH());
+        return;
+      }
+
+      deleteBoardRequest(boardId, accessToken).then(deleteBoardResponse);
     }
 
     /**
@@ -202,7 +236,16 @@ export default function BoardDetail() {
      *  TODO: event handler: 이벤트 핸들러
      * */
     const onLikeClickHandler = () => {
-      setLike(!isLike);
+      if (!signInUser || !boardId) return;
+
+      const accessToken = cookie.accessToken;
+      if (!accessToken) {
+        navigator(AUTH_PATH());
+        return;
+      }
+
+      putLikeRequest(boardId, accessToken).then(putLikeResponse);
+
     }
 
     const onShowLikeListClickHandler = () => {
@@ -214,8 +257,17 @@ export default function BoardDetail() {
     }
 
     const onCommentSubmitButtonClickHandler = () => {
-      if (!comment) return;
-      alert('댓글 작성이 완료되었습니다!');
+      if (!comment || !boardId || !signInUser) return;
+
+      const accessToken = cookie.accessToken;
+      if (!accessToken) {
+        navigator(AUTH_PATH());
+        return;
+      }
+
+      const requestBody: PostCommentRequestDto = { comment: comment };
+
+      postCommentRequest(boardId, requestBody, accessToken).then(postCommentResponse);
     }
 
     const onCommentChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -249,6 +301,44 @@ export default function BoardDetail() {
       }
     }
 
+    const putLikeResponse = (responseBody: ApiResponseDto<PutLikeResponseDto> | null) => {
+      if (!responseBody || !responseBody.data) return;
+
+      const accessToken = cookie.accessToken;
+
+      const { code } = responseBody;
+      if (code === 'NFB') alert('존재하지 않는 게시물입니다.');
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code === 'VF') alert('잘못된 접근입니다.');
+      if (code === 'NFU') alert('존재하지 않는 유저입니다.');
+      if (code === 'AF') alert('인증에 실패했습니다.');
+      if (code !== 'SU') return;
+
+      setLike(responseBody.data?.liking);
+
+      if (!boardId) return;
+      getLikeListRequest(boardId, accessToken).then(getLikeListResponse);
+    }
+
+    const postCommentResponse = (responseBody: ApiResponseDto<PostCommentResponseDto> | null) => {
+      if (!responseBody) return;
+
+      const accessToken = cookie.accessToken;
+
+      const { code } = responseBody;
+      if (code === 'NFB') alert('존재하지 않는 게시물입니다.');
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code === 'VF') alert('잘못된 접근입니다.');
+      if (code === 'NFU') alert('존재하지 않는 유저입니다.');
+      if (code === 'AF') alert('인증에 실패했습니다.');
+      if (code !== 'SU') return;
+
+      setComment('');
+
+      if (!boardId) return;
+      getCommentListRequest(boardId, accessToken).then(getCommentListResponse);
+    }
+
     const getCommentListResponse = (responseBody: ApiResponseDto<GetCommentListResponseDto> | null) => {
       if (!responseBody) return;
 
@@ -257,11 +347,8 @@ export default function BoardDetail() {
       if (code === 'DBE') alert('데이터베이스 오류입니다.');
       if (code !== 'SU') return;
 
-      console.log('responseBody: ', responseBody);
-
       const { commentList } = responseBody.data as GetCommentListResponseDto;
       setCommentList(commentList);
-      console.log('commentList:', commentList);
     }
 
     /**
@@ -278,7 +365,6 @@ export default function BoardDetail() {
       if (!boardId) return;
 
       getLikeListRequest(boardId, accessToken).then(getLikeListResponse);
-
       getCommentListRequest(boardId, accessToken).then(getCommentListResponse);
     }, []);
 
@@ -291,8 +377,8 @@ export default function BoardDetail() {
           <div className="board-detail-bottom-button-group">
             <div className="icon-button" onClick={onLikeClickHandler}>
               {isLike ?
-                <IonIcon icon={heart} style={{ width: '24px', height: '24px', color: 'red' }} /> :
-                <IonIcon icon={heartOutline} style={{ width: '24px', height: '24px' }} />
+                (<IonIcon icon={heart} style={{ width: '24px', height: '24px', color: 'red' }} />) :
+                (<IonIcon icon={heartOutline} style={{ width: '24px', height: '24px' }} />)
               }
             </div>
             <div className="board-detail-bottom-button-text">
@@ -328,7 +414,7 @@ export default function BoardDetail() {
               </div>
               <div className='board-detail-bottom-like-contents'>
                 {likeList.map((item, index) => (
-                  <LikeItem key={item.email || index} likeListItem={item} />
+                  <LikeItem key={`${item.email}-${index}`} likeListItem={item} />
                 ))}
               </div>
             </div>
@@ -341,8 +427,10 @@ export default function BoardDetail() {
                 {'댓글 '}<span className="emphasis">{commentList ? commentList.length : 0}</span>
               </div>
               <div className='board-detail-bottom-comment-list-container'>
-                {commentList.map((item, index) => (
-                  <CommentItem key={item.username || index} commentListItem={item} />
+                {commentList
+                  .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())
+                  .map((item, index) => (
+                  <CommentItem key={`${item.username}-${index}`} commentListItem={item} />
                 ))}
               </div>
             </div>

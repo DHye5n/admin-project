@@ -56,11 +56,11 @@ public class BoardController {
      *   TODO: 좋아요
      * */
     @PutMapping("/{boardId}/like")
-    public ResponseEntity<ApiResponseDto<PutBoardResponseDto>> toggleLike(
+    public ResponseEntity<ApiResponseDto<PutLikeResponseDto>> toggleLike(
             @PathVariable("boardId") Long boardId,
             @AuthenticationPrincipal PrincipalDetails user
     ) {
-        ApiResponseDto<PutBoardResponseDto> responseDto = boardService.toggleLike(boardId, user.getUserId());
+        ApiResponseDto<PutLikeResponseDto> responseDto = boardService.toggleLike(boardId, user.getUserId());
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 

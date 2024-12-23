@@ -103,7 +103,7 @@ public class BoardService {
      *   TODO: 좋아요
      * */
     @Transactional
-    public ApiResponseDto<PutBoardResponseDto> toggleLike(Long boardId, Long userId) {
+    public ApiResponseDto<PutLikeResponseDto> toggleLike(Long boardId, Long userId) {
 
         UserEntity userEntity = authService.checkUserAuthorization(userId);
 
@@ -133,7 +133,7 @@ public class BoardService {
 
         boardRepository.save(boardEntity);
 
-        PutBoardResponseDto responseDto = PutBoardResponseDto.fromEntity(boardEntity, isLiking);
+        PutLikeResponseDto responseDto = PutLikeResponseDto.fromEntity(boardEntity, isLiking);
 
         return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
     }

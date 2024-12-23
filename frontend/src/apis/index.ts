@@ -7,9 +7,11 @@ import {
   PostBoardResponseDto,
   GetBoardResponseDto,
   ViewCountResponseDto,
-  GetLikeListResponseDto, GetCommentListResponseDto,
+  GetLikeListResponseDto, GetCommentListResponseDto, PutLikeResponseDto, DeleteBoardResponseDTO,
 } from './response/board';
 import { PostBoardRequestDto } from './request/board';
+import PostCommentRequestDto from './request/comment/post-comment.request.dto';
+import PostCommentResponseDto from './response/comment/post-comment.response.dto';
 
 
 const DOMAIN = 'http://localhost:9994';
@@ -48,11 +50,17 @@ const POST_BOARD_URL = () => `${API_DOMAIN}/boards`;
 
 const GET_BOARD_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}`;
 
+const DELETE_BOARD_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}`;
+
 const VIEW_COUNT_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/view-counts`;
 
 const GET_LIKE_LIST_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/likes`;
 
 const GET_COMMENT_LIST_URL = (boardId: number | string) => `${API_DOMAIN}/comments/${boardId}/comments`;
+
+const PUT_LIKE_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/like`
+
+const POST_COMMENT_URL = (boardId: number | string) => `${API_DOMAIN}/comments/${boardId}/comment`;
 
 const FILE_DOMAIN = `${DOMAIN}/files`;
 
@@ -194,6 +202,20 @@ export const postBoardRequest = async (requestBody: PostBoardRequestDto, accessT
   return result;
 }
 
+export const deleteBoardRequest = async (boardId: number | string, accessToken: string) => {
+  const result = await axios.delete(DELETE_BOARD_URL(boardId), authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<DeleteBoardResponseDTO> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<DeleteBoardResponseDTO> = error.response.data;
+      return responseBody;
+    })
+  return result;
+}
+
 // 파일 업로드
 export const fileUploadRequest = async (data: FormData, accessToken: string) => {
 
@@ -268,4 +290,33 @@ export const getCommentListRequest = async (boardId: number | string, accessToke
       return responseBody;
     })
   return result;
+}
+
+export const putLikeRequest = async (boardId: number | string, accessToken: string) => {
+  const result = await axios.put(PUT_LIKE_URL(boardId), {}, authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<PutLikeResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<PutLikeResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+}
+
+export const postCommentRequest =
+  async (boardId: number | string, requestBody: PostCommentRequestDto, accessToken: string) => {
+  const result = await axios.post(POST_COMMENT_URL(boardId), requestBody, authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<PostCommentResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<PostCommentResponseDto> = error.response.data;
+      return responseBody;
+    })
+    return result;
 }
