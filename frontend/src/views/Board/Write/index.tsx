@@ -61,16 +61,12 @@ export default function BoardWrite() {
 
     const files = Array.from(event.target.files);
 
-    console.log("Selected files:", files);
-
     // 미리보기
     const newImageUrls = [...files.map(file => URL.createObjectURL(file)), ...imageUrls];
     setImageUrls(newImageUrls);
     // 업로드
     const newBoardImageList = [...files, ...boardImageFileList];
     setBoardImageFileList(newBoardImageList);
-
-    console.log("Updated boardImageList:", newBoardImageList);
 
     if (!imageInputRef.current) return;
     imageInputRef.current.value = '';

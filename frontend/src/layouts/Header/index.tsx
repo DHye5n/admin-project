@@ -265,7 +265,7 @@ export default function Header() {
       if (code === 'DBE') alert('데이터베이스 오류입니다.');
       if (code === 'AF' || code === 'NFU') navigator(AUTH_PATH());
       if (code === 'VF') alert('제목과 내용은 필수입니다.');
-      if (code === 'NFB') alert('제목과 내용은 필수입니다.');
+      if (code === 'NFB') alert('게시물이 존재하지 않습니다.');
       if (code !== 'SU') return;
 
       if (!boardId) return;
@@ -278,6 +278,21 @@ export default function Header() {
     const onUploadButtonClickHandler = async () => {
       const accessToken = cookie.accessToken;
       if (!accessToken) return;
+
+      if (!title || title.trim() === "") {
+        alert('제목은 필수 입력사항입니다.');
+        return;
+      }
+
+      if (!content || content.trim() === "") {
+        alert('내용은 필수 입력사항입니다.');
+        return;
+      }
+
+      if (boardImageFileList.length === 0) {
+        alert('이미지는 필수 입력사항입니다.');
+        return;
+      }
 
       const boardImageList: string[] = [];
 
@@ -307,14 +322,12 @@ export default function Header() {
         }
         patchBoardRequest(boardId, requestBody, accessToken).then(patchBoardResponse);
       }
-
-
     };
 
     /**
      *  TODO: render: 업로드 버튼 컴포넌트 렌더링
      * */
-    if (title && content)
+    if (title && content && boardImageFileList.length > 0)
       return (
         <div className='blue-button' onClick={onUploadButtonClickHandler}>
           {'업로드'}

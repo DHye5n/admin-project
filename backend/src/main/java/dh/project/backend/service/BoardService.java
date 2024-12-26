@@ -40,21 +40,22 @@ public class BoardService {
      *   TODO: 게시물 작성
      * */
     @Transactional
-    public ApiResponseDto<PostBoardResponseDto> createBoard(PostBoardRequestDto requestDto, Long userId) {
+    public ApiResponseDto<PostBoardResponseDto> createBoard(PostBoardRequestDto dto, Long userId) {
 
-        if ((requestDto.getTitle() == null || requestDto.getTitle().trim().isEmpty()) ||
-                (requestDto.getContent() == null || requestDto.getContent().trim().isEmpty())) {
+        if ((dto.getTitle() == null || dto.getTitle().trim().isEmpty()) ||
+            (dto.getContent() == null || dto.getContent().trim().isEmpty()) ||
+            (dto.getBoardImageList() == null || dto.getBoardImageList().isEmpty())) {
             throw new ErrorException(ResponseStatus.NOT_EMPTY);
         }
 
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
 
-        BoardEntity boardEntity = requestDto.toEntity(userEntity);
+        BoardEntity boardEntity = dto.toEntity(userEntity);
 
         BoardEntity savedBoard = boardRepository.save(boardEntity);
 
-        List<ImageEntity> imageEntities = saveImage(requestDto, savedBoard);
+        List<ImageEntity> imageEntities = saveImage(dto, savedBoard);
 
         imageRepository.saveAll(imageEntities);
 
@@ -161,8 +162,8 @@ public class BoardService {
      *   TODO: 이미지 저장
      * */
     @Transactional
-    public List<ImageEntity> saveImage(PostBoardRequestDto postDto, BoardEntity board) {
-        return postDto.getBoardImageList().stream()
+    public List<ImageEntity> saveImage(PostBoardRequestDto dto, BoardEntity board) {
+        return dto.getBoardImageList().stream()
                 .map(imageUrl -> ImageEntity.builder()
                         .imageUrl(imageUrl)
                         .board(board)
