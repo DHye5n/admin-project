@@ -26,9 +26,11 @@ import { useCookies } from 'react-cookie';
 import { formatDate } from 'utils/dateUtils';
 import { ViewCountResponseDto, GetBoardResponseDto } from 'apis/response/board';
 import { GetCommentListResponseDto, GetLikeListResponseDto } from 'apis/response/board';
-import { DeleteBoardResponseDTO, PutLikeResponseDto } from '../../../apis/response/board';
-import PostCommentRequestDto from '../../../apis/request/comment/post-comment.request.dto';
-import PostCommentResponseDto from '../../../apis/response/comment/post-comment.response.dto';
+import { DeleteBoardResponseDTO, PutLikeResponseDto } from 'apis/response/board';
+import PostCommentRequestDto from 'apis/request/comment/post-comment.request.dto';
+import PostCommentResponseDto from 'apis/response/comment/post-comment.response.dto';
+import { usePagination } from 'hooks';
+
 
 /**
  *  TODO: component: Board Detail 컴포넌트
@@ -50,13 +52,54 @@ export default function BoardDetail() {
    * */
   const navigator = useNavigate();
 
+  const handleApiError = (code: string) => {
+    switch (code) {
+      case 'NFB':
+        alert('존재하지 않는 게시물입니다.');
+        navigator(MAIN_PATH());
+        break;
+      case 'DBE':
+        alert('데이터베이스 오류입니다.');
+        navigator(AUTH_PATH());
+        break;
+      case 'VF':
+        alert('잘못된 접근입니다.');
+        navigator(MAIN_PATH());
+        break;
+      case 'NFU':
+        alert('존재하지 않는 유저입니다.');
+        navigator(MAIN_PATH());
+        break;
+      case 'AF':
+        alert('인증에 실패했습니다.');
+        navigator(AUTH_PATH());
+        break;
+      case 'NP':
+        alert('권한이 없습니다.');
+        navigator(MAIN_PATH());
+        break;
+      default:
+        navigator(MAIN_PATH());
+    }
+  };
+
+  const checkLoginStatus = (accessToken: string | undefined) => {
+    if (!accessToken) {
+      navigator(AUTH_PATH());
+      return false;
+    }
+    return true;
+  };
+
   const viewCountResponse = (responseBody: ApiResponseDto<ViewCountResponseDto> | null) => {
     if (!responseBody) return;
 
     const { code } = responseBody;
-    if (code === 'NFB') alert('존재하지 않는 게시물입니다.');
-    if (code === 'DBE') alert('데이터베이스 오류입니다.');
-  }
+    if (code !== 'SU') {
+      handleApiError(code);
+      return;
+    }
+  };
 
   /**
    *  TODO: component: Board Detail Top 컴포넌트
@@ -75,13 +118,14 @@ export default function BoardDetail() {
      *  TODO: function: 함수
      * */
     const getBoardResponse = (responseBody: ApiResponseDto<GetBoardResponseDto> | null) => {
-      if (!responseBody) return;
+      if (!responseBody) {
+        navigator(MAIN_PATH());
+        return;
+      }
 
       const { code } = responseBody;
-      if (code === 'NFB') alert('존재하지 않는 게시물입니다.');
-      if (code === 'DBE') alert('데이터베이스 오류입니다.');
       if (code !== 'SU') {
-        navigator(MAIN_PATH());
+        handleApiError(code);
         return;
       }
 
@@ -94,40 +138,17 @@ export default function BoardDetail() {
       }
       const isWriter = signInUser.email === board.email;
       setWriter(isWriter);
-    }
+    };
 
     const deleteBoardResponse = (responseBody: ApiResponseDto<DeleteBoardResponseDTO> | null) => {
       if (!responseBody) return;
 
       const { code } = responseBody;
-      if (code === 'NFB') {
-        alert('존재하지 않는 게시물입니다.');
-        navigator(MAIN_PATH());  
+      if (code !== 'SU') {
+        handleApiError(code);
+        return;
       }
-      if (code === 'DBE') {
-        alert('데이터베이스 오류입니다.');
-        navigator(MAIN_PATH());
-      }
-      if (code === 'VF') {
-        alert('잘못된 접근입니다.');
-        navigator(MAIN_PATH());
-      }
-      if (code === 'NFU') {
-        alert('존재하지 않는 유저입니다.');
-        navigator(MAIN_PATH());
-      }
-      if (code === 'AF') {
-        alert('인증에 실패했습니다.');
-        navigator(MAIN_PATH());
-      }
-      if (code === 'NP') {
-        alert('권한이 없습니다.');
-        navigator(MAIN_PATH());
-      }
-      if (code === 'SU') {
-        alert('게시물이 삭제되었습니다.');
-        navigator(MAIN_PATH());
-      }
+
     };
 
     const getFormattedDate = (createdDate: string, modifiedDate: string | null) => {
@@ -159,10 +180,7 @@ export default function BoardDetail() {
       if (signInUser.email !== board.email) return;
 
       const accessToken = cookie.accessToken;
-      if (!accessToken) {
-        navigator(AUTH_PATH());
-        return;
-      }
+      if (!checkLoginStatus(accessToken)) return;
 
       deleteBoardRequest(boardId, accessToken).then(deleteBoardResponse);
     }
@@ -172,10 +190,7 @@ export default function BoardDetail() {
      * */
     useEffect(() => {
       const accessToken = cookie.accessToken;
-      if (!accessToken) {
-        navigator(AUTH_PATH());
-        return;
-      }
+      if (!checkLoginStatus(accessToken)) return;
 
       if (!boardId) {
         navigator(MAIN_PATH());
@@ -240,8 +255,6 @@ export default function BoardDetail() {
 
     const [likeList, setLikeList] = useState<LikeListItem[]>([]);
 
-    const [commentList, setCommentList] = useState<CommentListItem[]>([]);
-
     const [isLike, setLike] = useState<boolean>(false);
 
     const [showLike, setShowLike] = useState<boolean>(false);
@@ -250,6 +263,10 @@ export default function BoardDetail() {
 
     const [comment, setComment] = useState<string>('');
 
+    const [totalCommentCount, setTotalCommentCount] = useState<number>(0);
+
+    const { currentPage, setCurrentPage, currentSection, setCurrentSection, viewList, viewPageList, totalSection, setTotalList } = usePagination<CommentListItem>(3);
+
     /**
      *  TODO: event handler: 이벤트 핸들러
      * */
@@ -257,10 +274,7 @@ export default function BoardDetail() {
       if (!signInUser || !boardId) return;
 
       const accessToken = cookie.accessToken;
-      if (!accessToken) {
-        navigator(AUTH_PATH());
-        return;
-      }
+      if (!checkLoginStatus(accessToken)) return;
 
       putLikeRequest(boardId, accessToken).then(putLikeResponse);
 
@@ -278,10 +292,7 @@ export default function BoardDetail() {
       if (!comment || !boardId || !signInUser) return;
 
       const accessToken = cookie.accessToken;
-      if (!accessToken) {
-        navigator(AUTH_PATH());
-        return;
-      }
+      if (!checkLoginStatus(accessToken)) return;
 
       const requestBody: PostCommentRequestDto = { comment: comment };
 
@@ -300,9 +311,10 @@ export default function BoardDetail() {
       if (!responseBody) return;
 
       const { code } = responseBody;
-      if (code === 'NFB') alert('존재하지 않는 게시물입니다.');
-      if (code === 'DBE') alert('데이터베이스 오류입니다.');
-      if (code !== 'SU') return;
+      if (code !== 'SU') {
+        handleApiError(code);
+        return;
+      }
 
       const { likeList } = responseBody.data as GetLikeListResponseDto;
       setLikeList(likeList);
@@ -323,14 +335,13 @@ export default function BoardDetail() {
       if (!responseBody || !responseBody.data) return;
 
       const accessToken = cookie.accessToken;
+      if (!checkLoginStatus(accessToken)) return;
 
       const { code } = responseBody;
-      if (code === 'NFB') alert('존재하지 않는 게시물입니다.');
-      if (code === 'DBE') alert('데이터베이스 오류입니다.');
-      if (code === 'VF') alert('잘못된 접근입니다.');
-      if (code === 'NFU') alert('존재하지 않는 유저입니다.');
-      if (code === 'AF') alert('인증에 실패했습니다.');
-      if (code !== 'SU') return;
+      if (code !== 'SU') {
+        handleApiError(code);
+        return;
+      }
 
       setLike(responseBody.data?.liking);
 
@@ -344,12 +355,10 @@ export default function BoardDetail() {
       const accessToken = cookie.accessToken;
 
       const { code } = responseBody;
-      if (code === 'NFB') alert('존재하지 않는 게시물입니다.');
-      if (code === 'DBE') alert('데이터베이스 오류입니다.');
-      if (code === 'VF') alert('잘못된 접근입니다.');
-      if (code === 'NFU') alert('존재하지 않는 유저입니다.');
-      if (code === 'AF') alert('인증에 실패했습니다.');
-      if (code !== 'SU') return;
+      if (code !== 'SU') {
+        handleApiError(code);
+        return;
+      }
 
       setComment('');
 
@@ -361,12 +370,14 @@ export default function BoardDetail() {
       if (!responseBody) return;
 
       const { code } = responseBody;
-      if (code === 'NFB') alert('존재하지 않는 게시물입니다.');
-      if (code === 'DBE') alert('데이터베이스 오류입니다.');
-      if (code !== 'SU') return;
+      if (code !== 'SU') {
+        handleApiError(code);
+        return;
+      }
 
       const { commentList } = responseBody.data as GetCommentListResponseDto;
-      setCommentList(commentList);
+      setTotalList(commentList);
+      setTotalCommentCount(commentList.length);
     }
 
     /**
@@ -374,11 +385,7 @@ export default function BoardDetail() {
      * */
     useEffect(() => {
       const accessToken = cookie.accessToken;
-
-      if (!accessToken) {
-        navigator(AUTH_PATH());
-        return;
-      }
+      if (!checkLoginStatus(accessToken)) return;
 
       if (!boardId) return;
 
@@ -414,7 +421,7 @@ export default function BoardDetail() {
               <IonIcon icon={chatbubbleEllipsesOutline} style={{ width: '24px', height: '24px' }} />
             </div>
             <div className="board-detail-bottom-button-text">
-              {`댓글 ${commentList ? commentList.length : 0}`}
+              {`댓글 ${totalCommentCount}`}
             </div>
             <div className="icon-button" onClick={onShowCommentListClickHandler}>
               {showComment ?
@@ -442,21 +449,21 @@ export default function BoardDetail() {
           <div className='board-detail-bottom-comment-box'>
             <div className='board-detail-bottom-comment-container'>
               <div className="board-detail-bottom-comment-title">
-                {'댓글 '}<span className="emphasis">{commentList ? commentList.length : 0}</span>
+                {'댓글 '}<span className="emphasis">{totalCommentCount}</span>
               </div>
               <div className='board-detail-bottom-comment-list-container'>
-                {commentList
-                  .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())
+                {viewList
                   .map((item, index) => (
-                  <CommentItem key={`${item.username}-${index}`} commentListItem={item} />
-                ))}
+                    <CommentItem key={`${item.username}-${index}`} commentListItem={item} />
+                  ))}
               </div>
             </div>
 
             <div className='divider'></div>
 
             <div className='board-detail-bottom-comment-pagination-box'>
-              <Pagination />
+              <Pagination currentPage={currentPage} currentSection={currentSection} setCurrentPage={setCurrentPage}
+                          setCurrentSection={setCurrentSection} viewPageList={viewPageList} totalSection={totalSection}/>
             </div>
           {signInUser !== null &&
             <div className='board-detail-bottom-comment-input-box'>
@@ -480,10 +487,7 @@ export default function BoardDetail() {
    * */
   useEffect(() => {
     const accessToken = cookie.accessToken;
-    if (!accessToken) {
-      navigator(AUTH_PATH());
-      return;
-    }
+    if (!checkLoginStatus(accessToken)) return;
 
     if (!boardId) return;
 

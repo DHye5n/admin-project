@@ -24,6 +24,7 @@ import { fileUploadRequest, postBoardRequest } from 'apis';
 import { PostBoardRequestDto } from 'apis/request/board';
 import { PostBoardResponseDto } from 'apis/response/board';
 import { ApiResponseDto } from 'apis/response';
+import defaultProfileImage from '../../assets/image/default-profile-image.png';
 
 /**
  *  TODO: component: Header 레이아웃 컴포넌트
@@ -345,8 +346,11 @@ export default function Header() {
           {(isBoardWritePage || isBoardUpdatePage) && <UploadButton />}
           {isSignIn && signInUser && (
             <div className="user-info">
-              <div className='user-info-profile-image'>
-                {signInUser.profileImage}
+              <div className='user-info-profile-image-box'>
+                <div className='user-info-profile-image' style={{
+                  backgroundImage: `url(${signInUser.profileImage ? signInUser.profileImage : defaultProfileImage})`,
+                }}>
+                </div>
               </div>
               <div className='user-info-username'>
                 <span>{signInUser.username}</span>
