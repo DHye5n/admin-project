@@ -152,6 +152,7 @@ export default function BoardDetail() {
     };
 
     const getFormattedDate = (createdDate: string, modifiedDate: string | null) => {
+
       return modifiedDate && modifiedDate !== createdDate
         ? `${formatDate(modifiedDate)}`
         : `${formatDate(createdDate)}`;

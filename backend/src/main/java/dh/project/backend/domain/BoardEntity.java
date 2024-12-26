@@ -1,5 +1,6 @@
 package dh.project.backend.domain;
 
+import dh.project.backend.dto.request.board.PatchBoardRequestDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,10 +40,10 @@ public class BoardEntity extends BaseTime {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentEntity> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ImageEntity> images = new ArrayList<>();
 
     @Builder
@@ -53,6 +54,12 @@ public class BoardEntity extends BaseTime {
         this.commentCount = commentCount;
         this.viewCount = viewCount;
         this.user = user;
+    }
+
+    public void patchBoard(PatchBoardRequestDto dto) {
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
+        this.modifiedDate = dto.getModifiedDate();
     }
 
 }

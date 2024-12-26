@@ -32,4 +32,5 @@ public class ImageEntity extends BaseTime {
         this.imageUrl = imageUrl;
         this.board = board;
     }
+
 }

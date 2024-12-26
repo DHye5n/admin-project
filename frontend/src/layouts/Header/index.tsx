@@ -20,11 +20,13 @@ import {
 import { useCookies } from 'react-cookie';
 import { useBoardStore } from 'stores';
 import useSignInUserStore from 'stores/login-user.store';
-import { fileUploadRequest, postBoardRequest } from 'apis';
+import { fileUploadRequest, patchBoardRequest, postBoardRequest } from 'apis';
 import { PostBoardRequestDto } from 'apis/request/board';
 import { PostBoardResponseDto } from 'apis/response/board';
 import { ApiResponseDto } from 'apis/response';
-import defaultProfileImage from '../../assets/image/default-profile-image.png';
+import defaultProfileImage from 'assets/image/default-profile-image.png';
+import { PatchBoardRequestDTO } from 'apis/request/board';
+import { PatchBoardResponseDto } from 'apis/response/board';
 
 /**
  *  TODO: component: Header 레이아웃 컴포넌트
@@ -230,6 +232,8 @@ export default function Header() {
      * */
     const { title, content, boardImageFileList, resetBoard } = useBoardStore();
 
+    const { boardId } = useParams();
+
     /**
      *  TODO: function: board post response 처리 함수
      * */
@@ -248,6 +252,24 @@ export default function Header() {
       if (!signInUser) return;
       const { email } = signInUser;
       navigator(USER_PATH(email));
+    }
+
+    /**
+     *  TODO: function: board patch response 처리 함수
+     * */
+    const patchBoardResponse = (responseBody: PatchBoardResponseDto | ApiResponseDto<PatchBoardResponseDto> | null) => {
+      if (!responseBody) return;
+
+      const { code } = responseBody;
+
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code === 'AF' || code === 'NFU') navigator(AUTH_PATH());
+      if (code === 'VF') alert('제목과 내용은 필수입니다.');
+      if (code === 'NFB') alert('제목과 내용은 필수입니다.');
+      if (code !== 'SU') return;
+
+      if (!boardId) return;
+      navigator(BOARD_PATH() + '/' + BOARD_DETAIL_PATH(boardId));
     }
 
     /**
@@ -273,9 +295,20 @@ export default function Header() {
         }
       }
 
-      const requestBody: PostBoardRequestDto = { title, content, boardImageList };
+      const isWriterPage = pathname === BOARD_PATH() + '/' + BOARD_WRITE_PATH();
+      if (isWriterPage) {
+        const requestBody: PostBoardRequestDto = { title, content, boardImageList };
 
-      postBoardRequest(requestBody, accessToken).then(postBoardResponse);
+        postBoardRequest(requestBody, accessToken).then(postBoardResponse);
+      } else {
+        if (!boardId) return;
+        const requestBody: PatchBoardRequestDTO = {
+          title, content, boardImageList
+        }
+        patchBoardRequest(boardId, requestBody, accessToken).then(patchBoardResponse);
+      }
+
+
     };
 
     /**

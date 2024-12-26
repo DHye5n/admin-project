@@ -73,6 +73,7 @@ public class FileService {
 
         try {
             // 파일 저장
+            log.info("Saving file to: {}", savePath);
             file.transferTo(new File(savePath));
         } catch (IOException e) {
             log.error("Error during file upload: ", e);

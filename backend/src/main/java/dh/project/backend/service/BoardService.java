@@ -5,6 +5,7 @@ import dh.project.backend.domain.ImageEntity;
 import dh.project.backend.domain.LikeEntity;
 import dh.project.backend.domain.UserEntity;
 import dh.project.backend.dto.ApiResponseDto;
+import dh.project.backend.dto.request.board.PatchBoardRequestDto;
 import dh.project.backend.dto.request.board.PostBoardRequestDto;
 import dh.project.backend.dto.response.board.*;
 import dh.project.backend.enums.ResponseStatus;
@@ -15,13 +16,16 @@ import dh.project.backend.repository.LikeRepository;
 import dh.project.backend.repository.UserRepository;
 import dh.project.backend.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class BoardService {
@@ -60,18 +64,6 @@ public class BoardService {
     }
 
     /**
-     *   TODO: 이미지 저장
-     * */
-    private List<ImageEntity> saveImage(PostBoardRequestDto requestDto, BoardEntity board) {
-        return requestDto.getBoardImageList().stream()
-                .map(imageUrl -> ImageEntity.builder()
-                        .imageUrl(imageUrl)
-                        .board(board)
-                        .build())
-                .collect(Collectors.toList());
-    }
-
-    /**
      *   TODO: 특정 게시물
      * */
     @Transactional(readOnly = true)
@@ -86,6 +78,113 @@ public class BoardService {
 
         return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
     }
+
+    /**
+     *   TODO: 게시물 수정
+     * */
+    @Transactional
+    public ApiResponseDto<PatchBoardResponseDto> patchBoard(PatchBoardRequestDto dto, Long boardId, Long userId) {
+
+        try {
+            // 1. 게시물 조회
+            BoardEntity boardEntity = boardRepository.findByIdWithImages(boardId)
+                    .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
+
+            // 2. 게시물 작성자 확인
+            authService.checkUserAuthorization(boardEntity.getUser().getUserId(), userId);
+
+            // 3. 게시물 내용 수정
+            boardEntity.patchBoard(dto);
+
+            // 4. 이미지 엔티티 생성
+            List<ImageEntity> newImageEntities = updateImage(dto, boardEntity);
+
+            // 5. 기존 이미지 삭제 및 새 이미지 저장
+            List<ImageEntity> currentImages = boardEntity.getImages();
+            List<ImageEntity> imagesToRemove = new ArrayList<>();
+            List<ImageEntity> imagesToSave = new ArrayList<>(newImageEntities);
+
+            for (ImageEntity currentImage : currentImages) {
+                if (!newImageEntities.stream().anyMatch(newImage -> newImage.getImageUrl().equals(currentImage.getImageUrl()))) {
+                    imagesToRemove.add(currentImage);
+                }
+            }
+
+            // 삭제된 이미지는 DB에서 삭제
+            if (!imagesToRemove.isEmpty()) {
+                imageRepository.deleteAll(imagesToRemove);
+                boardEntity.getImages().removeAll(imagesToRemove);
+            }
+
+            // 새 이미지는 DB에 저장
+            if (!imagesToSave.isEmpty()) {
+                imageRepository.saveAll(imagesToSave);
+            }
+
+            boardEntity = boardRepository.findById(boardId)
+                    .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
+
+            // 6. 수정된 게시물 저장
+            boardRepository.save(boardEntity);
+
+            // 7. 응답 DTO 생성
+            PatchBoardResponseDto responseDto = PatchBoardResponseDto.fromEntity(boardEntity);
+
+            // 8. 응답 반환
+            return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(ResponseStatus.DATABASE_ERROR);
+        }
+    }
+
+    /**
+     *   TODO: 게시물 삭제
+     * */
+    @Transactional
+    public ApiResponseDto<DeleteBoardResponseDto> deleteBoard(Long boardId, Long userId) {
+
+        BoardEntity boardEntity = boardRepository.findById(boardId)
+                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
+
+        authService.checkUserAuthorization(boardEntity.getUser().getUserId(), userId);
+
+        boardRepository.delete(boardEntity);
+
+        DeleteBoardResponseDto responseDto = DeleteBoardResponseDto.fromEntity(boardEntity);
+
+        return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
+
+    }
+
+    /**
+     *   TODO: 이미지 저장
+     * */
+    @Transactional
+    public List<ImageEntity> saveImage(PostBoardRequestDto postDto, BoardEntity board) {
+        return postDto.getBoardImageList().stream()
+                .map(imageUrl -> ImageEntity.builder()
+                        .imageUrl(imageUrl)
+                        .board(board)
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    /**
+     *   TODO: 이미지 수정
+     * */
+    @Transactional
+    public List<ImageEntity> updateImage(PatchBoardRequestDto dto, BoardEntity board) {
+        List<ImageEntity> newImageEntities = dto.getBoardImageList().stream()
+                .map(imageUrl -> ImageEntity.builder()
+                        .imageUrl(imageUrl)
+                        .board(board)
+                        .build())
+                .collect(Collectors.toList());
+
+        return newImageEntities;
+    }
+
     /**
      *   TODO: 조회수
      * */
@@ -158,22 +257,5 @@ public class BoardService {
         return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
     }
 
-    /**
-     *   TODO: 게시물 삭제
-     * */
-    @Transactional
-    public ApiResponseDto<DeleteBoardResponseDto> deleteBoard(Long boardId, Long userId) {
 
-        BoardEntity boardEntity = boardRepository.findById(boardId)
-                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
-
-        authService.checkUserAuthorization(boardEntity.getUser().getUserId(), userId);
-
-        boardRepository.delete(boardEntity);
-
-        DeleteBoardResponseDto responseDto = DeleteBoardResponseDto.fromEntity(boardEntity);
-
-        return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
-
-    }
 }

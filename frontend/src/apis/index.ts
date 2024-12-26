@@ -7,9 +7,9 @@ import {
   PostBoardResponseDto,
   GetBoardResponseDto,
   ViewCountResponseDto,
-  GetLikeListResponseDto, GetCommentListResponseDto, PutLikeResponseDto, DeleteBoardResponseDTO,
+  GetLikeListResponseDto, GetCommentListResponseDto, PutLikeResponseDto, DeleteBoardResponseDTO, PatchBoardResponseDto,
 } from './response/board';
-import { PostBoardRequestDto } from './request/board';
+import { PatchBoardRequestDTO, PostBoardRequestDto } from './request/board';
 import PostCommentRequestDto from './request/comment/post-comment.request.dto';
 import PostCommentResponseDto from './response/comment/post-comment.response.dto';
 
@@ -49,6 +49,8 @@ const SIGN_IN_USER_URL = () => `${API_DOMAIN}/users`;
 const POST_BOARD_URL = () => `${API_DOMAIN}/boards`;
 
 const GET_BOARD_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}`;
+
+const PATCH_BOARD_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}`;
 
 const DELETE_BOARD_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}`;
 
@@ -306,8 +308,7 @@ export const putLikeRequest = async (boardId: number | string, accessToken: stri
   return result;
 }
 
-export const postCommentRequest =
-  async (boardId: number | string, requestBody: PostCommentRequestDto, accessToken: string) => {
+export const postCommentRequest = async (boardId: number | string, requestBody: PostCommentRequestDto, accessToken: string) => {
   const result = await axios.post(POST_COMMENT_URL(boardId), requestBody, authorization(accessToken))
     .then(response => {
       const responseBody: ApiResponseDto<PostCommentResponseDto> = response.data;
@@ -319,4 +320,18 @@ export const postCommentRequest =
       return responseBody;
     })
     return result;
+}
+
+export const patchBoardRequest = async (boardId: number | string, requestBody: PatchBoardRequestDTO, accessToken: string) => {
+  const result = await axios.patch(PATCH_BOARD_URL(boardId), requestBody, authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<PatchBoardResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<PatchBoardResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
 }

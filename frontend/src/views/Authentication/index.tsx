@@ -18,6 +18,8 @@ import { useNavigate } from 'react-router-dom';
 import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
 import { SignUpRequestDto } from 'apis/request/auth';
 import { SignUpResponseDto } from 'apis/response/auth';
+import { IonIcon } from '@ionic/react';
+import { checkmarkCircle, checkmarkCircleOutline } from 'ionicons/icons';
 
 /**
  *   TODO:  component: Main Authentication 컴포넌트
@@ -416,6 +418,7 @@ function SignUpCard() {
   const [passwordCheckButtonIcon, setPasswordCheckButtonIcon] = useState<'eyeOff' | 'eyeOn'>('eyeOff');
 
   const [addressButtonIcon, setAddressButtonIcon] = useState<'home' | undefined>('home');
+
 
   /**
    *   TODO:  function:  다음 주소 검색 팝업 오픈 함수
@@ -1099,11 +1102,13 @@ function SignUpCard() {
           {page === 2 && (
             <>
               <div className='auth-consent-box'>
-                <div className='auth-check-box' onClick={onAgreedPersonalClickHandler}>
-                  <div className={`icon ${agreedPersonal ? 'check-round-fill-icon' : 'check-round-light-icon'}`}></div>
+                <div className="auth-check-box" onClick={onAgreedPersonalClickHandler}>
+                  {agreedPersonal ?
+                    <IonIcon icon={checkmarkCircle} style={{ width: '24px', height: '24px', color: 'rgba(116, 148, 236, 1)' }} /> :
+                    <IonIcon icon={checkmarkCircleOutline} style={{ width: '24px', height: '24px', color: 'rgba(0, 0, 0, 0.3)' }} />
+                  }
                 </div>
-                <div
-                  className={isAgreedPersonalError ? 'auth-consent-title-error' : 'auth-consent-title'}>{'개인정보동의'}</div>
+                <div className={isAgreedPersonalError ? 'auth-consent-title-error' : 'auth-consent-title'}>{'개인정보동의'}</div>
                 <div className='auth-consent-link'>{'더보기 >'}</div>
               </div>
 

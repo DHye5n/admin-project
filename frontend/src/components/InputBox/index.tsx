@@ -5,6 +5,7 @@ import React, {
 } from 'react';
 import './style.css';
 import {
+  checkmarkCircleOutline,
   eyeOffOutline,
   eyeOutline,
   homeOutline,
@@ -58,13 +59,13 @@ const InputBox = forwardRef<HTMLInputElement, Props>((props: Props, ref) => {
     email: { icon: mailOutline, color: 'rgba(0, 0, 0, 0.7)' },
     emailError: { icon: mailOutline, color: 'rgba(255, 0, 0, 0.7)' },
     emailSuccess: { icon: mailOutline, color: 'rgba(0, 128, 0, 0.7)' },
-    home: { icon: homeOutline, color: 'rgba(128, 0, 128, 0.7)' },
+    home: { icon: homeOutline, color: 'rgba(0, 0, 0, 0.7)' },
     person: { icon: personOutline, color: 'rgba(0, 0, 0, 0.7)' },
     personError: { icon: personOutline, color: 'rgba(255, 0, 0, 0.7)' },
     personSuccess: { icon: personOutline, color: 'rgba(0, 128, 0, 0.7)' },
     shield: { icon: shieldOutline, color: 'rgba(0, 0, 0, 0.7)' },
     shieldError: { icon: shieldCheckmarkOutline, color: 'rgba(255, 0, 0, 0.7)' },
-    shieldSuccess: { icon: shieldCheckmarkOutline, color: 'rgba(0, 128, 0, 0.7)' }
+    shieldSuccess: { icon: shieldCheckmarkOutline, color: 'rgba(0, 128, 0, 0.7)' },
   };
 
   /**

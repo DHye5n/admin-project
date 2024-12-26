@@ -6,6 +6,7 @@ import GetCommentListResponseDto from '../comment/get-comment-list.response.dto'
 import PutLikeResponseDto from './put-like-response.dto';
 import PostCommentResponseDto from '../comment/post-comment.response.dto';
 import DeleteBoardResponseDTO from './delete-board-response.dto';
+import PatchBoardResponseDto from './patch-board.response.dto';
 
 export type {
   PostBoardResponseDto,
@@ -15,5 +16,6 @@ export type {
   GetCommentListResponseDto,
   PutLikeResponseDto,
   PostCommentResponseDto,
-  DeleteBoardResponseDTO
+  DeleteBoardResponseDTO,
+  PatchBoardResponseDto
 }
