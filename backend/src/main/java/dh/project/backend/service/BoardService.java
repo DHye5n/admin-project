@@ -99,6 +99,10 @@ public class BoardService {
 
             // 4. 이미지 엔티티 생성
             List<ImageEntity> newImageEntities = updateImage(dto, boardEntity);
+            if (newImageEntities.isEmpty() && boardEntity.getImages().isEmpty()) {
+                throw new ErrorException(ResponseStatus.NOT_EMPTY);
+            }
+
 
             // 5. 기존 이미지 삭제 및 새 이미지 저장
             List<ImageEntity> currentImages = boardEntity.getImages();

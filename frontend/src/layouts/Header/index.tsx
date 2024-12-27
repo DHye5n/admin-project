@@ -114,12 +114,12 @@ export default function Header() {
      *  TODO:  event handler: 검색 버튼 클릭 이벤트 처리 함수
      * */
     const onSearchButtonClickHandler = () => {
-      if (!status) {
-        setStatus(true);
-        return;
-      }
+      // if (!status) {
+      //   setStatus(true);
+      //   return;
+      // }
       if (word.trim() === '') {
-        setStatus(false);
+        // setStatus(false);
         return;
       }
       if (word) {
@@ -133,19 +133,19 @@ export default function Header() {
     useEffect(() => {
       if (searchWord !== undefined) {
         setWord(searchWord);
-        setStatus(true);
+        // setStatus(true);
       }
     }, [searchWord]);
 
-    if (!status)
-      /**
-       *  TODO:  render: 검색 버튼 컴포넌트 렌더링 false 상태
-       * */
-      return (
-        <div className='icon-button' onClick={onSearchButtonClickHandler}>
-          <div className='icon search-light-icon'></div>
-        </div>
-      );
+    // if (!status)
+    //   /**
+    //    *  TODO:  render: 검색 버튼 컴포넌트 렌더링 false 상태
+    //    * */
+    //   return (
+    //     <div className='icon-button' onClick={onSearchButtonClickHandler}>
+    //       <div className='icon search-light-icon'></div>
+    //     </div>
+    //   );
     /**
      *  TODO:  render: 검색 버튼 컴포넌트 렌더링 true 상태
      * */
@@ -382,14 +382,16 @@ export default function Header() {
           </div>
           <div className='header-logo'>{'DHy25n'}</div>
         </div>
-        <div className='header-right-box'>
+        <div className='header-middle-box'>
           {(isAuthPage || isMainPage || isSearchPage || isBoardDetailPage) && (
             <SearchButton />
           )}
-          {(isMainPage || isSearchPage || isBoardDetailPage || isUserPage) && (
+        </div>
+        <div className='header-right-box'>
+          {(isBoardWritePage || isBoardUpdatePage) && <UploadButton />}
+          {(isMainPage || isSearchPage || isBoardDetailPage || isUserPage || isBoardWritePage || isBoardUpdatePage) && (
             <MyPageButton />
           )}
-          {(isBoardWritePage || isBoardUpdatePage) && <UploadButton />}
           {isSignIn && signInUser && (
             <div className="user-info">
               <div className='user-info-profile-image-box'>
