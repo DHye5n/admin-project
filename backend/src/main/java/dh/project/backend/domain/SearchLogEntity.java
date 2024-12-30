@@ -1,6 +1,7 @@
 package dh.project.backend.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,4 +22,12 @@ public class SearchLogEntity {
     private String relationWord;
 
     private boolean relation;
+
+    @Builder
+    public SearchLogEntity(Long searchLogId, String searchWord, String relationWord, boolean relation) {
+        this.searchLogId = searchLogId;
+        this.searchWord = searchWord;
+        this.relationWord = relationWord;
+        this.relation = relation;
+    }
 }
