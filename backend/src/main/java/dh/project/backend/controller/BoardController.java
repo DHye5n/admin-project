@@ -96,5 +96,21 @@ public class BoardController {
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
+    /**
+     *   TODO: 최신 게시물 리스트
+     * */
+    @GetMapping("/latest")
+    public ResponseEntity<ApiResponseDto<GetLatestBoardListResponseDto>> getLatestBoardList() {
+        ApiResponseDto<GetLatestBoardListResponseDto> responseDto = boardService.getLatestBoardList();
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
 
+    /**
+     *   TODO: Top3 게시물 리스트
+     * */
+    @GetMapping("/top-3")
+    public ResponseEntity<ApiResponseDto<GetTop3BoardListResponseDto>> getTop3BoardList() {
+        ApiResponseDto<GetTop3BoardListResponseDto> responseDto = boardService.getTop3BoardList();
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
 }

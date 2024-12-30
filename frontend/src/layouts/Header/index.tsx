@@ -27,6 +27,8 @@ import { ApiResponseDto } from 'apis/response';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
 import { PatchBoardRequestDTO } from 'apis/request/board';
 import { PatchBoardResponseDto } from 'apis/response/board';
+import { closeOutline } from 'ionicons/icons';
+import { IonIcon } from '@ionic/react';
 
 /**
  *  TODO: component: Header 레이아웃 컴포넌트
@@ -110,6 +112,10 @@ export default function Header() {
       searchButtonRef.current?.click();
     };
 
+    const onClearButtonClickHandler = () => {
+      setWord('');
+    };
+
     /**
      *  TODO:  event handler: 검색 버튼 클릭 이벤트 처리 함수
      * */
@@ -137,17 +143,8 @@ export default function Header() {
       }
     }, [searchWord]);
 
-    // if (!status)
-    //   /**
-    //    *  TODO:  render: 검색 버튼 컴포넌트 렌더링 false 상태
-    //    * */
-    //   return (
-    //     <div className='icon-button' onClick={onSearchButtonClickHandler}>
-    //       <div className='icon search-light-icon'></div>
-    //     </div>
-    //   );
     /**
-     *  TODO:  render: 검색 버튼 컴포넌트 렌더링 true 상태
+     *  TODO:  render: 검색 버튼 컴포넌트 렌더링
      * */
     return (
       <div className='header-search-input-box'>

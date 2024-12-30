@@ -1,19 +1,14 @@
 package dh.project.backend.service;
 
-import dh.project.backend.domain.BoardEntity;
-import dh.project.backend.domain.ImageEntity;
-import dh.project.backend.domain.LikeEntity;
-import dh.project.backend.domain.UserEntity;
+import dh.project.backend.domain.*;
 import dh.project.backend.dto.ApiResponseDto;
+import dh.project.backend.dto.object.BoardListItem;
 import dh.project.backend.dto.request.board.PatchBoardRequestDto;
 import dh.project.backend.dto.request.board.PostBoardRequestDto;
 import dh.project.backend.dto.response.board.*;
 import dh.project.backend.enums.ResponseStatus;
 import dh.project.backend.exception.ErrorException;
-import dh.project.backend.repository.BoardRepository;
-import dh.project.backend.repository.ImageRepository;
-import dh.project.backend.repository.LikeRepository;
-import dh.project.backend.repository.UserRepository;
+import dh.project.backend.repository.*;
 import dh.project.backend.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +30,7 @@ public class BoardService {
     private final ImageRepository imageRepository;
     private final LikeRepository likeRepository;
     private final AuthService authService;
+    private final BoardListViewRepository boardListViewRepository;
 
     /**
      *   TODO: 게시물 작성
@@ -262,5 +258,34 @@ public class BoardService {
         return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
     }
 
+    /**
+     *   TODO: 최신 게시물 리스트
+     * */
+    @Transactional(readOnly = true)
+    public ApiResponseDto<GetLatestBoardListResponseDto> getLatestBoardList() {
+
+        List<BoardListViewEntity> latestBoards = boardListViewRepository.findLatestBoards();
+
+        List<BoardListItem> boardListItems = BoardListItem.fromEntityList(latestBoards);
+
+        GetLatestBoardListResponseDto responseDto = new GetLatestBoardListResponseDto(boardListItems);
+
+        return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
+    }
+
+    /**
+     *   TODO: Top3 게시물 리스트
+     * */
+    @Transactional(readOnly = true)
+    public ApiResponseDto<GetTop3BoardListResponseDto> getTop3BoardList() {
+
+        List<BoardListViewEntity> top3Boards = boardListViewRepository.findTop3Boards();
+
+        List<BoardListItem> boardListItems = BoardListItem.fromEntityList(top3Boards);
+
+        GetTop3BoardListResponseDto responseDto = new GetTop3BoardListResponseDto(boardListItems);
+
+        return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
+    }
 
 }

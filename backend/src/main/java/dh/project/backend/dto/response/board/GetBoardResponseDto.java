@@ -18,8 +18,6 @@ public class GetBoardResponseDto {
 
     private final String content;
 
-//    private final SignInUserResponseDto writer;
-
     private final List<String> boardImageList;
 
     private final String createdDate;
@@ -39,7 +37,6 @@ public class GetBoardResponseDto {
         this.boardId = boardId;
         this.title = title;
         this.content = content;
-//        this.writer = writer;
         this.boardImageList = boardImageList;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
@@ -49,7 +46,6 @@ public class GetBoardResponseDto {
     }
 
     public static GetBoardResponseDto fromEntity(BoardEntity board , List<ImageEntity> images) {
-//        SignInUserResponseDto writerDto = SignInUserResponseDto.fromEntity(board.getUser());
 
         List<String> boardImageList = images.stream()
                 .map(ImageEntity::getImageUrl)
@@ -59,7 +55,6 @@ public class GetBoardResponseDto {
                 .boardId(board.getBoardId())
                 .title(board.getTitle())
                 .content(board.getContent())
-//                .writer(writerDto)
                 .boardImageList(boardImageList)
                 .createdDate(board.getCreatedDate())
                 .modifiedDate(board.getModifiedDate())
