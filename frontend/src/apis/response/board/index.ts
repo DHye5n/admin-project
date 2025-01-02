@@ -7,6 +7,8 @@ import PutLikeResponseDto from './put-like-response.dto';
 import PostCommentResponseDto from '../comment/post-comment.response.dto';
 import DeleteBoardResponseDTO from './delete-board-response.dto';
 import PatchBoardResponseDto from './patch-board.response.dto';
+import GetTop3BoardListResponseDTO from './get-top3-board-list.response.dto';
+import GetLatestBoardListResponseDto from './get-latest-board-list.response.dto';
 
 export type {
   PostBoardResponseDto,
@@ -17,5 +19,7 @@ export type {
   PutLikeResponseDto,
   PostCommentResponseDto,
   DeleteBoardResponseDTO,
-  PatchBoardResponseDto
+  PatchBoardResponseDto,
+  GetTop3BoardListResponseDTO,
+  GetLatestBoardListResponseDto
 }

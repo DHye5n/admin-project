@@ -99,7 +99,7 @@ public class BoardController {
     /**
      *   TODO: 최신 게시물 리스트
      * */
-    @GetMapping("/latest")
+    @GetMapping("/latest-lists")
     public ResponseEntity<ApiResponseDto<GetLatestBoardListResponseDto>> getLatestBoardList() {
         ApiResponseDto<GetLatestBoardListResponseDto> responseDto = boardService.getLatestBoardList();
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
@@ -108,7 +108,7 @@ public class BoardController {
     /**
      *   TODO: Top3 게시물 리스트
      * */
-    @GetMapping("/top-3")
+    @GetMapping("/top3-lists")
     public ResponseEntity<ApiResponseDto<GetTop3BoardListResponseDto>> getTop3BoardList() {
         ApiResponseDto<GetTop3BoardListResponseDto> responseDto = boardService.getTop3BoardList();
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);

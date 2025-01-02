@@ -4,7 +4,8 @@ import { useLocation } from 'react-router-dom';
 import { BOARD_WRITE_PATH, MAIN_PATH } from 'constant';
 import React from 'react';
 import BoardDetail from 'views/Board/Detail';
-import BoardUpdate from '../../views/Board/Update';
+import BoardUpdate from 'views/Board/Update';
+import Main from 'views/Main';
 
 export default function Content() {
   /**
@@ -17,7 +18,7 @@ export default function Content() {
       {pathname.startsWith('/boards/write') && <BoardWrite />}
       {pathname.startsWith('/boards/detail') && <BoardDetail />}
       {pathname.startsWith('/boards/update') && <BoardUpdate />}
-      {pathname === MAIN_PATH() && <div>메인페이지</div>}
+      {pathname.startsWith('/dashboard') && <Main />}
     </div>
   );
 }

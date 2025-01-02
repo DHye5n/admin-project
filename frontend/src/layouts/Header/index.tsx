@@ -379,12 +379,17 @@ export default function Header() {
           </div>
           <div className='header-logo'>{'DHy25n'}</div>
         </div>
+
         <div className='header-middle-box'>
           {(isAuthPage || isMainPage || isSearchPage || isBoardDetailPage) && (
             <SearchButton />
           )}
         </div>
+
         <div className='header-right-box'>
+          <div className='popular-keyword-box'>
+
+          </div>
           {(isBoardWritePage || isBoardUpdatePage) && <UploadButton />}
           {(isMainPage || isSearchPage || isBoardDetailPage || isUserPage || isBoardWritePage || isBoardUpdatePage) && (
             <MyPageButton />

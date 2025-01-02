@@ -25,5 +25,5 @@ export function formatDate(date: string): string {
   }
 
   // 24시간 이상이면 날짜 형식으로 표시
-  return `${currentDate.getFullYear()}.${currentDate.getMonth() + 1}.${currentDate.getDate()}`;
+  return format(currentDate, 'yy.MM.dd HH:mm');
 }

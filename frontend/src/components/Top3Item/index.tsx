@@ -1,6 +1,9 @@
 import './style.css';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
 import { BoardListItem } from 'types/interface';
+import { useNavigate } from 'react-router-dom';
+import { BOARD_DETAIL_PATH, BOARD_PATH } from '../../constant';
+import { formatDate } from '../../utils/dateUtils';
 
 /**
  *  TODO: interface: TOP 3 List Item 컴포넌트 Properties
@@ -18,18 +21,24 @@ export default function Top3Item({ top3ListItem }: Props) {
    * */
   const { boardId, title, content, boardTitleImage } = top3ListItem;
   const { likeCount, commentCount, viewCount } = top3ListItem;
-  const { createdAt, username, profileImage } = top3ListItem;
+  const { createdDate, modifiedDate, username, profileImage } = top3ListItem;
+
+  const getFormattedDate = (createdDate: string, modifiedDate: string | null) => {
+    return modifiedDate && modifiedDate !== createdDate
+      ? `${formatDate(modifiedDate)}`
+      : `${formatDate(createdDate)}`;
+  }
 
   /**
    *  TODO: function: navigate 함수
    * */
-  // const navigator = useNavigate();
+  const navigator = useNavigate();
 
   /**
    *  TODO: event handler: 게시물 아이템 클릭 이벤트 처리 함수
    * */
   const onClickHandler = () => {
-    // navigator(boardId);
+    navigator(BOARD_PATH() + '/' + BOARD_DETAIL_PATH(boardId));
   };
 
   /**
@@ -53,7 +62,9 @@ export default function Top3Item({ top3ListItem }: Props) {
           </div>
           <div className='top3-list-item-write-box'>
             <div className='top3-list-item-username'>{username}</div>
-            <div className='top3-list-item-write-date'>{createdAt}</div>
+            <div className='top3-list-item-write-date'>
+              {getFormattedDate(createdDate, modifiedDate)}
+            </div>
           </div>
         </div>
 

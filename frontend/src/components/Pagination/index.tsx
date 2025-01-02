@@ -56,18 +56,20 @@ export default function Pagination(props: Props) {
       </div>
       <div className='pagination-divider'>{'\|'}</div>
 
-      {viewPageList.map(page => page === currentPage ?
-        (<div key={page} className="pagination-text-active">{page}</div>) :
-        (<div key={page} className="pagination-text" onClick={() => onPageClickHandler(page)}>{page}</div>)
-      )}
+      <div className="pagination-change-link-number">
+        {viewPageList.map(page => page === currentPage ?
+          (<div key={page} className="pagination-text-active">{page}</div>) :
+          (<div key={page} className="pagination-text" onClick={() => onPageClickHandler(page)}>{page}</div>)
+        )}
+      </div>
 
-      <div className='pagination-divider'>{'\|'}</div>
-      <div className="pagination-change-link-box">
-        <div className='pagination-change-link-text' onClick={onNextClickHandler}>{'다음'}</div>
-        <div className="icon-box-small">
-          <div className="icon expand-right-icon"></div>
+        <div className='pagination-divider'>{'\|'}</div>
+        <div className="pagination-change-link-box">
+          <div className='pagination-change-link-text' onClick={onNextClickHandler}>{'다음'}</div>
+          <div className="icon-box-small">
+            <div className="icon expand-right-icon"></div>
+          </div>
         </div>
       </div>
-    </div>
-  )
-}
+      )
+      }

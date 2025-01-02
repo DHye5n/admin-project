@@ -7,11 +7,17 @@ import {
   PostBoardResponseDto,
   GetBoardResponseDto,
   ViewCountResponseDto,
-  GetLikeListResponseDto, GetCommentListResponseDto, PutLikeResponseDto, DeleteBoardResponseDTO, PatchBoardResponseDto,
+  GetLikeListResponseDto,
+  GetCommentListResponseDto,
+  PutLikeResponseDto,
+  DeleteBoardResponseDTO,
+  PatchBoardResponseDto,
+  GetLatestBoardListResponseDto, GetTop3BoardListResponseDTO,
 } from './response/board';
 import { PatchBoardRequestDTO, PostBoardRequestDto } from './request/board';
 import PostCommentRequestDto from './request/comment/post-comment.request.dto';
 import PostCommentResponseDto from './response/comment/post-comment.response.dto';
+import { GetPopularListResponseDto } from './response/search';
 
 
 const DOMAIN = 'http://localhost:9994';
@@ -64,6 +70,12 @@ const PUT_LIKE_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${board
 
 const POST_COMMENT_URL = (boardId: number | string) => `${API_DOMAIN}/comments/${boardId}/comment`;
 
+const GET_LATEST_BOARD_LIST_URL = () => `${API_DOMAIN}/boards/latest-lists`;
+
+const GET_TOP3_BOARD_LIST_URL = () => `${API_DOMAIN}/boards/top3-lists`;
+
+const GET_POPULAR_LIST_URL = () => `${API_DOMAIN}/search/populars`;
+
 const FILE_DOMAIN = `${DOMAIN}/files`;
 
 const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
@@ -81,7 +93,7 @@ export const signInRequest = async (requestBody: SignInRequestDto) => {
       return responseBody;
     });
   return result;
-}
+};
 
 // 회원가입
 export const signUpRequest = async (requestBody: SignUpRequestDto) => {
@@ -96,7 +108,7 @@ export const signUpRequest = async (requestBody: SignUpRequestDto) => {
       return responseBody;
     });
   return result;
-}
+};
 
 // 이메일 중복 체크
 export const checkEmailExists = async (email: string): Promise<ApiResponseDto<DuplicateCheckResponseDto> | null> => {
@@ -111,7 +123,7 @@ export const checkEmailExists = async (email: string): Promise<ApiResponseDto<Du
       return responseBody;
     });
   return result;
-}
+};
 
 // 아이디 중복 체크
 export const checkUsernameExists = async (username: string): Promise<ApiResponseDto<DuplicateCheckResponseDto> | null> => {
@@ -126,7 +138,7 @@ export const checkUsernameExists = async (username: string): Promise<ApiResponse
       return responseBody;
     });
   return result;
-}
+};
 
 // 인증 코드 발송 요청
 export const sendVerificationCode = async (email: string): Promise<ApiResponseDto<string> | null> => {
@@ -141,7 +153,7 @@ export const sendVerificationCode = async (email: string): Promise<ApiResponseDt
       return responseBody;
     });
   return result;
-}
+};
 
 // 인증 코드 재발송 요청
 export const resendVerificationCode = async (email: string): Promise<ApiResponseDto<string> | null> => {
@@ -156,7 +168,7 @@ export const resendVerificationCode = async (email: string): Promise<ApiResponse
       return responseBody;
     });
   return result;
-}
+};
 
 // 인증 코드 검증 요청
 export const verifyCode = async (email: string, verificationCode: string): Promise<ApiResponseDto<boolean> | null> => {
@@ -172,7 +184,7 @@ export const verifyCode = async (email: string, verificationCode: string): Promi
       return responseBody;
     });
   return result;
-}
+};
 
 // 유저 정보 반환
 export const signInUserRequest = async (accessToken: string): Promise<ApiResponseDto<SignInUserResponseDto> | null> => {
@@ -187,7 +199,7 @@ export const signInUserRequest = async (accessToken: string): Promise<ApiRespons
       return responseBody;
     });
   return result;
-}
+};
 
 // 게시물 작성
 export const postBoardRequest = async (requestBody: PostBoardRequestDto, accessToken: string): Promise<ApiResponseDto<PostBoardResponseDto> | null> => {
@@ -202,7 +214,7 @@ export const postBoardRequest = async (requestBody: PostBoardRequestDto, accessT
       return responseBody;
     })
   return result;
-}
+};
 
 export const deleteBoardRequest = async (boardId: number | string, accessToken: string) => {
   const result = await axios.delete(DELETE_BOARD_URL(boardId), authorization(accessToken))
@@ -216,7 +228,7 @@ export const deleteBoardRequest = async (boardId: number | string, accessToken: 
       return responseBody;
     })
   return result;
-}
+};
 
 // 파일 업로드
 export const fileUploadRequest = async (data: FormData, accessToken: string) => {
@@ -235,7 +247,7 @@ export const fileUploadRequest = async (data: FormData, accessToken: string) => 
       return null;
     })
   return result;
-}
+};
 
 // 게시물 상세
 export const getBoardRequest = async (boardId: number | string, accessToken: string) => {
@@ -250,7 +262,7 @@ export const getBoardRequest = async (boardId: number | string, accessToken: str
       return responseBody;
     })
   return result;
-}
+};
 
 export const viewCountRequest = async (boardId: number | string, accessToken: string) => {
   const result = await axios.get(VIEW_COUNT_URL(boardId), authorization(accessToken))
@@ -264,7 +276,7 @@ export const viewCountRequest = async (boardId: number | string, accessToken: st
       return responseBody;
     })
   return result;
-}
+};
 
 export const getLikeListRequest = async (boardId: number | string, accessToken: string) => {
   const result = await axios.get(GET_LIKE_LIST_URL(boardId), authorization(accessToken))
@@ -278,7 +290,7 @@ export const getLikeListRequest = async (boardId: number | string, accessToken: 
       return responseBody;
     })
   return result;
-}
+};
 
 export const getCommentListRequest = async (boardId: number | string, accessToken: string) => {
   const result = await axios.get(GET_COMMENT_LIST_URL(boardId), authorization(accessToken))
@@ -292,7 +304,7 @@ export const getCommentListRequest = async (boardId: number | string, accessToke
       return responseBody;
     })
   return result;
-}
+};
 
 export const putLikeRequest = async (boardId: number | string, accessToken: string) => {
   const result = await axios.put(PUT_LIKE_URL(boardId), {}, authorization(accessToken))
@@ -306,7 +318,7 @@ export const putLikeRequest = async (boardId: number | string, accessToken: stri
       return responseBody;
     })
   return result;
-}
+};
 
 export const postCommentRequest = async (boardId: number | string, requestBody: PostCommentRequestDto, accessToken: string) => {
   const result = await axios.post(POST_COMMENT_URL(boardId), requestBody, authorization(accessToken))
@@ -320,7 +332,7 @@ export const postCommentRequest = async (boardId: number | string, requestBody: 
       return responseBody;
     })
     return result;
-}
+};
 
 export const patchBoardRequest = async (boardId: number | string, requestBody: PatchBoardRequestDTO, accessToken: string) => {
   const result = await axios.patch(PATCH_BOARD_URL(boardId), requestBody, authorization(accessToken))
@@ -334,4 +346,46 @@ export const patchBoardRequest = async (boardId: number | string, requestBody: P
       return responseBody;
     })
   return result;
-}
+};
+
+export const getLatestBoardListRequest = async (accessToken: string) => {
+  const result = await axios.get(GET_LATEST_BOARD_LIST_URL(), authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<GetLatestBoardListResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<GetLatestBoardListResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+};
+
+export const getTop3BoardListRequest = async (accessToken: string) => {
+  const result = await axios.get(GET_TOP3_BOARD_LIST_URL(), authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<GetTop3BoardListResponseDTO> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<GetTop3BoardListResponseDTO> = error.response.data;
+      return responseBody;
+    })
+  return result;
+};
+
+export const getPopularListRequest = async (accessToken: string) => {
+  const result = await axios.get(GET_POPULAR_LIST_URL(), authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<GetPopularListResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<GetPopularListResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+};

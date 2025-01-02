@@ -6,7 +6,15 @@
 .pagination-change-link-box {
     display: flex;
     align-items: center;
-    gap: 4px;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.pagination-change-link-number {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     cursor: pointer;
 }
 
@@ -14,7 +22,6 @@
     color: rgba(0, 0, 0, 0.7);
     font-size: 12px;
     font-weight: 500;
-    line-height: 140%;
 }
 
 .pagination-divider {
@@ -29,12 +36,10 @@
     color: var(--black);
     font-size: 12px;
     font-weight: 500;
-    line-height: 140%;
 }
 
 .pagination-text {
     color: rgba(0, 0, 0, 0.6);
     font-size: 12px;
     font-weight: 500;
-    line-height: 140%;
 }

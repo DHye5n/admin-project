@@ -9,10 +9,10 @@ import java.util.List;
 @Getter
 public class GetLatestBoardListResponseDto {
 
-    private final List<BoardListItem> boardListItems;
+    private final List<BoardListItem> latestList;
 
     @Builder
-    public GetLatestBoardListResponseDto(List<BoardListItem> boardListItems) {
-        this.boardListItems = boardListItems;
+    public GetLatestBoardListResponseDto(List<BoardListItem> latestList) {
+        this.latestList = latestList;
     }
 }

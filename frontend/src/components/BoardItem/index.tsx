@@ -1,6 +1,9 @@
 import './style.css';
 import { BoardListItem } from 'types/interface';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
+import { useNavigate } from 'react-router-dom';
+import { BOARD_DETAIL_PATH, BOARD_PATH } from '../../constant';
+import { formatDate } from '../../utils/dateUtils';
 
 /**
  *  TODO: interface: Board List Item 컴포넌트 Properties
@@ -18,18 +21,24 @@ export default function BoardItem({ boardListItem }: Props) {
    * */
   const { boardId, title, content, boardTitleImage } = boardListItem;
   const { likeCount, commentCount, viewCount } = boardListItem;
-  const { createdAt, username, profileImage } = boardListItem;
+  const { createdDate, modifiedDate, username, profileImage } = boardListItem;
+
+  const getFormattedDate = (createdDate: string, modifiedDate: string | null) => {
+    return modifiedDate && modifiedDate !== createdDate
+      ? `${formatDate(modifiedDate)}`
+      : `${formatDate(createdDate)}`;
+  }
 
   /**
    *  TODO: function: navigate 함수
    * */
-  // const navigator = useNavigate();
+  const navigator = useNavigate();
 
   /**
    *  TODO: event handler: 게시물 아이템 클릭 이벤트 처리 함수
    * */
   const onClickHandler = () => {
-    // navigator(boardId);
+    navigator(BOARD_PATH() + '/' + BOARD_DETAIL_PATH(boardId));
   };
 
   /**
@@ -49,7 +58,9 @@ export default function BoardItem({ boardListItem }: Props) {
           </div>
           <div className='board-list-item-write-box'>
             <div className='board-list-item-username'>{username}</div>
-            <div className='board-list-item-write-date'>{createdAt}</div>
+            <div className='board-list-item-write-date'>
+              {getFormattedDate(createdDate, modifiedDate)}
+            </div>
           </div>
         </div>
 

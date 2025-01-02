@@ -6,9 +6,10 @@
   padding: 24px;
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.5);
-  background-position: 50% 50%;
-  background-size: 100% 100%;
+  background-position: center;
+  background-size: cover;
   cursor: pointer;
+  position: relative;
 }
 
 .top3-list-item:hover {

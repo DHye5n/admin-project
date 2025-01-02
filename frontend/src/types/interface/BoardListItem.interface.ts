@@ -6,7 +6,8 @@ export default interface BoardListItem {
   likeCount: number;
   commentCount: number;
   viewCount: number;
-  createdAt: string;
+  createdDate: string;
+  modifiedDate: string;
   username: string;
   profileImage: string | null;
 }
