@@ -113,4 +113,17 @@ public class BoardController {
         ApiResponseDto<GetTop3BoardListResponseDto> responseDto = boardService.getTop3BoardList();
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
+
+    /**
+     *   TODO: 검색 게시물 리스트
+     * */
+    @GetMapping(value = {"/searches/{searchWord}", "/searches/{searchWord}/{preSearchWord}"})
+    public ResponseEntity<ApiResponseDto<GetSearchBoardListResponseDto>> getSearchBoardList(
+            @PathVariable("searchWord") String searchWord,
+            @PathVariable(value = "preSearchWord", required = false) String preSearchWord
+    ) {
+        ApiResponseDto<GetSearchBoardListResponseDto> responseDto = boardService.getSearchBoardList(searchWord, preSearchWord);
+        boardService.saveSearchLog(searchWord, preSearchWord);
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
 }

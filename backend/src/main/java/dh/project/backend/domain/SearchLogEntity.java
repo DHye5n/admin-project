@@ -24,8 +24,7 @@ public class SearchLogEntity {
     private boolean relation;
 
     @Builder
-    public SearchLogEntity(Long searchLogId, String searchWord, String relationWord, boolean relation) {
-        this.searchLogId = searchLogId;
+    public SearchLogEntity(String searchWord, String relationWord, boolean relation) {
         this.searchWord = searchWord;
         this.relationWord = relationWord;
         this.relation = relation;

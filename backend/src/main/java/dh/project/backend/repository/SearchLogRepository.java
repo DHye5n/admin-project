@@ -11,8 +11,21 @@ public interface SearchLogRepository extends JpaRepository<SearchLogEntity, Long
     @Query(value =
             "SELECT s.search_word, COUNT(s.search_word) AS searchCount " +
                     "FROM search_log s " +
+                    "WHERE relation IS FALSE " +
                     "GROUP BY s.search_word " +
-                    "ORDER BY searchCount DESC",
+                    "ORDER BY searchCount DESC " +
+                    "LIMIT 10 ",
             nativeQuery = true)
-    List<String> findPopularSearchWords();
+    List<String> findPopularWords();
+
+    @Query(value =
+            "SELECT s.relation_word, COUNT(s.relation_word) AS relationCount " +
+                    "FROM search_log s " +
+                    "WHERE search_word = ?1 " +
+                    "AND relation_word IS NOT NULL " +
+                    "GROUP BY s.relation_word " +
+                    "ORDER BY relationCount DESC " +
+                    "LIMIT 10 ",
+            nativeQuery = true)
+    List<String> findRelationWords(String searchWord);
 }

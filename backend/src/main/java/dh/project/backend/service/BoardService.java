@@ -31,6 +31,7 @@ public class BoardService {
     private final LikeRepository likeRepository;
     private final AuthService authService;
     private final BoardListViewRepository boardListViewRepository;
+    private final SearchLogRepository searchLogRepository;
 
     /**
      *   TODO: 게시물 작성
@@ -286,6 +287,49 @@ public class BoardService {
         GetTop3BoardListResponseDto responseDto = new GetTop3BoardListResponseDto(boardListItems);
 
         return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
+    }
+
+    /**
+     *   TODO: 검색 게시물 리스트
+     * */
+    @Transactional(readOnly = true)
+    public ApiResponseDto<GetSearchBoardListResponseDto> getSearchBoardList(String searchWord, String preSearchWord) {
+
+        List<BoardListViewEntity> searchBoards =
+                boardListViewRepository.findSearchBoards(searchWord, searchWord);
+
+        List<BoardListItem> boardListItems = BoardListItem.fromEntityList(searchBoards);
+
+        GetSearchBoardListResponseDto responseDto = new GetSearchBoardListResponseDto(boardListItems);
+
+        return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
+    }
+
+    public boolean isRelated(String searchWord, String preSearchWord) {
+
+        if (preSearchWord == null || preSearchWord.isEmpty()) {
+            return false;
+        }
+
+        return searchWord.contains(preSearchWord);
+    }
+
+    @Transactional
+    public void saveSearchLog(String searchWord, String preSearchWord) {
+
+        boolean relation = isRelated(searchWord, preSearchWord);
+
+        if (preSearchWord == null) {
+            preSearchWord = "";
+        }
+
+        SearchLogEntity searchLogEntity = SearchLogEntity.builder()
+                .searchWord(searchWord)
+                .relationWord(preSearchWord)
+                .relation(relation)
+                .build();
+
+        searchLogRepository.save(searchLogEntity);
     }
 
 }
