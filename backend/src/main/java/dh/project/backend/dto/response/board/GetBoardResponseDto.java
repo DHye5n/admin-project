@@ -24,6 +24,8 @@ public class GetBoardResponseDto {
 
     private final String modifiedDate;
 
+    private final int viewCount;
+
     private final String email;
 
     private final String username;
@@ -32,7 +34,7 @@ public class GetBoardResponseDto {
 
     @Builder
     public GetBoardResponseDto(Long boardId, String title, String content, SignInUserResponseDto writer,
-                               List<String> boardImageList, String createdDate, String modifiedDate,
+                               List<String> boardImageList, String createdDate, String modifiedDate, int viewCount,
                                String email, String username, String profileImage) {
         this.boardId = boardId;
         this.title = title;
@@ -40,6 +42,7 @@ public class GetBoardResponseDto {
         this.boardImageList = boardImageList;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
+        this.viewCount = viewCount;
         this.email = email;
         this.username = username;
         this.profileImage = profileImage;
@@ -58,6 +61,7 @@ public class GetBoardResponseDto {
                 .boardImageList(boardImageList)
                 .createdDate(board.getCreatedDate())
                 .modifiedDate(board.getModifiedDate())
+                .viewCount(board.getViewCount())
                 .email(board.getUser() != null ? board.getUser().getEmail() : null)
                 .username(board.getUser() != null ? board.getUser().getUsername() : null)
                 .profileImage(board.getUser() != null ? board.getUser().getProfileImage() : null)

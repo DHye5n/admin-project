@@ -10,6 +10,7 @@ const boardMock: Board = {
   ],
   createdDate: '2024. 12. 21',
   modifiedDate: '2024. 12. 21',
+  viewCount: 1,
   email: 'email@email.com',
   username: '불로배',
   profileImage: 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTOgywO3sIkGy_W9VWNF6v4m9Xv2vnpJQW0Tv_QFt09oXd_7409MVRBEPktoQ9L39vZvtc4KMxKswR_vhXBnD481Q',

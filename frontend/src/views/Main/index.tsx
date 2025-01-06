@@ -2,7 +2,6 @@ import './style.css';
 import Top3Item from 'components/Top3Item';
 import { useEffect, useState } from 'react';
 import { BoardListItem } from 'types/interface';
-import { latestBoardListMock } from 'mocks';
 import BoardItem from 'components/BoardItem';
 import Pagination from 'components/Pagination';
 import { useNavigate } from 'react-router-dom';
@@ -11,9 +10,9 @@ import { getLatestBoardListRequest, getPopularListRequest, getTop3BoardListReque
 import { ApiResponseDto } from 'apis/response';
 import { GetTop3BoardListResponseDTO } from 'apis/response/board';
 import { useCookies } from 'react-cookie';
-import { usePagination } from '../../hooks';
-import { GetLatestBoardListResponseDto } from '../../apis/response/board';
-import { GetPopularListResponseDto } from '../../apis/response/search';
+import { usePagination } from 'hooks';
+import { GetLatestBoardListResponseDto } from 'apis/response/board';
+import { GetPopularListResponseDto } from 'apis/response/search';
 
 /**
  *  TODO: component: Main 컴포넌트

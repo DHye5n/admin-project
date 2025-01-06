@@ -2,8 +2,8 @@ import './style.css';
 import { BoardListItem } from 'types/interface';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
 import { useNavigate } from 'react-router-dom';
-import { BOARD_DETAIL_PATH, BOARD_PATH } from '../../constant';
-import { formatDate } from '../../utils/dateUtils';
+import { BOARD_DETAIL_PATH, BOARD_PATH } from 'constant';
+import { formatDate } from 'utils/dateUtils';
 
 /**
  *  TODO: interface: Board List Item 컴포넌트 Properties

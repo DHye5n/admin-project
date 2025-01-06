@@ -30,6 +30,7 @@ import { DeleteBoardResponseDTO, PutLikeResponseDto } from 'apis/response/board'
 import PostCommentRequestDto from 'apis/request/comment/post-comment.request.dto';
 import PostCommentResponseDto from 'apis/response/comment/post-comment.response.dto';
 import { usePagination } from 'hooks';
+import ImageSlider from 'types/interface/slider.interface';
 
 
 /**
@@ -113,6 +114,7 @@ export default function BoardDetail() {
     const [board, setBoard] = useState<Board | null>(null);
 
     const [isWriter, setWriter] = useState<boolean>(false);
+
 
     /**
      *  TODO: function: 함수
@@ -210,12 +212,18 @@ export default function BoardDetail() {
         <div className='board-detail-top-header'>
           <div className='board-detail-title'>{board.title}</div>
           <div className='board-detail-top-sub-box'>
-            <div className='board-detail-write-info-box'>
-              <div className='board-detail-writer-profile-image' style={{ backgroundImage: `url(${board.profileImage ? board.profileImage : defaultProfileImage})` }}></div>
-              <div className='board-detail-writer-username' onClick={onUsernameClickHandler}>{board.username}</div>
-              <div className='board-detail-info-divider'>{'\|'}</div>
-              <div className='board-detail-write-date'>
+            <div className="board-detail-write-info-box">
+              <div className="board-detail-writer-profile-image"
+                   style={{ backgroundImage: `url(${board.profileImage ? board.profileImage : defaultProfileImage})` }}></div>
+              <div className="board-detail-writer-username" onClick={onUsernameClickHandler}>{board.username}</div>
+              <div className="board-detail-info-divider">{'\|'}</div>
+              <div className="board-detail-write-date">
                 {getFormattedDate(board.createdDate, board.modifiedDate)}
+              </div>
+              <div className="board-detail-info-divider">{'\|'}</div>
+              <div className="board-detail-write-view-count">
+                {'조회수: '}
+                {board.viewCount}
               </div>
             </div>
             {signInUser && isWriter && (
@@ -237,9 +245,17 @@ export default function BoardDetail() {
 
         <div className='board-detail-top-main'>
           <div className='board-detail-main-text'>{board.content}</div>
-          {board.boardImageList.map((image, index) => (
-            <img key={index} className='board-detail-main-image' src={image} />
-          ))}
+          <div className='board-detail-main-image'>
+            <ImageSlider
+              dots={true}
+              infinite={false}
+              speed={500}
+              slidesToShow={1}
+              slidesToScroll={1}
+              arrows={true}
+              images={board.boardImageList}
+            />
+          </div>
         </div>
       </div>
     )

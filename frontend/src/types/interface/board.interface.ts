@@ -5,6 +5,7 @@ export default interface Board {
   boardImageList: string[];
   createdDate: string;
   modifiedDate: string;
+  viewCount: number;
   email: string;
   username: string;
   profileImage: string | null;
