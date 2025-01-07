@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { AUTH_PATH, MAIN_PATH, SEARCH_PATH } from 'constant';
 import { getLatestBoardListRequest, getPopularListRequest, getTop3BoardListRequest } from 'apis';
 import { ApiResponseDto } from 'apis/response';
-import { GetTop3BoardListResponseDTO } from 'apis/response/board';
+import { GetTop3BoardListResponseDto } from 'apis/response/board';
 import { useCookies } from 'react-cookie';
 import { usePagination } from 'hooks';
 import { GetLatestBoardListResponseDto } from 'apis/response/board';
@@ -69,7 +69,7 @@ export default function Main() {
     return true;
   };
 
-  const getTop3BoardListResponse = (responseBody: ApiResponseDto<GetTop3BoardListResponseDTO> | null) => {
+  const getTop3BoardListResponse = (responseBody: ApiResponseDto<GetTop3BoardListResponseDto> | null) => {
     if (!responseBody) return;
 
     const { code } = responseBody;
@@ -78,7 +78,7 @@ export default function Main() {
       return;
     }
 
-    const { top3List } = responseBody.data as GetTop3BoardListResponseDTO;
+    const { top3List } = responseBody.data as GetTop3BoardListResponseDto;
     setTop3List(top3List);
   };
 

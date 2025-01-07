@@ -78,6 +78,25 @@ public class BoardService {
     }
 
     /**
+     *   TODO: 특정 유저 게시물
+     * */
+    @Transactional(readOnly = true)
+    public ApiResponseDto<GetUserBoardListResponseDto> getUserBoardList(Long userId) {
+
+        List<BoardListViewEntity> userBoardList = boardListViewRepository.findUserBoardList(userId);
+
+        if (userBoardList.isEmpty()) {
+            throw new ErrorException(ResponseStatus.NOT_FOUND_BOARD);
+        }
+
+        List<BoardListItem> boardListItems = BoardListItem.fromEntityList(userBoardList);
+
+        GetUserBoardListResponseDto responseDto = new GetUserBoardListResponseDto(boardListItems);
+
+        return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
+    }
+
+    /**
      *   TODO: 게시물 수정
      * */
     @Transactional

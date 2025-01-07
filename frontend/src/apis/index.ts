@@ -10,14 +10,14 @@ import {
   GetLikeListResponseDto,
   GetCommentListResponseDto,
   PutLikeResponseDto,
-  DeleteBoardResponseDTO,
+  DeleteBoardResponseDto,
   PatchBoardResponseDto,
-  GetLatestBoardListResponseDto, GetTop3BoardListResponseDTO,
+  GetLatestBoardListResponseDto, GetTop3BoardListResponseDto, GetSearchBoardListResponseDto,
 } from './response/board';
 import { PatchBoardRequestDTO, PostBoardRequestDto } from './request/board';
 import PostCommentRequestDto from './request/comment/post-comment.request.dto';
 import PostCommentResponseDto from './response/comment/post-comment.response.dto';
-import { GetPopularListResponseDto } from './response/search';
+import { GetPopularListResponseDto, GetRelationListResponseDto } from './response/search';
 
 
 const DOMAIN = 'http://localhost:9994';
@@ -74,7 +74,11 @@ const GET_LATEST_BOARD_LIST_URL = () => `${API_DOMAIN}/boards/latest-lists`;
 
 const GET_TOP3_BOARD_LIST_URL = () => `${API_DOMAIN}/boards/top3-lists`;
 
-const GET_POPULAR_LIST_URL = () => `${API_DOMAIN}/search/populars`;
+const GET_POPULAR_LIST_URL = () => `${API_DOMAIN}/searches/populars`;
+
+const GET_SEARCH_BOARD_LIST_URL = (searchWord: string, preSearchWord: string | null) => `${API_DOMAIN}/boards/searches/${searchWord}${preSearchWord ? '/' + preSearchWord : ''}`;
+
+const GET_RELATION_LIST_URL = (searchWord: string) => `${API_DOMAIN}/searches/${searchWord}/relations`;
 
 const FILE_DOMAIN = `${DOMAIN}/files`;
 
@@ -219,12 +223,12 @@ export const postBoardRequest = async (requestBody: PostBoardRequestDto, accessT
 export const deleteBoardRequest = async (boardId: number | string, accessToken: string) => {
   const result = await axios.delete(DELETE_BOARD_URL(boardId), authorization(accessToken))
     .then(response => {
-      const responseBody: ApiResponseDto<DeleteBoardResponseDTO> = response.data;
+      const responseBody: ApiResponseDto<DeleteBoardResponseDto> = response.data;
       return responseBody;
     })
     .catch(error => {
       if (!error.response) return null;
-      const responseBody: ApiResponseDto<DeleteBoardResponseDTO> = error.response.data;
+      const responseBody: ApiResponseDto<DeleteBoardResponseDto> = error.response.data;
       return responseBody;
     })
   return result;
@@ -365,12 +369,12 @@ export const getLatestBoardListRequest = async (accessToken: string) => {
 export const getTop3BoardListRequest = async (accessToken: string) => {
   const result = await axios.get(GET_TOP3_BOARD_LIST_URL(), authorization(accessToken))
     .then(response => {
-      const responseBody: ApiResponseDto<GetTop3BoardListResponseDTO> = response.data;
+      const responseBody: ApiResponseDto<GetTop3BoardListResponseDto> = response.data;
       return responseBody;
     })
     .catch(error => {
       if (!error.response) return null;
-      const responseBody: ApiResponseDto<GetTop3BoardListResponseDTO> = error.response.data;
+      const responseBody: ApiResponseDto<GetTop3BoardListResponseDto> = error.response.data;
       return responseBody;
     })
   return result;
@@ -385,6 +389,34 @@ export const getPopularListRequest = async (accessToken: string) => {
     .catch(error => {
       if (!error.response) return null;
       const responseBody: ApiResponseDto<GetPopularListResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+};
+
+export const getSearchBoardListRequest = async (searchWord: string, preSearchWord: string | null, accessToken: string) => {
+  const result = await axios.get(GET_SEARCH_BOARD_LIST_URL(searchWord, preSearchWord), authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<GetSearchBoardListResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<GetSearchBoardListResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+};
+
+export const getRelationListRequest = async (searchWord: string, accessToken: string) => {
+  const result = await axios.get(GET_RELATION_LIST_URL(searchWord), authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<GetRelationListResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<GetRelationListResponseDto> = error.response.data;
       return responseBody;
     })
   return result;

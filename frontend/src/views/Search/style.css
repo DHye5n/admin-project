@@ -1,5 +1,4 @@
 #search-wrapper {
-    /*padding: 40px 20px;*/
     display: flex;
     justify-content: center;
     background-color: var(--white);
@@ -12,13 +11,13 @@
     height: 100%;
     width: 100%;
     padding: 40px 20px;
+    gap: 20px;
 }
 
 .search-title-box {
     display: flex;
     padding: 0 24px;
     gap: 8px;
-    margin-bottom: 20px;
 }
 
 .search-title {
@@ -35,20 +34,76 @@
     line-height: 140%;
 }
 
+.search-relation-box {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 24px;
+}
+
+.search-relation-card {
+    display: flex;
+    flex-direction: column;
+    padding: 0 24px;
+    gap: 8px;
+}
+
+.search-relation-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.search-relation-card-title {
+    color: var(--black);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 140%;
+}
+
+.search-relation-card-contents-nothing {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgba(0, 0, 0, 0.4);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 140%;
+}
+
+.search-relation-card-contents {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}
+
 .search-contents-box {
-    display: grid;
-    grid-template-columns: 8fr 4fr;
+    display: flex;
+    flex-direction: column;
     gap: 24px;
     width: 100%;
+    height: 100%;
 }
 
 .search-contents {
-    grid-column: 1 / 2;
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
 .search-contents-nothing {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--black);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 140%;
+    padding-top: 200px;
+}
 
+.search-pagination-box {
+    margin-top: 60px;
+    display: flex;
+    justify-content: center;
 }

@@ -2,6 +2,7 @@ package dh.project.backend.service;
 
 import dh.project.backend.domain.UserEntity;
 import dh.project.backend.dto.ApiResponseDto;
+import dh.project.backend.dto.response.user.GetUserResponseDto;
 import dh.project.backend.dto.response.user.SignInUserResponseDto;
 import dh.project.backend.enums.ResponseStatus;
 import dh.project.backend.exception.ErrorException;
@@ -15,10 +16,9 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final JwtService jwtService;
 
     /**
-     *   TODO: 유저 정보
+     *   TODO: 로그인 유저 정보
      * */
     public ApiResponseDto<SignInUserResponseDto> getSignInUser(PrincipalDetails user) {
 
@@ -28,6 +28,19 @@ public class UserService {
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
 
         SignInUserResponseDto responseDto = SignInUserResponseDto.fromEntity(userEntity);
+
+        return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
+    }
+
+    /**
+     *   TODO: 유저 정보
+     * */
+    public ApiResponseDto<GetUserResponseDto> getUser(String email) {
+
+        UserEntity userEntity = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
+
+        GetUserResponseDto responseDto = GetUserResponseDto.fromEntity(userEntity);
 
         return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
     }

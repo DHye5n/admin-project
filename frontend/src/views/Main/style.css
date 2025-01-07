@@ -4,8 +4,7 @@
     align-items: center;
     background-color: var(--white);
     width: 100%;
-    height: auto;
-    min-height: 40%;
+    height: 40%;
     margin-bottom: 15px;
 }
 

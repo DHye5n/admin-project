@@ -26,7 +26,7 @@ import { useCookies } from 'react-cookie';
 import { formatDate } from 'utils/dateUtils';
 import { ViewCountResponseDto, GetBoardResponseDto } from 'apis/response/board';
 import { GetCommentListResponseDto, GetLikeListResponseDto } from 'apis/response/board';
-import { DeleteBoardResponseDTO, PutLikeResponseDto } from 'apis/response/board';
+import { DeleteBoardResponseDto, PutLikeResponseDto } from 'apis/response/board';
 import PostCommentRequestDto from 'apis/request/comment/post-comment.request.dto';
 import PostCommentResponseDto from 'apis/response/comment/post-comment.response.dto';
 import { usePagination } from 'hooks';
@@ -142,7 +142,7 @@ export default function BoardDetail() {
       setWriter(isWriter);
     };
 
-    const deleteBoardResponse = (responseBody: ApiResponseDto<DeleteBoardResponseDTO> | null) => {
+    const deleteBoardResponse = (responseBody: ApiResponseDto<DeleteBoardResponseDto> | null) => {
       if (!responseBody) return;
 
       const { code } = responseBody;

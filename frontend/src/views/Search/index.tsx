@@ -5,8 +5,13 @@ import { useCookies } from 'react-cookie';
 import { AUTH_PATH, MAIN_PATH, SEARCH_PATH } from 'constant';
 import { BoardListItem } from 'types/interface';
 import { latestBoardListMock } from 'mocks';
-import BoardItem from '../../components/BoardItem';
+import BoardItem from 'components/BoardItem';
 import Pagination from '../../components/Pagination';
+import { usePagination } from '../../hooks';
+import { getRelationListRequest, getSearchBoardListRequest } from '../../apis';
+import { ApiResponseDto } from '../../apis/response';
+import { GetSearchBoardListResponseDto } from '../../apis/response/board';
+import { GetRelationListResponseDto } from '../../apis/response/search';
 
 /**
  *  TODO: component: Search 컴포넌트
@@ -17,6 +22,8 @@ export default function Search() {
    * */
   const { searchWord } = useParams();
 
+  const [preSearchWord, setPreSearchWord] = useState<string | null>(null);
+
   const [cookie, setCookie] = useCookies();
 
   const [searchBoardList, setSearchBoardList] = useState<BoardListItem[]>([]);
@@ -24,6 +31,16 @@ export default function Search() {
   const [count, setCount] = useState<number>(2);
 
   const [relationList, setRelationList] = useState<string[]>([]);
+
+  const {
+    currentPage,
+    setCurrentPage,
+    currentSection,
+    setCurrentSection,
+    viewList,
+    viewPageList,
+    totalSection,
+    setTotalList } = usePagination<BoardListItem>(5);
 
   /**
    *  TODO: event handler: 클릭 이벤트 처리 함수
@@ -76,6 +93,36 @@ export default function Search() {
     return true;
   };
 
+  const getSearchBoardListResponse = (responseBody: ApiResponseDto<GetSearchBoardListResponseDto> | null) => {
+    if (!responseBody) return;
+
+    const { code } = responseBody;
+    if (code !== 'SU') {
+      handleApiError(code);
+      return;
+    }
+
+    if (!searchWord) return;
+
+    const { searchList } = responseBody.data as GetSearchBoardListResponseDto;
+    setTotalList(searchList);
+    setCount(searchList.length);
+    setPreSearchWord(searchWord);
+  }
+
+  const getRelationListResponse = (responseBody: ApiResponseDto<GetRelationListResponseDto> | null) => {
+    if (!responseBody) return;
+
+    const { code } = responseBody;
+    if (code !== 'SU') {
+      handleApiError(code);
+      return;
+    }
+
+    const { relationWordList } = responseBody.data as GetRelationListResponseDto;
+    setRelationList(relationWordList);
+  }
+
   /**
    *  TODO: effect: 마운트 시 실행될 함수
    * */
@@ -83,7 +130,10 @@ export default function Search() {
     const accessToken = cookie.accessToken;
     if (!checkLoginStatus(accessToken)) return;
 
-    setSearchBoardList(latestBoardListMock);
+    if (!searchWord) return;
+
+    getSearchBoardListRequest(searchWord, preSearchWord, accessToken).then(getSearchBoardListResponse);
+    getRelationListRequest(searchWord, accessToken).then(getRelationListResponse);
 
   }, [searchWord]);
 
@@ -95,36 +145,49 @@ export default function Search() {
     <div id='search-wrapper'>
       <div className='search-container'>
         <div className='search-title-box'>
-          <div className='search-title'>
-            <span className='search-emphasis'>{searchWord}</span>
-            {'에 대한 검색 결과입니다.'}
+          <div className="search-title">
+            <span className="search-emphasis">{searchWord}</span>
+            {'에 대한 '}
+            <span className='search-emphasis'>{count}</span>
+            {'건의 검색 결과입니다.'}
           </div>
-          <div className='search-emphasis'>{count}</div>
         </div>
-        <div className='search-contents-box'>
-          {count === 0 ?
-            <div className="search-contents-nothing">{'검색 결과가 없습니다.'}</div> :
-            <div className="search-contents">{searchBoardList.map(boardListItem => <BoardItem
-              boardListItem={boardListItem} />)}</div>
-          }
-          <div className="search-relation-box">
-            <div className="search-relation-card">
-              <div className="search-relation-card-container">
-                <div className="search-relation-card-title"></div>
-                {relationList.length === 0 ?
-                  <div className='search-relation-card-contents-nothing'></div> :
-                  <div className="search-relation-card-contents">
-                    {relationList.map(word => <div className="word-badge"
-                                                   onClick={() => onRelationWordClickHandler(word)}>{word}</div>)}
-                  </div>
-                }
-              </div>
+
+        <div className="search-relation-box">
+          <div className="search-relation-card">
+            <div className="search-relation-card-container">
+              <div className="search-relation-card-title">관련 검색어</div>
+              {relationList.filter(word => word.trim() !== "").length === 0 ?
+                (<div className="search-relation-card-contents-nothing">
+                  {'관련 검색어가 없습니다.'}
+                </div>) :
+                (<div className="search-relation-card-contents">
+                  {relationList.filter(word => word.trim() !== "").map((word, index) => (
+                      <div key={index} className="word-badge" onClick={() => onRelationWordClickHandler(word)}>
+                        {word}
+                      </div>
+                    ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
 
+        <div className='search-contents-box'>
+          {count === 0 ?
+            <div className="search-contents-nothing">{'검색 결과가 없습니다.'}</div> :
+            <div className="search-contents">
+              {viewList.map(boardListItem => <BoardItem boardListItem={boardListItem} />)}
+            </div>
+          }
+        </div>
+
         <div className='search-pagination-box'>
-          {/*<Pagination currentPage={} setCurrentPage={} currentSection={} setCurrentSection={} viewPageList={} totalSection={} />*/}
+          {count !== 0 &&
+            <Pagination currentPage={currentPage} currentSection={currentSection}
+                        setCurrentPage={setCurrentPage} setCurrentSection={setCurrentSection}
+                        viewPageList={viewPageList} totalSection={totalSection} />
+          }
         </div>
       </div>
     </div>
