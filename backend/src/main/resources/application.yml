@@ -43,6 +43,9 @@ spring:
 logging:
   level:
     root: INFO
+    org:
+      springframework:
+        security: DEBUG
 
 jwt:
   secret-key: X2NyYXNoX3NlcnZpY2Vfc3VwZXJfc2VjcmV0X2tldF8=

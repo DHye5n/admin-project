@@ -64,7 +64,7 @@ const VIEW_COUNT_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boa
 
 const GET_LIKE_LIST_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/likes`;
 
-const GET_COMMENT_LIST_URL = (boardId: number | string) => `${API_DOMAIN}/comments/${boardId}/comments`;
+const GET_COMMENT_LIST_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/comments`;
 
 const PUT_LIKE_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/like`
 

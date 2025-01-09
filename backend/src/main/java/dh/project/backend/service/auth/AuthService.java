@@ -52,8 +52,10 @@ public class AuthService {
      * */
     public ApiResponseDto<SignInResponseDto> signIn(SignInRequestDto dto) {
 
-        UserEntity user = userRepository.findByUsername(dto.getUsername())
+        UserEntity user = userRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
+
+        System.out.println("===============================로그인============================");
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new ErrorException(ResponseStatus.SIGN_IN_FAIL);
@@ -120,20 +122,20 @@ public class AuthService {
 
     }
 
-    private Long getCurrentUserId() {
-
+    public UserEntity getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
+            return null;
         }
 
         Object principal = authentication.getPrincipal();
-        if (!(principal instanceof PrincipalDetails)) {
-            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
+
+        if (principal instanceof PrincipalDetails) {
+            return ((PrincipalDetails) principal).getUser();
+        } else if (principal instanceof UserEntity){
+            return (UserEntity) principal;
         }
 
-        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
-
-        return userDetails.getUserId();
+        return null;
     }
 }

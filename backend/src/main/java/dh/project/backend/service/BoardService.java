@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final UserRepository userRepository;
     private final ImageRepository imageRepository;
     private final LikeRepository likeRepository;
     private final AuthService authService;
@@ -37,7 +36,12 @@ public class BoardService {
      *   TODO: 게시물 작성
      * */
     @Transactional
-    public ApiResponseDto<PostBoardResponseDto> createBoard(PostBoardRequestDto dto, Long userId) {
+    public ApiResponseDto<PostBoardResponseDto> createBoard(PostBoardRequestDto dto) {
+
+        UserEntity currentUser = authService.getCurrentUser();
+        if (currentUser == null) {
+            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
+        }
 
         if ((dto.getTitle() == null || dto.getTitle().trim().isEmpty()) ||
             (dto.getContent() == null || dto.getContent().trim().isEmpty()) ||
@@ -45,10 +49,7 @@ public class BoardService {
             throw new ErrorException(ResponseStatus.NOT_EMPTY);
         }
 
-        UserEntity userEntity = userRepository.findById(userId)
-                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
-
-        BoardEntity boardEntity = dto.toEntity(userEntity);
+        BoardEntity boardEntity = dto.toEntity(currentUser.getUserId());
 
         BoardEntity savedBoard = boardRepository.save(boardEntity);
 
@@ -56,7 +57,11 @@ public class BoardService {
 
         imageRepository.saveAll(imageEntities);
 
-        PostBoardResponseDto responseDto = PostBoardResponseDto.fromEntity(savedBoard);
+        BoardEntity result = boardRepository.findBoardWithUserAndImages(savedBoard.getBoardId())
+                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
+
+
+        PostBoardResponseDto responseDto = PostBoardResponseDto.fromEntity(result);
 
         return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
     }
@@ -67,12 +72,10 @@ public class BoardService {
     @Transactional(readOnly = true)
     public ApiResponseDto<GetBoardResponseDto> getBoard(Long boardId) {
 
-        BoardEntity boardEntity = boardRepository.findById(boardId)
+        BoardEntity boardEntity = boardRepository.findByIdWithImages(boardId)
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
 
-        List<ImageEntity> imageEntities = imageRepository.findByBoard_BoardId(boardId);
-
-        GetBoardResponseDto responseDto = GetBoardResponseDto.fromEntity(boardEntity, imageEntities);
+        GetBoardResponseDto responseDto = GetBoardResponseDto.fromEntity(boardEntity, boardEntity.getImages());
 
         return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
     }
@@ -100,27 +103,25 @@ public class BoardService {
      *   TODO: 게시물 수정
      * */
     @Transactional
-    public ApiResponseDto<PatchBoardResponseDto> patchBoard(PatchBoardRequestDto dto, Long boardId, Long userId) {
+    public ApiResponseDto<PatchBoardResponseDto> patchBoard(PatchBoardRequestDto dto, Long boardId) {
 
-        try {
-            // 1. 게시물 조회
+            UserEntity currentUser = authService.getCurrentUser();
+            if (currentUser == null) {
+                throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
+            }
+
             BoardEntity boardEntity = boardRepository.findByIdWithImages(boardId)
                     .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
 
-            // 2. 게시물 작성자 확인
-            authService.checkUserAuthorization(boardEntity.getUser().getUserId(), userId);
+            authService.checkUserAuthorization(boardEntity.getUser().getUserId(), currentUser.getUserId());
 
-            // 3. 게시물 내용 수정
             boardEntity.patchBoard(dto);
 
-            // 4. 이미지 엔티티 생성
             List<ImageEntity> newImageEntities = updateImage(dto, boardEntity);
             if (newImageEntities.isEmpty() && boardEntity.getImages().isEmpty()) {
                 throw new ErrorException(ResponseStatus.NOT_EMPTY);
             }
 
-
-            // 5. 기존 이미지 삭제 및 새 이미지 저장
             List<ImageEntity> currentImages = boardEntity.getImages();
             List<ImageEntity> imagesToRemove = new ArrayList<>();
             List<ImageEntity> imagesToSave = new ArrayList<>(newImageEntities);
@@ -131,13 +132,11 @@ public class BoardService {
                 }
             }
 
-            // 삭제된 이미지는 DB에서 삭제
             if (!imagesToRemove.isEmpty()) {
                 imageRepository.deleteAll(imagesToRemove);
                 boardEntity.getImages().removeAll(imagesToRemove);
             }
 
-            // 새 이미지는 DB에 저장
             if (!imagesToSave.isEmpty()) {
                 imageRepository.saveAll(imagesToSave);
             }
@@ -145,30 +144,29 @@ public class BoardService {
             boardEntity = boardRepository.findById(boardId)
                     .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
 
-            // 6. 수정된 게시물 저장
             boardRepository.save(boardEntity);
 
-            // 7. 응답 DTO 생성
             PatchBoardResponseDto responseDto = PatchBoardResponseDto.fromEntity(boardEntity);
 
-            // 8. 응답 반환
             return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ErrorException(ResponseStatus.DATABASE_ERROR);
-        }
     }
 
     /**
      *   TODO: 게시물 삭제
      * */
     @Transactional
-    public ApiResponseDto<DeleteBoardResponseDto> deleteBoard(Long boardId, Long userId) {
+    public ApiResponseDto<DeleteBoardResponseDto> deleteBoard(Long boardId) {
+
+        UserEntity currentUser = authService.getCurrentUser();
+        if (currentUser == null) {
+            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL); // 또는 다른 적절한 예외 처리
+        }
 
         BoardEntity boardEntity = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
 
-        authService.checkUserAuthorization(boardEntity.getUser().getUserId(), userId);
+
+        authService.checkUserAuthorization(boardEntity.getUser().getUserId(), currentUser.getUserId());
 
         boardRepository.delete(boardEntity);
 
@@ -226,17 +224,21 @@ public class BoardService {
      *   TODO: 좋아요
      * */
     @Transactional
-    public ApiResponseDto<PutLikeResponseDto> toggleLike(Long boardId, Long userId) {
+    public ApiResponseDto<PutLikeResponseDto> toggleLike(Long boardId) {
 
-        BoardEntity boardEntity = boardRepository.findById(boardId)
-                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
+        UserEntity currentUser = authService.getCurrentUser();
+        if (currentUser == null) {
+            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
+        }
 
-        UserEntity userEntity = userRepository.findById(userId)
-                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
+        Optional<BoardEntity> boardOptional = boardRepository.findById(boardId);
+        if (!boardOptional.isPresent()) {
+            throw new ErrorException(ResponseStatus.NOT_FOUND_BOARD);
+        }
+        BoardEntity boardEntity = boardOptional.get();
 
-        Optional<LikeEntity> likeEntity = likeRepository.findByBoard_BoardIdAndUser_UserId(boardId, userId);
-
-        boolean isLiking;
+        Optional<LikeEntity> likeEntity = likeRepository.findByBoard_BoardIdAndUser_UserId(boardId, currentUser.getUserId());
+        boolean isLiking = likeEntity.isPresent();
 
         if (likeEntity.isPresent()) {
             likeRepository.delete(likeEntity.get());
@@ -247,15 +249,13 @@ public class BoardService {
             isLiking = false;
         } else {
             LikeEntity newLike = LikeEntity.builder()
-                    .user(userEntity)
+                    .user(currentUser)
                     .board(boardEntity)
                     .build();
             likeRepository.save(newLike);
             likeRepository.increaseLikeCount(boardId);
             isLiking = true;
         }
-
-        boardRepository.save(boardEntity);
 
         PutLikeResponseDto responseDto = PutLikeResponseDto.fromEntity(boardEntity, isLiking);
 
@@ -286,7 +286,11 @@ public class BoardService {
 
         List<BoardListViewEntity> latestBoards = boardListViewRepository.findLatestBoards();
 
+        System.out.println("===============================getLatestBoardList(latestBoards)============================");
+
         List<BoardListItem> boardListItems = BoardListItem.fromEntityList(latestBoards);
+
+        System.out.println("===============================getLatestBoardList(boardListItems)============================");
 
         GetLatestBoardListResponseDto responseDto = new GetLatestBoardListResponseDto(boardListItems);
 
@@ -301,7 +305,11 @@ public class BoardService {
 
         List<BoardListViewEntity> top3Boards = boardListViewRepository.findTop3Boards();
 
+        System.out.println("===============================getTop3BoardList(top3Boards)============================");
+
         List<BoardListItem> boardListItems = BoardListItem.fromEntityList(top3Boards);
+
+        System.out.println("===============================getTop3BoardList(boardListItems)============================");
 
         GetTop3BoardListResponseDto responseDto = new GetTop3BoardListResponseDto(boardListItems);
 

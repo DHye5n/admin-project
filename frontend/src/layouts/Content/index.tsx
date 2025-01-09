@@ -5,7 +5,7 @@ import React from 'react';
 import BoardDetail from 'views/Board/Detail';
 import BoardUpdate from 'views/Board/Update';
 import Main from 'views/Main';
-import Search from '../../views/Search';
+import Search from 'views/Search';
 
 export default function Content() {
   /**

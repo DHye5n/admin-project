@@ -17,6 +17,10 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
     @Query("SELECT b FROM board b JOIN FETCH b.images WHERE b.boardId = :boardId")
     Optional<BoardEntity> findByIdWithImages(@Param("boardId") Long boardId);
 
-//    List<BoardListViewEntity> findByUserId(Long userId);
+    @Query("SELECT b FROM board b " +
+            "JOIN FETCH b.user u " +
+            "LEFT JOIN FETCH b.images i " +
+            "WHERE b.boardId = :boardId")
+    Optional<BoardEntity> findBoardWithUserAndImages(@Param("boardId") Long boardId);
 
 }

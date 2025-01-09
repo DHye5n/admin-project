@@ -12,7 +12,7 @@ const top3BoardListMock: BoardListItem[] = [
     createdDate: '2024-11-23',
     modifiedDate: '2024-11-23',
     username: '불로배',
-    profileImage: null,
+    profileImage: null
   },
   {
     boardId: 1,
@@ -38,7 +38,7 @@ const top3BoardListMock: BoardListItem[] = [
     createdDate: '2024-11-23',
     modifiedDate: '2024-11-23',
     username: '불로배',
-    profileImage: null,
+    profileImage: null
   },
 ];
 

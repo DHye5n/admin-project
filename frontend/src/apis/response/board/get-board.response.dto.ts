@@ -7,6 +7,7 @@ export default interface GetBoardResponseDto extends ApiResponseDto {
   boardImageList: string[];
   createdDate: string;
   modifiedDate: string;
+  deletedDate: string;
   viewCount: number;
   email: string;
   username: string;

@@ -4,12 +4,11 @@ import dh.project.backend.dto.ApiResponseDto;
 import dh.project.backend.dto.request.board.PatchBoardRequestDto;
 import dh.project.backend.dto.request.board.PostBoardRequestDto;
 import dh.project.backend.dto.response.board.*;
-import dh.project.backend.repository.BoardRepository;
+import dh.project.backend.dto.response.comment.GetCommentListResponseDto;
 import dh.project.backend.service.BoardService;
-import dh.project.backend.service.principal.PrincipalDetails;
+import dh.project.backend.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,17 +19,14 @@ import javax.validation.Valid;
 public class BoardController {
 
     private final BoardService boardService;
-    private final BoardRepository boardRepository;
+    private final CommentService commentService;
 
     /**
      *   TODO: 게시물 작성
      * */
     @PostMapping
-    public ResponseEntity<ApiResponseDto<PostBoardResponseDto>> createBoard(
-            @Valid @RequestBody PostBoardRequestDto dto,
-            @AuthenticationPrincipal PrincipalDetails user
-            ) {
-        ApiResponseDto<PostBoardResponseDto> responseDto = boardService.createBoard(dto, user.getUserId());
+    public ResponseEntity<ApiResponseDto<PostBoardResponseDto>> createBoard(@Valid @RequestBody PostBoardRequestDto dto) {
+        ApiResponseDto<PostBoardResponseDto> responseDto = boardService.createBoard(dto);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
@@ -58,9 +54,8 @@ public class BoardController {
     @PatchMapping("/{boardId}")
     public ResponseEntity<ApiResponseDto<PatchBoardResponseDto>> patchBoard(
             @Valid @RequestBody PatchBoardRequestDto dto,
-            @PathVariable("boardId") Long boardId,
-            @AuthenticationPrincipal PrincipalDetails user) {
-        ApiResponseDto<PatchBoardResponseDto> responseDto = boardService.patchBoard(dto, boardId, user.getUserId());
+            @PathVariable("boardId") Long boardId) {
+        ApiResponseDto<PatchBoardResponseDto> responseDto = boardService.patchBoard(dto, boardId);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
@@ -69,9 +64,8 @@ public class BoardController {
      * */
     @DeleteMapping("/{boardId}")
     public ResponseEntity<ApiResponseDto<DeleteBoardResponseDto>> deleteBoard(
-            @PathVariable("boardId") Long boardId,
-            @AuthenticationPrincipal PrincipalDetails user) {
-        ApiResponseDto<DeleteBoardResponseDto> responseDto = boardService.deleteBoard(boardId, user.getUserId());
+            @PathVariable("boardId") Long boardId) {
+        ApiResponseDto<DeleteBoardResponseDto> responseDto = boardService.deleteBoard(boardId);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
@@ -89,10 +83,9 @@ public class BoardController {
      * */
     @PutMapping("/{boardId}/like")
     public ResponseEntity<ApiResponseDto<PutLikeResponseDto>> toggleLike(
-            @PathVariable("boardId") Long boardId,
-            @AuthenticationPrincipal PrincipalDetails user
+            @PathVariable("boardId") Long boardId
     ) {
-        ApiResponseDto<PutLikeResponseDto> responseDto = boardService.toggleLike(boardId, user.getUserId());
+        ApiResponseDto<PutLikeResponseDto> responseDto = boardService.toggleLike(boardId);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
@@ -102,6 +95,15 @@ public class BoardController {
     @GetMapping("/{boardId}/likes")
     public ResponseEntity<ApiResponseDto<GetLikeListResponseDto>> getLikeList(@PathVariable("boardId") Long boardId) {
         ApiResponseDto<GetLikeListResponseDto> responseDto = boardService.getLikeList(boardId);
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
+    /**
+     *   TODO: 댓글 리스트
+     * */
+    @GetMapping("/{boardId}/comments")
+    public ResponseEntity<ApiResponseDto<GetCommentListResponseDto>> getCommentList(@PathVariable("boardId") Long boardId) {
+        ApiResponseDto<GetCommentListResponseDto> responseDto = commentService.getCommentList(boardId);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 

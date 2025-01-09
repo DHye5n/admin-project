@@ -6,10 +6,12 @@ import lombok.Getter;
 
 @Getter
 public class DeleteBoardResponseDto {
+
     private final Long boardId;
 
+
     @Builder
-    public DeleteBoardResponseDto(Long boardId) {
+    public DeleteBoardResponseDto(Long boardId, boolean deleted) {
         this.boardId = boardId;
     }
 

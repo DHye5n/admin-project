@@ -64,8 +64,10 @@ public class UserEntity extends BaseTime {
     private List<BoardEntity> boards = new ArrayList<>();
 
     @Builder
-    public UserEntity(String email, String password, String username, String phone,
-                      String zonecode, String address, String addressDetail, boolean agreedPersonal, Role role) {
+    public UserEntity(Long userId, String email, String password, String username, String phone,
+                      String zonecode, String address, String addressDetail, String profileImage,
+                      boolean agreedPersonal, Role role) {
+        this.userId = userId;
         this.email = email;
         this.password = password;
         this.username = username;
@@ -73,8 +75,16 @@ public class UserEntity extends BaseTime {
         this.zonecode = zonecode;
         this.address = address;
         this.addressDetail = addressDetail;
+        this.profileImage = profileImage;
         this.agreedPersonal = agreedPersonal;
         this.role = role != null ? role : Role.USER;
     }
 
+    public void updateUsername(String username) {
+        this.username = username;
+    }
+
+    public void updateProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
 }

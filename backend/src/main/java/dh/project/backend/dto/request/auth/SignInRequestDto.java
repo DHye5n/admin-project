@@ -13,20 +13,20 @@ import javax.validation.constraints.NotBlank;
 public class SignInRequestDto {
 
     @NotBlank
-    private String username;
+    private String email;
 
     @NotBlank
     private String password;
 
     @Builder
-    public SignInRequestDto(String username, String password) {
-        this.username = username;
+    public SignInRequestDto(String email, String password) {
+        this.email = email;
         this.password = password;
     }
 
     public UserEntity toEntity() {
         return UserEntity.builder()
-                .username(username)
+                .email(email)
                 .password(password)
                 .build();
     }

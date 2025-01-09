@@ -33,19 +33,22 @@ public class CommentService {
      *   TODO: 댓글 작성
      * */
     @Transactional
-    public ApiResponseDto<PostCommentResponseDto> createComment(PostCommentRequestDto requestDto, Long boardId, Long userId) {
+    public ApiResponseDto<PostCommentResponseDto> createComment(PostCommentRequestDto requestDto, Long boardId) {
+
+        UserEntity currentUser = authService.getCurrentUser();
+        if (currentUser == null) {
+            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
+        }
 
         BoardEntity boardEntity = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
 
-        UserEntity userEntity = userRepository.findById(userId)
-                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
 
         if ((requestDto.getComment() == null || requestDto.getComment().trim().isEmpty())) {
             throw new ErrorException(ResponseStatus.NOT_EMPTY);
         }
 
-        CommentEntity commentEntity = requestDto.toEntity(userEntity, boardEntity);
+        CommentEntity commentEntity = requestDto.toEntity(currentUser, boardEntity);
 
         CommentEntity savedComment = commentRepository.save(commentEntity);
 
@@ -63,6 +66,7 @@ public class CommentService {
     public ApiResponseDto<GetCommentListResponseDto> getCommentList(Long boardId) {
 
         BoardEntity boardEntity = boardRepository.findById(boardId)
+                .filter(board -> board.getDeletedDate() == null)
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
 
         List<CommentEntity> commentEntities = commentRepository.findCommentsWithUserByBoardId(boardId);

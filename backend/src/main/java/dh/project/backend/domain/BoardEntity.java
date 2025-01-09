@@ -36,6 +36,7 @@ public class BoardEntity extends BaseTime {
 
     private int viewCount = 0;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
@@ -45,6 +46,9 @@ public class BoardEntity extends BaseTime {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ImageEntity> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<LikeEntity> likes = new ArrayList<>();
 
     @Builder
     public BoardEntity(String title, String content, int likeCount, int commentCount, int viewCount, UserEntity user) {

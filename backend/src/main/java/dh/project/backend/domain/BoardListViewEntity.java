@@ -9,8 +9,10 @@ import org.hibernate.annotations.Immutable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Immutable
+@Table(name = "board_list_view")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity(name = "board_list_view")
@@ -38,6 +40,7 @@ public class BoardListViewEntity {
     private String username;
 
     private String profileImage;
+
 
     @Builder
     public BoardListViewEntity(Long boardId, String title, String content, String titleImage, int likeCount,

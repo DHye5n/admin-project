@@ -41,6 +41,9 @@ public enum ResponseStatus {
 
     VALIDATION_FAILED(422,"VF", "Validation Failed."),
 
+    // 410
+    DELETED_BOARD(410, "DB", "Deleted Board."),
+
     // SERVER ERROR: 500
     FILE_UPLOAD_FAIL(500, "FF","File upload failed"),
     FILE_READ_FAIL(500, "FRF", "File read failed."),

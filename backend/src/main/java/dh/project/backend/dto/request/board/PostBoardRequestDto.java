@@ -31,11 +31,15 @@ public class PostBoardRequestDto {
         this.boardImageList = boardImageList;
     }
 
-    public BoardEntity toEntity(UserEntity user) {
+    public BoardEntity toEntity(Long userId) {
         return BoardEntity.builder()
                 .title(title)
                 .content(content)
-                .user(user)
+                .user(
+                        UserEntity.builder()
+                                .userId(userId)
+                                .build()
+                )
                 .build();
     }
 }

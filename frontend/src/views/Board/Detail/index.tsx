@@ -1,6 +1,6 @@
 import './style.css';
 import LikeItem from 'components/LikeItem';
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { LikeListItem } from 'types/interface';
 import { CommentListItem } from 'types/interface';
 import CommentItem from 'components/CommentItem';
@@ -48,12 +48,24 @@ export default function BoardDetail() {
 
   const [effectFlag, setEffectFlag] = useState(true);
 
+  const [isAlertShown, setIsAlertShown] = useState<boolean>(false);
+
+  const alertTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   /**
    *  TODO: function: 함수
    * */
   const navigator = useNavigate();
 
-  const handleApiError = (code: string) => {
+  const handleApiError = useCallback((code: string) => {
+    if (isAlertShown) return; // alert가 이미 표시 중이면 추가 실행 방지
+    setIsAlertShown(true);
+
+    // alert 재실행 방지를 위한 3초 제한
+    if (alertTimeoutRef.current) clearTimeout(alertTimeoutRef.current);
+    alertTimeoutRef.current = setTimeout(() => setIsAlertShown(false), 3000);
+
+    // 에러 처리
     switch (code) {
       case 'NFB':
         alert('존재하지 않는 게시물입니다.');
@@ -82,7 +94,7 @@ export default function BoardDetail() {
       default:
         navigator(MAIN_PATH());
     }
-  };
+  }, [isAlertShown, navigator]);
 
   const checkLoginStatus = (accessToken: string | undefined) => {
     if (!accessToken) {
@@ -125,13 +137,14 @@ export default function BoardDetail() {
         return;
       }
 
-      const { code } = responseBody;
+      const { code, data } = responseBody;
       if (code !== 'SU') {
         handleApiError(code);
         return;
       }
 
       const board: Board = { ...responseBody.data as GetBoardResponseDto };
+
       setBoard(board);
 
       if (!signInUser) {
@@ -150,6 +163,10 @@ export default function BoardDetail() {
         handleApiError(code);
         return;
       }
+
+      alert('게시물이 삭제되었습니다.');
+      setBoard(null);
+      navigator(MAIN_PATH());
 
     };
 
@@ -192,6 +209,8 @@ export default function BoardDetail() {
      *  TODO: effect: 마운트 시 실행할 함수
      * */
     useEffect(() => {
+      console.log('boardId:', boardId);
+
       const accessToken = cookie.accessToken;
       if (!checkLoginStatus(accessToken)) return;
 
