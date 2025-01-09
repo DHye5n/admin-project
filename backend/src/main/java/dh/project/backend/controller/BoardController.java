@@ -4,11 +4,12 @@ import dh.project.backend.dto.ApiResponseDto;
 import dh.project.backend.dto.request.board.PatchBoardRequestDto;
 import dh.project.backend.dto.request.board.PostBoardRequestDto;
 import dh.project.backend.dto.response.board.*;
-import dh.project.backend.dto.response.comment.GetCommentListResponseDto;
 import dh.project.backend.service.BoardService;
 import dh.project.backend.service.CommentService;
+import dh.project.backend.service.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,8 +26,10 @@ public class BoardController {
      *   TODO: 게시물 작성
      * */
     @PostMapping
-    public ResponseEntity<ApiResponseDto<PostBoardResponseDto>> createBoard(@Valid @RequestBody PostBoardRequestDto dto) {
-        ApiResponseDto<PostBoardResponseDto> responseDto = boardService.createBoard(dto);
+    public ResponseEntity<ApiResponseDto<PostBoardResponseDto>> createBoard(
+            @Valid @RequestBody PostBoardRequestDto dto,
+            @AuthenticationPrincipal PrincipalDetails user) {
+        ApiResponseDto<PostBoardResponseDto> responseDto = boardService.createBoard(dto, user);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
@@ -54,8 +57,9 @@ public class BoardController {
     @PatchMapping("/{boardId}")
     public ResponseEntity<ApiResponseDto<PatchBoardResponseDto>> patchBoard(
             @Valid @RequestBody PatchBoardRequestDto dto,
-            @PathVariable("boardId") Long boardId) {
-        ApiResponseDto<PatchBoardResponseDto> responseDto = boardService.patchBoard(dto, boardId);
+            @PathVariable("boardId") Long boardId,
+            @AuthenticationPrincipal PrincipalDetails user) {
+        ApiResponseDto<PatchBoardResponseDto> responseDto = boardService.patchBoard(dto, boardId, user);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
@@ -64,8 +68,9 @@ public class BoardController {
      * */
     @DeleteMapping("/{boardId}")
     public ResponseEntity<ApiResponseDto<DeleteBoardResponseDto>> deleteBoard(
-            @PathVariable("boardId") Long boardId) {
-        ApiResponseDto<DeleteBoardResponseDto> responseDto = boardService.deleteBoard(boardId);
+            @PathVariable("boardId") Long boardId,
+            @AuthenticationPrincipal PrincipalDetails user) {
+        ApiResponseDto<DeleteBoardResponseDto> responseDto = boardService.deleteBoard(boardId, user);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
@@ -83,9 +88,10 @@ public class BoardController {
      * */
     @PutMapping("/{boardId}/like")
     public ResponseEntity<ApiResponseDto<PutLikeResponseDto>> toggleLike(
-            @PathVariable("boardId") Long boardId
+            @PathVariable("boardId") Long boardId,
+            @AuthenticationPrincipal PrincipalDetails user
     ) {
-        ApiResponseDto<PutLikeResponseDto> responseDto = boardService.toggleLike(boardId);
+        ApiResponseDto<PutLikeResponseDto> responseDto = boardService.toggleLike(boardId, user);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
@@ -99,18 +105,9 @@ public class BoardController {
     }
 
     /**
-     *   TODO: 댓글 리스트
-     * */
-    @GetMapping("/{boardId}/comments")
-    public ResponseEntity<ApiResponseDto<GetCommentListResponseDto>> getCommentList(@PathVariable("boardId") Long boardId) {
-        ApiResponseDto<GetCommentListResponseDto> responseDto = commentService.getCommentList(boardId);
-        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
-    }
-
-    /**
      *   TODO: 최신 게시물 리스트
      * */
-    @GetMapping("/latest-lists")
+    @GetMapping("/latest-list")
     public ResponseEntity<ApiResponseDto<GetLatestBoardListResponseDto>> getLatestBoardList() {
         ApiResponseDto<GetLatestBoardListResponseDto> responseDto = boardService.getLatestBoardList();
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
@@ -119,7 +116,7 @@ public class BoardController {
     /**
      *   TODO: Top3 게시물 리스트
      * */
-    @GetMapping("/top3-lists")
+    @GetMapping("/top3-list")
     public ResponseEntity<ApiResponseDto<GetTop3BoardListResponseDto>> getTop3BoardList() {
         ApiResponseDto<GetTop3BoardListResponseDto> responseDto = boardService.getTop3BoardList();
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);

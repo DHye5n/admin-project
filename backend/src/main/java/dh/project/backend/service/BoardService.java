@@ -10,8 +10,8 @@ import dh.project.backend.enums.ResponseStatus;
 import dh.project.backend.exception.ErrorException;
 import dh.project.backend.repository.*;
 import dh.project.backend.service.auth.AuthService;
+import dh.project.backend.service.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class BoardService {
@@ -36,10 +35,9 @@ public class BoardService {
      *   TODO: 게시물 작성
      * */
     @Transactional
-    public ApiResponseDto<PostBoardResponseDto> createBoard(PostBoardRequestDto dto) {
+    public ApiResponseDto<PostBoardResponseDto> createBoard(PostBoardRequestDto dto, PrincipalDetails user) {
 
-        UserEntity currentUser = authService.getCurrentUser();
-        if (currentUser == null) {
+        if (user == null) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
@@ -49,7 +47,7 @@ public class BoardService {
             throw new ErrorException(ResponseStatus.NOT_EMPTY);
         }
 
-        BoardEntity boardEntity = dto.toEntity(currentUser.getUserId());
+        BoardEntity boardEntity = dto.toEntity(user.getUserId());
 
         BoardEntity savedBoard = boardRepository.save(boardEntity);
 
@@ -103,17 +101,17 @@ public class BoardService {
      *   TODO: 게시물 수정
      * */
     @Transactional
-    public ApiResponseDto<PatchBoardResponseDto> patchBoard(PatchBoardRequestDto dto, Long boardId) {
+    public ApiResponseDto<PatchBoardResponseDto> patchBoard(
+            PatchBoardRequestDto dto, Long boardId, PrincipalDetails user) {
 
-            UserEntity currentUser = authService.getCurrentUser();
-            if (currentUser == null) {
+            if (user == null) {
                 throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
             }
 
             BoardEntity boardEntity = boardRepository.findByIdWithImages(boardId)
                     .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
 
-            authService.checkUserAuthorization(boardEntity.getUser().getUserId(), currentUser.getUserId());
+            authService.checkUserAuthorization(boardEntity.getUser().getUserId(), user);
 
             boardEntity.patchBoard(dto);
 
@@ -155,18 +153,17 @@ public class BoardService {
      *   TODO: 게시물 삭제
      * */
     @Transactional
-    public ApiResponseDto<DeleteBoardResponseDto> deleteBoard(Long boardId) {
+    public ApiResponseDto<DeleteBoardResponseDto> deleteBoard(Long boardId, PrincipalDetails user) {
 
-        UserEntity currentUser = authService.getCurrentUser();
-        if (currentUser == null) {
-            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL); // 또는 다른 적절한 예외 처리
+        if (user == null) {
+            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
         BoardEntity boardEntity = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
 
 
-        authService.checkUserAuthorization(boardEntity.getUser().getUserId(), currentUser.getUserId());
+        authService.checkUserAuthorization(boardEntity.getUser().getUserId(), user);
 
         boardRepository.delete(boardEntity);
 
@@ -224,10 +221,9 @@ public class BoardService {
      *   TODO: 좋아요
      * */
     @Transactional
-    public ApiResponseDto<PutLikeResponseDto> toggleLike(Long boardId) {
+    public ApiResponseDto<PutLikeResponseDto> toggleLike(Long boardId, PrincipalDetails user) {
 
-        UserEntity currentUser = authService.getCurrentUser();
-        if (currentUser == null) {
+        if (user == null) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
@@ -237,7 +233,7 @@ public class BoardService {
         }
         BoardEntity boardEntity = boardOptional.get();
 
-        Optional<LikeEntity> likeEntity = likeRepository.findByBoard_BoardIdAndUser_UserId(boardId, currentUser.getUserId());
+        Optional<LikeEntity> likeEntity = likeRepository.findByBoard_BoardIdAndUser_UserId(boardId, user.getUserId());
         boolean isLiking = likeEntity.isPresent();
 
         if (likeEntity.isPresent()) {
@@ -249,7 +245,7 @@ public class BoardService {
             isLiking = false;
         } else {
             LikeEntity newLike = LikeEntity.builder()
-                    .user(currentUser)
+                    .user(user.getUser())
                     .board(boardEntity)
                     .build();
             likeRepository.save(newLike);
@@ -286,11 +282,7 @@ public class BoardService {
 
         List<BoardListViewEntity> latestBoards = boardListViewRepository.findLatestBoards();
 
-        System.out.println("===============================getLatestBoardList(latestBoards)============================");
-
         List<BoardListItem> boardListItems = BoardListItem.fromEntityList(latestBoards);
-
-        System.out.println("===============================getLatestBoardList(boardListItems)============================");
 
         GetLatestBoardListResponseDto responseDto = new GetLatestBoardListResponseDto(boardListItems);
 
@@ -305,11 +297,7 @@ public class BoardService {
 
         List<BoardListViewEntity> top3Boards = boardListViewRepository.findTop3Boards();
 
-        System.out.println("===============================getTop3BoardList(top3Boards)============================");
-
         List<BoardListItem> boardListItems = BoardListItem.fromEntityList(top3Boards);
-
-        System.out.println("===============================getTop3BoardList(boardListItems)============================");
 
         GetTop3BoardListResponseDto responseDto = new GetTop3BoardListResponseDto(boardListItems);
 

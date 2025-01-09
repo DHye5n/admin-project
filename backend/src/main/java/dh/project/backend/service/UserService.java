@@ -9,7 +9,7 @@ import dh.project.backend.dto.response.user.SignInUserResponseDto;
 import dh.project.backend.enums.ResponseStatus;
 import dh.project.backend.exception.ErrorException;
 import dh.project.backend.repository.UserRepository;
-import dh.project.backend.service.auth.AuthService;
+import dh.project.backend.service.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,20 +19,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final AuthService authService;
 
     /**
      *   TODO: 로그인 유저 정보
      * */
-    public ApiResponseDto<SignInUserResponseDto> getSignInUser() {
+    public ApiResponseDto<SignInUserResponseDto> getSignInUser(PrincipalDetails user) {
 
-        UserEntity currentUser = authService.getCurrentUser();
-        if (currentUser == null) {
-            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL); // 또는 다른 적절한 예외 처리
+        if (user == null) {
+            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
-
-        SignInUserResponseDto responseDto = SignInUserResponseDto.fromEntity(currentUser);
+        SignInUserResponseDto responseDto = SignInUserResponseDto.fromEntity(user.getUser());
 
         return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
     }
@@ -54,16 +51,18 @@ public class UserService {
      *   TODO: 프로필 수정
      * */
     @Transactional
-    public ApiResponseDto<PatchUserResponseDto> patchProfile(PatchUserRequestDto dto, Long userId) {
+    public ApiResponseDto<PatchUserResponseDto> patchProfile(
+            PatchUserRequestDto dto, Long userId, PrincipalDetails user) {
+
+        if (user == null) {
+            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
+        }
+
+        if (!userId.equals(user.getUserId())) {
+            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
+        }
 
         try {
-
-            UserEntity currentUser = authService.getCurrentUser();
-            if (currentUser == null) {
-                throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL); // 권한 없는 사용자
-            }
-
-            authService.checkUserAuthorization(userId, currentUser.getUserId());
 
             UserEntity userEntity = userRepository.findById(userId)
                     .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));

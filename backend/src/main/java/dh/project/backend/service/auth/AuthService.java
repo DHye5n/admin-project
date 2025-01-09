@@ -13,8 +13,6 @@ import dh.project.backend.repository.UserRepository;
 import dh.project.backend.service.JwtService;
 import dh.project.backend.service.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,8 +52,6 @@ public class AuthService {
 
         UserEntity user = userRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
-
-        System.out.println("===============================로그인============================");
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new ErrorException(ResponseStatus.SIGN_IN_FAIL);
@@ -114,28 +110,28 @@ public class AuthService {
     /**
      *   TODO: 유저 권한 체크
      * */
-    public void checkUserAuthorization(Long userId, Long currentUserId) {
+    public void checkUserAuthorization(Long userId, PrincipalDetails user) {
 
-        if (!userId.equals(currentUserId)) {
+        if (!userId.equals(user.getUserId())) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
     }
-
-    public UserEntity getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
-        }
-
-        Object principal = authentication.getPrincipal();
-
-        if (principal instanceof PrincipalDetails) {
-            return ((PrincipalDetails) principal).getUser();
-        } else if (principal instanceof UserEntity){
-            return (UserEntity) principal;
-        }
-
-        return null;
-    }
+//
+//    public UserEntity getCurrentUser() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication == null || !authentication.isAuthenticated()) {
+//            return null;
+//        }
+//
+//        Object principal = authentication.getPrincipal();
+//
+//        if (principal instanceof PrincipalDetails) {
+//            return ((PrincipalDetails) principal).getUser();
+//        } else if (principal instanceof UserEntity){
+//            return (UserEntity) principal;
+//        }
+//
+//        return null;
+//    }
 }

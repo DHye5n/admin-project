@@ -2,7 +2,6 @@ package dh.project.backend.service;
 
 import dh.project.backend.domain.BoardEntity;
 import dh.project.backend.domain.CommentEntity;
-import dh.project.backend.domain.UserEntity;
 import dh.project.backend.dto.ApiResponseDto;
 import dh.project.backend.dto.request.comment.PostCommentRequestDto;
 import dh.project.backend.dto.response.comment.GetCommentListResponseDto;
@@ -11,8 +10,7 @@ import dh.project.backend.enums.ResponseStatus;
 import dh.project.backend.exception.ErrorException;
 import dh.project.backend.repository.BoardRepository;
 import dh.project.backend.repository.CommentRepository;
-import dh.project.backend.repository.UserRepository;
-import dh.project.backend.service.auth.AuthService;
+import dh.project.backend.service.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,20 +21,17 @@ import java.util.List;
 @Service
 public class CommentService {
 
-    private final AuthService authService;
-
     private final BoardRepository boardRepository;
-    private final UserRepository userRepository;
     private final CommentRepository commentRepository;
 
     /**
      *   TODO: 댓글 작성
      * */
     @Transactional
-    public ApiResponseDto<PostCommentResponseDto> createComment(PostCommentRequestDto requestDto, Long boardId) {
+    public ApiResponseDto<PostCommentResponseDto> createComment(
+            PostCommentRequestDto requestDto, Long boardId, PrincipalDetails user) {
 
-        UserEntity currentUser = authService.getCurrentUser();
-        if (currentUser == null) {
+        if (user == null) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
@@ -48,7 +43,7 @@ public class CommentService {
             throw new ErrorException(ResponseStatus.NOT_EMPTY);
         }
 
-        CommentEntity commentEntity = requestDto.toEntity(currentUser, boardEntity);
+        CommentEntity commentEntity = requestDto.toEntity(user.getUser(), boardEntity);
 
         CommentEntity savedComment = commentRepository.save(commentEntity);
 

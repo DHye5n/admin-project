@@ -6,8 +6,10 @@ import dh.project.backend.dto.response.user.GetUserResponseDto;
 import dh.project.backend.dto.response.user.PatchUserResponseDto;
 import dh.project.backend.dto.response.user.SignInUserResponseDto;
 import dh.project.backend.service.UserService;
+import dh.project.backend.service.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,8 +25,8 @@ public class UserController {
      *   TODO: 로그인 유저 정보
      * */
     @GetMapping
-    public ResponseEntity<ApiResponseDto<SignInUserResponseDto>> getSignInUser() {
-        ApiResponseDto<SignInUserResponseDto> responseDto = userService.getSignInUser();
+    public ResponseEntity<ApiResponseDto<SignInUserResponseDto>> getSignInUser(@AuthenticationPrincipal PrincipalDetails user) {
+        ApiResponseDto<SignInUserResponseDto> responseDto = userService.getSignInUser(user);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
@@ -43,9 +45,10 @@ public class UserController {
     @PatchMapping("/profile/{userId}")
     public ResponseEntity<ApiResponseDto<PatchUserResponseDto>> patchProfile(
             @Valid @RequestBody PatchUserRequestDto dto,
-            @PathVariable("userId") Long userId
-    ) {
-        ApiResponseDto<PatchUserResponseDto> responseDto = userService.patchProfile(dto, userId);
+            @PathVariable("userId") Long userId,
+            @AuthenticationPrincipal PrincipalDetails user
+            ) {
+        ApiResponseDto<PatchUserResponseDto> responseDto = userService.patchProfile(dto, userId, user);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 }

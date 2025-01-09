@@ -64,15 +64,15 @@ const VIEW_COUNT_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boa
 
 const GET_LIKE_LIST_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/likes`;
 
-const GET_COMMENT_LIST_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/comments`;
+const GET_COMMENT_LIST_URL = (boardId: number | string) => `${API_DOMAIN}/comments/${boardId}/comment-list`;
 
 const PUT_LIKE_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/like`
 
 const POST_COMMENT_URL = (boardId: number | string) => `${API_DOMAIN}/comments/${boardId}/comment`;
 
-const GET_LATEST_BOARD_LIST_URL = () => `${API_DOMAIN}/boards/latest-lists`;
+const GET_LATEST_BOARD_LIST_URL = () => `${API_DOMAIN}/boards/latest-list`;
 
-const GET_TOP3_BOARD_LIST_URL = () => `${API_DOMAIN}/boards/top3-lists`;
+const GET_TOP3_BOARD_LIST_URL = () => `${API_DOMAIN}/boards/top3-list`;
 
 const GET_POPULAR_LIST_URL = () => `${API_DOMAIN}/searches/populars`;
 
