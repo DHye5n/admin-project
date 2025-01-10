@@ -23,7 +23,8 @@ enum ResponseStatus {
   INVALID_FILE_EXTENSION = 'IFE',
   NOT_FOUND_BOARD = 'NFB',
   NOT_FOUND_BOARD_USER = 'NFBU',
-  NOT_EMPTY = 'NE'
+  NOT_EMPTY = 'NE',
+  INVALID_REFRESH_TOKEN = 'IRT'
 }
 
 export default ResponseStatus;

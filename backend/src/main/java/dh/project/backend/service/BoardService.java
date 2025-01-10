@@ -12,6 +12,7 @@ import dh.project.backend.repository.*;
 import dh.project.backend.service.auth.AuthService;
 import dh.project.backend.service.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -152,6 +153,7 @@ public class BoardService {
     /**
      *   TODO: 게시물 삭제
      * */
+    @PreAuthorize("isAuthenticated()")
     @Transactional
     public ApiResponseDto<DeleteBoardResponseDto> deleteBoard(Long boardId, PrincipalDetails user) {
 

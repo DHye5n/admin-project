@@ -18,6 +18,7 @@ public enum ResponseStatus {
     FILE_EMPTY(400, "FE", "File is empty."),
     PASSWORD_MISMATCH(400, "PM", "Password does not match."),
     NOT_EMPTY(400, "NE", "Not empty."),
+    INVALID_REFRESH_TOKEN(400, "IRT", "Invalid refresh token."),
 
     // Authorization: 401
     SIGN_IN_FAIL(401,"SF", "Login information mismatch."),

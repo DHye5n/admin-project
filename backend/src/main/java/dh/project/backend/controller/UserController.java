@@ -42,13 +42,18 @@ public class UserController {
     /**
      *   TODO: 프로필 수정
      * */
-    @PatchMapping("/profile/{userId}")
+    @PatchMapping("/profile")
     public ResponseEntity<ApiResponseDto<PatchUserResponseDto>> patchProfile(
             @Valid @RequestBody PatchUserRequestDto dto,
-            @PathVariable("userId") Long userId,
             @AuthenticationPrincipal PrincipalDetails user
             ) {
-        ApiResponseDto<PatchUserResponseDto> responseDto = userService.patchProfile(dto, userId, user);
+        ApiResponseDto<PatchUserResponseDto> responseDto = userService.patchProfile(dto, user);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
+
+//    @PostMapping("/refresh")
+//    public ResponseEntity<ApiResponseDto<SignInResponseDto>> refresh(@RequestHeader("Authorization") String authorizationHeader) {
+//        ApiResponseDto<SignInResponseDto> responseDto = userService.refresh(authorizationHeader);
+//        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+//    }
 }

@@ -25,9 +25,9 @@ public class JwtService {
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(key));
     }
 
-    public String generateToken(String subject) {
+    public String generateToken(String subject, long expirationTime) {
         Date now = new Date();
-        Date exp = new Date(now.getTime() + (1000 * 60 * 60));
+        Date exp = new Date(now.getTime() + expirationTime);
         return Jwts.builder()
                 .subject(subject)
                 .signWith(key)
@@ -37,9 +37,10 @@ public class JwtService {
     }
 
     public SignInResponseDto generateAccessToken(PrincipalDetails principalDetails) {
-        String token = generateToken(principalDetails.getUsername());
+        String accessToken = generateToken(principalDetails.getEmail(), 1000 * 60 * 60);
+
         int expirationTimeInSeconds = 3600;
-        return SignInResponseDto.fromEntity(token, expirationTimeInSeconds);
+        return SignInResponseDto.fromEntity(accessToken, expirationTimeInSeconds);
     }
 
     public String getUsername(String accessToken) {
@@ -63,4 +64,25 @@ public class JwtService {
             throw e;
         }
     }
+
+    public boolean validateAccessToken(String accessToken) {
+        try {
+            getSubject(accessToken);  // 토큰이 유효한지 확인
+            return true;  // 유효한 경우
+        } catch (JwtException e) {
+            log.error("Invalid access token: {}", e.getMessage());
+            return false;  // 유효하지 않은 경우
+        }
+    }
+
+    public boolean validateRefreshToken(String refreshToken) {
+        try {
+            getSubject(refreshToken);  // 리프레시 토큰의 유효성 검증
+            return true;  // 유효한 경우
+        } catch (JwtException e) {
+            log.error("Invalid refresh token: {}", e.getMessage());
+            return false;  // 유효하지 않은 경우
+        }
+    }
+
 }

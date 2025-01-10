@@ -40,15 +40,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (accessToken != null && securityContext.getAuthentication() == null) {
             try {
 
-                String username = jwtService.getUsername(accessToken);
+                String email = jwtService.getUsername(accessToken);
 
-                if (username == null) {
+                if (email == null) {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
                     return;
                 }
 
 
-                UserDetails userDetails = principalDetailsService.loadUserByUsername(username);
+                UserDetails userDetails = principalDetailsService.loadUserByUsername(email);
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 

@@ -85,4 +85,10 @@ public class AuthController {
         ApiResponseDto<DuplicateCheckResponseDto> responseDto = authService.checkUsernameExists(username);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponseDto<SignInResponseDto>> refresh(@RequestHeader("Authorization") String refreshToken) {
+        ApiResponseDto<SignInResponseDto> responseDto = authService.refreshAccessToken(refreshToken);
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
 }

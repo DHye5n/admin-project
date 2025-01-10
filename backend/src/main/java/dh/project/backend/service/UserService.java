@@ -11,6 +11,7 @@ import dh.project.backend.exception.ErrorException;
 import dh.project.backend.repository.UserRepository;
 import dh.project.backend.service.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,17 +51,15 @@ public class UserService {
     /**
      *   TODO: 프로필 수정
      * */
+    @PreAuthorize("isAuthenticated()")
     @Transactional
-    public ApiResponseDto<PatchUserResponseDto> patchProfile(
-            PatchUserRequestDto dto, Long userId, PrincipalDetails user) {
+    public ApiResponseDto<PatchUserResponseDto> patchProfile(PatchUserRequestDto dto, PrincipalDetails user) {
 
         if (user == null) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
-        if (!userId.equals(user.getUserId())) {
-            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
-        }
+        Long userId = user.getUserId();
 
         try {
 

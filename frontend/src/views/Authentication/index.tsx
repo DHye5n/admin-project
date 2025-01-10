@@ -4,7 +4,7 @@ import InputBox from 'components/InputBox';
 import { SignInRequestDto } from 'apis/request/auth';
 import {
   checkEmailExists,
-  checkUsernameExists,
+  checkUsernameExists, refreshTokenRequest,
   resendVerificationCode,
   sendVerificationCode,
   signInRequest,
@@ -134,12 +134,13 @@ function SignInCard() {
     const { data } = responseBody;
 
     if (data) {
-      const { token, expirationTime } = data;
+      const { accessToken, expirationTime } = data;
 
       const now = new Date().getTime();
       const expires = new Date(now + expirationTime * 1000);
 
-      setCookie('accessToken', token, { expires, path: '/' });
+      setCookie('accessToken', accessToken, { expires, path: '/' });
+
       navigator(MAIN_PATH());
     } else {
       alert('Invalid response format.');

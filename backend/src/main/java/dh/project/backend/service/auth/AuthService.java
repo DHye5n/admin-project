@@ -115,23 +115,23 @@ public class AuthService {
         if (!userId.equals(user.getUserId())) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
-
     }
-//
-//    public UserEntity getCurrentUser() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication == null || !authentication.isAuthenticated()) {
-//            return null;
-//        }
-//
-//        Object principal = authentication.getPrincipal();
-//
-//        if (principal instanceof PrincipalDetails) {
-//            return ((PrincipalDetails) principal).getUser();
-//        } else if (principal instanceof UserEntity){
-//            return (UserEntity) principal;
-//        }
-//
-//        return null;
-//    }
+
+    public ApiResponseDto<SignInResponseDto> refreshAccessToken(String refreshToken) {
+
+        if (!jwtService.validateRefreshToken(refreshToken)) {
+            throw new ErrorException(ResponseStatus.INVALID_REFRESH_TOKEN);
+        }
+
+        String email = jwtService.getUsername(refreshToken);
+
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
+
+        PrincipalDetails principalDetails = new PrincipalDetails(user);
+
+        SignInResponseDto responseDto = jwtService.generateAccessToken(principalDetails);
+
+        return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
+    }
 }

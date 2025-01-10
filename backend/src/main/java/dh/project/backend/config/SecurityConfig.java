@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -14,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @RequiredArgsConstructor
+@EnableMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
@@ -38,10 +40,11 @@ public class SecurityConfig {
                                         "/api/v1/auth/verify-code",
                                         "/api/v1/auth/check-email",
                                         "/api/v1/auth/username/**/exists",
-                                        "/file/**", "/files/**"
+                                        "/file/**", "/files/**", "/error"
                                 ).permitAll()
                                 .antMatchers(
                                         "/api/v1/users/**",
+                                        "/api/v1/users/profile",
                                         "/api/v1/boards/**/**",
                                         "/api/v1/comments/**/**",
                                         "/api/v1/searches/**/**"

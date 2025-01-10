@@ -6,19 +6,19 @@ import lombok.Getter;
 @Getter
 public class SignInResponseDto {
 
-    private final String token;
+    private final String accessToken;
     private final int expirationTime;
 
     @Builder
-    public SignInResponseDto(String token, int expirationTime) {
-        this.token = token;
+    public SignInResponseDto(String accessToken, int expirationTime) {
+        this.accessToken = accessToken;
         this.expirationTime = expirationTime;
     }
 
 
-    public static SignInResponseDto fromEntity(String token, int expirationTime) {
+    public static SignInResponseDto fromEntity(String accessToken, int expirationTime) {
         return SignInResponseDto.builder()
-                .token(token)
+                .accessToken(accessToken)
                 .expirationTime(expirationTime)
                 .build();
     }
