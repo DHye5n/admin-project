@@ -6,6 +6,7 @@ import BoardDetail from 'views/Board/Detail';
 import BoardUpdate from 'views/Board/Update';
 import Main from 'views/Main';
 import Search from 'views/Search';
+import UserPage from 'views/User';
 
 export default function Content() {
   /**
@@ -21,6 +22,7 @@ export default function Content() {
       {pathname.startsWith('/boards/update') && <BoardUpdate />}
       {pathname.startsWith('/dashboard') && <Main />}
       {pathname.startsWith('/search') && searchWord && <Search />}
+      {pathname.startsWith('/users/profile') && <UserPage />}
     </div>
   );
 }

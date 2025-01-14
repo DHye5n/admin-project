@@ -5,7 +5,6 @@ import React, {
 } from 'react';
 import './style.css';
 import {
-  checkmarkCircleOutline,
   eyeOffOutline,
   eyeOutline,
   homeOutline,

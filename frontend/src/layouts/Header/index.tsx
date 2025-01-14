@@ -27,8 +27,7 @@ import { ApiResponseDto } from 'apis/response';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
 import { PatchBoardRequestDTO } from 'apis/request/board';
 import { PatchBoardResponseDto } from 'apis/response/board';
-import { closeOutline } from 'ionicons/icons';
-import { IonIcon } from '@ionic/react';
+
 
 /**
  *  TODO: component: Header 레이아웃 컴포넌트
@@ -120,12 +119,7 @@ export default function Header() {
      *  TODO:  event handler: 검색 버튼 클릭 이벤트 처리 함수
      * */
     const onSearchButtonClickHandler = () => {
-      // if (!status) {
-      //   setStatus(true);
-      //   return;
-      // }
       if (word.trim() === '') {
-        // setStatus(false);
         return;
       }
       if (word) {
@@ -139,7 +133,6 @@ export default function Header() {
     useEffect(() => {
       if (searchWord !== undefined) {
         setWord(searchWord);
-        // setStatus(true);
       }
     }, [searchWord]);
 
@@ -171,7 +164,7 @@ export default function Header() {
      * */
     const onMyPageButtonClickHandler = () => {
       if (!signInUser) return;
-      navigator(USER_PATH(signInUser.email));
+      navigator(USER_PATH());
     };
 
     /**
@@ -189,16 +182,6 @@ export default function Header() {
     const onSignInButtonClickHandler = () => {
       navigator(AUTH_PATH());
     };
-
-    /**
-     *  TODO: render: 로그아웃 버튼 컴포넌트 렌더링
-     * */
-    if (isSignIn && email && signInUser?.email && email === signInUser?.email)
-      return (
-        <div className='white-button' onClick={onSignOutButtonClickHandler}>
-          {'로그아웃'}
-        </div>
-      );
 
     /**
      *  TODO: render: 마이페이지 버튼 컴포넌트 렌더링
@@ -248,7 +231,7 @@ export default function Header() {
 
       if (!signInUser) return;
       const { email } = signInUser;
-      navigator(USER_PATH(email));
+      navigator(USER_PATH());
     }
 
     /**
@@ -359,7 +342,7 @@ export default function Header() {
     const isBoardUpdatePage = pathname.startsWith(BOARD_PATH() + '/' + BOARD_UPDATE_PATH(''));
     setBoardUpdatePage(isBoardUpdatePage);
 
-    const isUserPage = pathname.startsWith(USER_PATH(''));
+    const isUserPage = pathname.startsWith(USER_PATH());
     setUserPage(isUserPage);
   }, [pathname]);
 

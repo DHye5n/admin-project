@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './style.css';
 import { IonIcon } from '@ionic/react';
 import {
   clipboardOutline,
   homeOutline,
-  logoGithub,
+  logoGithub, logOutOutline,
   mailOutline, navigate,
   newspaperOutline,
   personOutline,
   settingsOutline,
 } from 'ionicons/icons';
-import { MAIN_PATH } from 'constant';
+import { AUTH_PATH, MAIN_PATH } from 'constant';
 import { useNavigate } from 'react-router-dom';
+import useSignInUserStore from 'stores/login-user.store';
+import { useCookies } from 'react-cookie';
 
 
 export default function Aside() {
@@ -20,10 +22,16 @@ export default function Aside() {
    */
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
+  const { signInUser, setSignInUser, resetSignInUser } = useSignInUserStore();
+
+  const [cookie, setCookie] = useCookies();
+
+  const [isSignIn, setSignIn] = useState<boolean>(false);
+
   /**
    *  TODO:  function: navigate 함수
    * */
-  const navigate = useNavigate();
+  const navigator = useNavigate();
 
   /**
    *   TODO:  item: 메뉴 아이템
@@ -43,8 +51,22 @@ export default function Aside() {
    *  TODO:  event handler: 로고 클릭 이벤트 처리 함수
    * */
   const onLogoClickHandler = () => {
-    navigate(MAIN_PATH());
+    navigator(MAIN_PATH());
   };
+
+  const onSignOutButtonClickHandler = () => {
+    resetSignInUser();
+    setCookie('accessToken', '', { path: MAIN_PATH(), expires: new Date() });
+    navigator(AUTH_PATH());
+  };
+
+  useEffect(() => {
+    if (cookie.accessToken) {
+      setSignIn(true);
+    } else {
+      setSignIn(false);
+    }
+  }, [cookie]);
 
   return (
     /**
@@ -61,7 +83,8 @@ export default function Aside() {
 
         <div className="aside-nav-middle">
           {navItems.map((item, index) => (
-            <div key={index} className="aside-nav-links-box" onMouseEnter={() => setHoverIndex(index)} onMouseLeave={() => setHoverIndex(null)}>
+            <div key={index} className="aside-nav-links-box" onMouseEnter={() => setHoverIndex(index)}
+                 onMouseLeave={() => setHoverIndex(null)} >
               <IonIcon icon={item.icon}
                        style={{ width: "24px", height: "24px", color: hoverIndex === index ? "rgba(116, 148, 236, 1)" : "white", transition: "color 0.3s ease", }} />
               <span className="aside-nav-links-title"
@@ -70,6 +93,16 @@ export default function Aside() {
               </span>
             </div>
           ))}
+          {isSignIn && (
+            <div className="aside-nav-links-box" onMouseEnter={() => setHoverIndex(navItems.length)} onMouseLeave={() => setHoverIndex(null)} onClick={onSignOutButtonClickHandler}>
+              <IonIcon icon={logOutOutline}
+                       style={{ width: "24px", height: "24px", color: hoverIndex === navItems.length ? "rgba(116, 148, 236, 1)" : "white", transition: "color 0.3s ease", }} />
+              <span className="aside-nav-links-title"
+                    style={{ color: hoverIndex === navItems.length ? "rgba(116, 148, 236, 1)" : "white", transition: "color 0.3s ease", }}>
+                Logout
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="aside-nav-bottom">

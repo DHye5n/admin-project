@@ -182,7 +182,7 @@ export default function BoardDetail() {
      * */
     const onUsernameClickHandler = () => {
       if (!board) return;
-      navigator(USER_PATH(board.email));
+      navigator(USER_PATH());
     }
 
     const onMoreButtonClickHandler = () => {
@@ -209,7 +209,6 @@ export default function BoardDetail() {
      *  TODO: effect: 마운트 시 실행할 함수
      * */
     useEffect(() => {
-      console.log('boardId:', boardId);
 
       const accessToken = cookie.accessToken;
       if (!checkLoginStatus(accessToken)) return;

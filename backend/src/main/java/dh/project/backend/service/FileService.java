@@ -94,8 +94,6 @@ public class FileService {
         String filePath = Paths.get(this.filePath, fileName).toString();
         File file = new File(filePath);
 
-        log.info("File path: {}", filePath);
-
         // 파일 존재 여부 확인
         if (!file.exists()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

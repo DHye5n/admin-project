@@ -22,7 +22,7 @@ public class SignInUserResponseDto {
         return SignInUserResponseDto.builder()
                 .email(userEntity.getEmail())
                 .username(userEntity.getUsername())
-                .profileImage(userEntity.getProfileImage())
+                .profileImage(userEntity.getProfileImage() != null ? userEntity.getProfileImage() : null)
                 .build();
     }
 }
