@@ -4,7 +4,7 @@ import InputBox from 'components/InputBox';
 import { SignInRequestDto } from 'apis/request/auth';
 import {
   checkEmailExists,
-  checkUsernameExists, refreshTokenRequest,
+  checkUsernameExists,
   resendVerificationCode,
   sendVerificationCode,
   signInRequest,

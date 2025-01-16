@@ -58,7 +58,7 @@ export default function BoardDetail() {
   const navigator = useNavigate();
 
   const handleApiError = useCallback((code: string) => {
-    if (isAlertShown) return; // alert가 이미 표시 중이면 추가 실행 방지
+    if (isAlertShown) return;
     setIsAlertShown(true);
 
     // alert 재실행 방지를 위한 3초 제한
@@ -137,7 +137,7 @@ export default function BoardDetail() {
         return;
       }
 
-      const { code, data } = responseBody;
+      const { code } = responseBody;
       if (code !== 'SU') {
         handleApiError(code);
         return;
@@ -182,7 +182,7 @@ export default function BoardDetail() {
      * */
     const onUsernameClickHandler = () => {
       if (!board) return;
-      navigator(USER_PATH());
+      navigator(USER_PATH(':email'));
     }
 
     const onMoreButtonClickHandler = () => {
@@ -270,7 +270,7 @@ export default function BoardDetail() {
               speed={500}
               slidesToShow={1}
               slidesToScroll={1}
-              arrows={false}
+              arrows={true}
               images={board.boardImageList}
             />
           </div>

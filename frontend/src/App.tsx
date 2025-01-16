@@ -81,7 +81,7 @@ function App() {
         <Route path={MAIN_PATH()} element={<Main />} />
         <Route path={AUTH_PATH()} element={<Authentication />} />
         <Route path={SEARCH_PATH(':searchWord')} element={<Search />} />
-        <Route path={USER_PATH()} element={<UserPage />} />
+        <Route path={USER_PATH(':email')} element={<UserPage />} />
         <Route path={BOARD_PATH()}>
           <Route path={BOARD_WRITE_PATH()} element={<BoardWrite />} />
           <Route path={BOARD_DETAIL_PATH(':boardId')} element={<BoardDetail />} />

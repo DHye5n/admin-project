@@ -106,25 +106,25 @@ export default function Aside() {
         </div>
 
         <div className="aside-nav-bottom">
-          <div className="aside-nav-bottom-box">
-            <div onClick={() => handleOpenMail('sai4875@naver.com')}>
+          <div className="aside-nav-bottom-box"  onClick={() => handleOpenMail('sai4875@naver.com')}>
+            <div>
               <IonIcon icon={mailOutline} style={{ width: '12px', height: '12px', color: 'white' }} />
-              <span className="aside-nav-bottom-title">sai4875@naver.com</span>
             </div>
+            <span className="aside-nav-bottom-title">sai4875@naver.com</span>
           </div>
 
-          <div className="aside-nav-bottom-box">
-            <div onClick={() => handleOpenInNewTab('https://github.com/DHye5n/admin-project')}>
+          <div className="aside-nav-bottom-box" onClick={() => handleOpenInNewTab('https://github.com/DHye5n/admin-project')}>
+            <div>
               <IonIcon icon={logoGithub} style={{ width: '12px', height: '12px', color: 'white' }} />
-              <span className='aside-nav-bottom-title'>github.com/DHye5n/admin-project</span>
             </div>
+            <span className="aside-nav-bottom-title">github.com/DHye5n/admin-project</span>
           </div>
 
-          <div className='aside-nav-bottom-box'>
-            <div onClick={() => handleOpenInNewTab('https://sai4875.tistory.com')}>
+          <div className="aside-nav-bottom-box" onClick={() => handleOpenInNewTab('https://sai4875.tistory.com')}>
+            <div>
               <IonIcon icon={newspaperOutline} style={{ width: '12px', height: '12px', color: 'white' }} />
-              <span className='aside-nav-bottom-title'>sai4875.tistory.com</span>
             </div>
+            <span className='aside-nav-bottom-title'>sai4875.tistory.com</span>
           </div>
         </div>
       </div>

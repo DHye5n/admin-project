@@ -6,50 +6,28 @@
 }
 
 .image-slide {
-    text-align: center; /* 이미지가 중앙에 오도록 설정 */
+    display: flex;
+    justify-content: center;
 }
 
 .slide-image {
-    width: 100%; /* 이미지가 슬라이더 크기에 맞게 확장되도록 설정 */
+    width: 60%; /* 이미지가 슬라이더 크기에 맞게 확장되도록 설정 */
     height: 760px;
-    object-fit: contain;
+    object-fit: cover;
     border-radius: 8px; /* 이미지 모서리를 둥글게 설정 */
+    background-position: center;
+    display: block; /* 이미지가 블록 요소로 처리되어, 부모 요소 내에서 중앙 정렬 */
+    margin: 0 auto;
 }
 
-.slick-prev, .slick-next {
-    font-size: 30px; /* 크기 조정 */
-    color: var(--black); /* 아이콘 색상 */
-    background-color: rgba(0, 0, 0, 0.5); /* 배경 색상 */
-    border-radius: 50%;
-    padding: 10px;
-    z-index: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.slick-prev {
-    left: 0;
-    /*display: none !important;*/
-}
-
-.slick-next {
-    right: 0;
-    /*display: none !important;*/
-}
-
-.slick-prev:before,
-.slick-next:before {
-    content: '';
-}
-
-.slick-prev[disabled], .slick-next[disabled] {
-    display: none; /* 비활성화된 애로우 버튼 숨기기 */
-}
+/*.slick-prev, .slick-next {*/
+/*    display: none !important; !* 기본 화살표 숨기기 *!*/
+/*}*/
 
 /* 커스텀 IonIcon 크기 조정 */
 .slick-arrow .ion-icon {
     font-size: 30px;
+    color: var(--black);
 }
 
 /* 슬라이더 점 스타일 */

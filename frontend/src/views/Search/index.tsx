@@ -6,12 +6,12 @@ import { AUTH_PATH, MAIN_PATH, SEARCH_PATH } from 'constant';
 import { BoardListItem } from 'types/interface';
 import { latestBoardListMock } from 'mocks';
 import BoardItem from 'components/BoardItem';
-import Pagination from '../../components/Pagination';
-import { usePagination } from '../../hooks';
-import { getRelationListRequest, getSearchBoardListRequest } from '../../apis';
+import Pagination from 'components/Pagination';
+import { usePagination } from 'hooks';
+import { getRelationListRequest, getSearchBoardListRequest } from 'apis';
 import { ApiResponseDto } from '../../apis/response';
-import { GetSearchBoardListResponseDto } from '../../apis/response/board';
-import { GetRelationListResponseDto } from '../../apis/response/search';
+import { GetSearchBoardListResponseDto } from 'apis/response/board';
+import { GetRelationListResponseDto } from 'apis/response/search';
 
 /**
  *  TODO: component: Search 컴포넌트

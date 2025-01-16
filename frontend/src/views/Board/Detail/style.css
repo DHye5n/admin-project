@@ -15,15 +15,12 @@
     justify-content: space-between;
     padding: 40px 20px;
     width: 80%;
-    /*height: 100%;*/
 }
 
 #board-detail-top {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    /*align-items: flex-start; !* 공간 분배 제거 *!*/
-    /*justify-content: flex-start; !* 위쪽으로 내용 배치 *!*/
     margin-bottom: 20px;
 }
 
@@ -143,6 +140,8 @@
 .board-detail-main-image {
     display: flex;
     flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: 100%;
     padding: 24px 0;
@@ -151,6 +150,7 @@
     background-position: center;
     background-size: cover;
     position: relative;
+    object-fit: cover;
 }
 
 /* Board Detail Bottom */

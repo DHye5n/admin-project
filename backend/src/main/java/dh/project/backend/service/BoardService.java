@@ -83,13 +83,9 @@ public class BoardService {
      *   TODO: 특정 유저 게시물
      * */
     @Transactional(readOnly = true)
-    public ApiResponseDto<GetUserBoardListResponseDto> getUserBoardList(Long userId) {
+    public ApiResponseDto<GetUserBoardListResponseDto> getUserBoardList(String email) {
 
-        List<BoardListViewEntity> userBoardList = boardListViewRepository.findUserBoardList(userId);
-
-        if (userBoardList.isEmpty()) {
-            throw new ErrorException(ResponseStatus.NOT_FOUND_BOARD);
-        }
+        List<BoardListViewEntity> userBoardList = boardListViewRepository.findUserBoardList(email);
 
         List<BoardListItem> boardListItems = BoardListItem.fromEntityList(userBoardList);
 

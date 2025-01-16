@@ -26,12 +26,12 @@ const ImageSlider: React.FC<SliderProps> = ({ dots, infinite, speed, slidesToSho
         arrows: arrows,
         nextArrow: (
           <div className="slick-arrow slick-next">
-              <IonIcon icon={chevronForwardOutline} />
+              <IonIcon icon={chevronForwardOutline} className='ion-icon' />
           </div>
         ),
         prevArrow: (
           <div className="slick-arrow slick-prev">
-              <IonIcon icon={chevronBackOutline} />
+              <IonIcon icon={chevronBackOutline} className='ion-icon' />
           </div>
         ),
         style: { width: '100%', height: '100%' }

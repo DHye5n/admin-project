@@ -27,6 +27,9 @@ public enum ResponseStatus {
 
     NO_PERMISSION(403,"NP", "Do not have permission."),
 
+    // NOT_FOUND: 403
+    FORBIDDEN(403,"FB", "Forbidden."),
+
     // NOT_FOUND: 404
     NOT_FOUND_USER(404, "NFU", "User Not Found."),
     NOT_EXISTED_USER(404,"NEU", "This user does not exist."),

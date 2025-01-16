@@ -157,8 +157,6 @@
 
 .logo-dark-icon {background-image: url(assets/image/logo-dark.png);}
 
-.search-light-icon {background-image: url(assets/image/search-light.png);}
-
 .edit-icon {background-image: url(assets/image/edit-light.png);}
 
 .image-box-white-icon {background-image: url(assets/image/image-box-white-light.png);}
@@ -201,6 +199,8 @@
 .up-light-icon {background-image: url(assets/image/expand-up-light.png);}
 
 .down-light-icon {background-image: url(assets/image/expand-down-light.png);}
+
+.arrow-right-icon {background-image: url(assets/image/arrow-right.png);}
 
 
 .divider {

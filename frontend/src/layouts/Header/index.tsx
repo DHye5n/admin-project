@@ -27,6 +27,8 @@ import { ApiResponseDto } from 'apis/response';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
 import { PatchBoardRequestDTO } from 'apis/request/board';
 import { PatchBoardResponseDto } from 'apis/response/board';
+import { closeOutline, searchOutline } from 'ionicons/icons';
+import { IonIcon } from '@ionic/react';
 
 
 /**
@@ -36,7 +38,7 @@ export default function Header() {
   /**
    *  TODO:  state: 상태
    * */
-  const { signInUser, setSignInUser, resetSignInUser } = useSignInUserStore();
+  const { signInUser, setSignInUser, resetSignInUser } = useSignInUserStore(state => state);
 
   const { pathname } = useLocation();
 
@@ -143,8 +145,13 @@ export default function Header() {
       <div className='header-search-input-box'>
         <input className='header-search-input' type='text' placeholder='검색어를 입력해주세요.' value={word}
           onChange={onSearchWordChangeHandler} onKeyDown={onSearchWordKeyDownHandler} />
-        <div ref={searchButtonRef} className='icon-button' onClick={onSearchButtonClickHandler}>
-          <div className='icon search-light-icon'></div>
+        {word && (
+          <div className='clear-button' onClick={onClearButtonClickHandler}>
+            <IonIcon icon={closeOutline} style={{ width: '24px', height: '24px', color: 'rgba(0, 0, 0, 0.7)' }} />
+          </div>
+        )}
+        <div ref={searchButtonRef} className='search-button' onClick={onSearchButtonClickHandler}>
+          <IonIcon icon={searchOutline} style={{ width: '24px', height: '24px', color: 'rgba(0, 0, 0, 0.7)' }} />
         </div>
       </div>
     );
@@ -164,16 +171,8 @@ export default function Header() {
      * */
     const onMyPageButtonClickHandler = () => {
       if (!signInUser) return;
-      navigator(USER_PATH());
-    };
-
-    /**
-     *  TODO: event handler: 로그아웃 버튼 클릭 이벤트 처리 함수
-     * */
-    const onSignOutButtonClickHandler = () => {
-      resetSignInUser();
-      setCookie('accessToken', '', { path: MAIN_PATH(), expires: new Date() });
-      navigator(AUTH_PATH());
+      const { email } = signInUser;
+      navigator(USER_PATH(email));
     };
 
     /**
@@ -230,8 +229,7 @@ export default function Header() {
       resetBoard();
 
       if (!signInUser) return;
-      const { email } = signInUser;
-      navigator(USER_PATH());
+      navigator(USER_PATH(':email'));
     }
 
     /**
@@ -342,7 +340,7 @@ export default function Header() {
     const isBoardUpdatePage = pathname.startsWith(BOARD_PATH() + '/' + BOARD_UPDATE_PATH(''));
     setBoardUpdatePage(isBoardUpdatePage);
 
-    const isUserPage = pathname.startsWith(USER_PATH());
+    const isUserPage = pathname.startsWith(USER_PATH(''));
     setUserPage(isUserPage);
   }, [pathname]);
 
@@ -364,7 +362,7 @@ export default function Header() {
         </div>
 
         <div className='header-middle-box'>
-          {(isAuthPage || isMainPage || isSearchPage || isBoardDetailPage) && (
+          {(isAuthPage || isUserPage || isMainPage || isSearchPage || isBoardDetailPage) && (
             <SearchButton />
           )}
         </div>

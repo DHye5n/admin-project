@@ -24,7 +24,8 @@ enum ResponseStatus {
   NOT_FOUND_BOARD = 'NFB',
   NOT_FOUND_BOARD_USER = 'NFBU',
   NOT_EMPTY = 'NE',
-  INVALID_REFRESH_TOKEN = 'IRT'
+  INVALID_REFRESH_TOKEN = 'IRT',
+  FORBIDDEN = 'FB'
 }
 
 export default ResponseStatus;

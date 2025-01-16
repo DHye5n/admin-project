@@ -53,20 +53,23 @@ public class UserService {
      * */
     @PreAuthorize("isAuthenticated()")
     @Transactional
-    public ApiResponseDto<PatchUserResponseDto> patchProfile(PatchUserRequestDto dto, PrincipalDetails user) {
+    public ApiResponseDto<PatchUserResponseDto> patchProfile(PatchUserRequestDto dto, String email, PrincipalDetails user) {
 
         if (user == null) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
-        Long userId = user.getUserId();
+        if (!user.getEmail().equals(email)) {
+            throw new ErrorException(ResponseStatus.NO_PERMISSION);
+        }
 
         try {
 
-            UserEntity userEntity = userRepository.findById(userId)
+            UserEntity userEntity = userRepository.findByEmail(email)
                     .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
 
-            if (dto.getUsername() != null) {
+            if (dto.getUsername() != null && !dto.getUsername().isEmpty()
+                    && !dto.getUsername().equals(userEntity.getUsername())) {
                 if (userRepository.existsByUsername(dto.getUsername())) {
                     throw new ErrorException(ResponseStatus.DUPLICATE_USERNAME);
                 }
