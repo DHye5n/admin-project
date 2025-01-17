@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 
@@ -16,4 +17,7 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 
     @Query("SELECT c FROM comment c JOIN FETCH c.user u WHERE c.board.boardId = :boardId AND c.deletedDate IS NULL ORDER BY c.createdDate DESC")
     List<CommentEntity> findCommentsWithUserByBoardId(@Param("boardId") Long boardId);
+
+    @Query("SELECT c FROM comment c LEFT JOIN FETCH c.user WHERE c.commentId = :commentId")
+    Optional<CommentEntity> findByIdWithUser(@Param("commentId") Long commentId);
 }

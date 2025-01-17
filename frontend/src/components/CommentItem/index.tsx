@@ -2,6 +2,7 @@ import './style.css';
 import { CommentListItem } from 'types/interface';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
 import { formatDate } from 'utils/dateUtils';
+import React from 'react';
 
 /**
  *  TODO: interface: Comment List Item 컴포넌트 Properties
@@ -30,24 +31,33 @@ export default function CommentItem({ commentListItem }: Props) {
    * */
   return (
     <div className='comment-list-item'>
-      <div className='comment-list-item-top'>
-        <div className='comment-list-item-profile-box'>
+      <div className="comment-list-item-top">
+        <div className="comment-list-item-profile-box">
           <div
-            className='comment-list-item-profile-image'
+            className="comment-list-item-profile-image"
             style={{
               backgroundImage: `url(${profileImage ? profileImage : defaultProfileImage})`,
             }}
           ></div>
         </div>
-        <div className='comment-list-item-username'>{username}</div>
-        <div className='comment-list-item-divider'>{'\|'}</div>
-        <div className='comment-list-item-time'>
-          {getFormattedDate(createdDate, modifiedDate)}
+        <div className="comment-list-item-top-box">
+          <div className="comment-list-item-info-box">
+            <div className="comment-list-item-username">{username}</div>
+            <div className="comment-list-item-divider">{'\|'}</div>
+            <div className="comment-list-item-time">
+              {getFormattedDate(createdDate, modifiedDate)}
+            </div>
+          </div>
+          <div className='comment-list-item-button-box'>
+            <div className="comment-list-item-update-button">{'수정'}</div>
+            <div className="comment-list-item-divider">{'\|'}</div>
+            <div className="comment-list-item-delete-button">{'삭제'}</div>
+          </div>
         </div>
       </div>
 
-      <div className='comment-list-item-main'>
-        <div className='comment-list-item-content'>{comment}</div>
+      <div className="comment-list-item-main">
+        <div className="comment-list-item-content">{comment}</div>
       </div>
     </div>
   );

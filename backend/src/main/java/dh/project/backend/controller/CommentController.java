@@ -1,8 +1,10 @@
 package dh.project.backend.controller;
 
 import dh.project.backend.dto.ApiResponseDto;
+import dh.project.backend.dto.request.comment.PatchCommentRequestDto;
 import dh.project.backend.dto.request.comment.PostCommentRequestDto;
 import dh.project.backend.dto.response.comment.GetCommentListResponseDto;
+import dh.project.backend.dto.response.comment.PatchCommentResponseDto;
 import dh.project.backend.dto.response.comment.PostCommentResponseDto;
 import dh.project.backend.service.CommentService;
 import dh.project.backend.service.principal.PrincipalDetails;
@@ -30,6 +32,18 @@ public class CommentController {
             @AuthenticationPrincipal PrincipalDetails user
             ) {
         ApiResponseDto<PostCommentResponseDto> responseDto = commentService.createComment(dto, boardId, user);
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
+    /**
+     *   TODO: 댓글 수정
+     * */
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<ApiResponseDto<PatchCommentResponseDto>> patchBoard(
+            @Valid @RequestBody PatchCommentRequestDto dto,
+            @PathVariable("commentId") Long commentId,
+            @AuthenticationPrincipal PrincipalDetails user) {
+        ApiResponseDto<PatchCommentResponseDto> responseDto = commentService.patchComment(dto, commentId, user);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 

@@ -1,5 +1,6 @@
 package dh.project.backend.domain;
 
+import dh.project.backend.dto.request.comment.PatchCommentRequestDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,5 +37,10 @@ public class CommentEntity extends BaseTime {
         this.comment = comment;
         this.user = user;
         this.board = board;
+    }
+
+    public void patchComment(PatchCommentRequestDto dto) {
+        this.comment = dto.getComment();
+        this.modifiedDate = dto.getModifiedDate();
     }
 }

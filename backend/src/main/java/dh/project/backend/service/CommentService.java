@@ -3,8 +3,10 @@ package dh.project.backend.service;
 import dh.project.backend.domain.BoardEntity;
 import dh.project.backend.domain.CommentEntity;
 import dh.project.backend.dto.ApiResponseDto;
+import dh.project.backend.dto.request.comment.PatchCommentRequestDto;
 import dh.project.backend.dto.request.comment.PostCommentRequestDto;
 import dh.project.backend.dto.response.comment.GetCommentListResponseDto;
+import dh.project.backend.dto.response.comment.PatchCommentResponseDto;
 import dh.project.backend.dto.response.comment.PostCommentResponseDto;
 import dh.project.backend.enums.ResponseStatus;
 import dh.project.backend.exception.ErrorException;
@@ -12,6 +14,7 @@ import dh.project.backend.repository.BoardRepository;
 import dh.project.backend.repository.CommentRepository;
 import dh.project.backend.service.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,6 +72,34 @@ public class CommentService {
         GetCommentListResponseDto responseDto = GetCommentListResponseDto.fromEntity(boardEntity, commentEntities);
 
         return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
+    }
+
+    /**
+     *   TODO: 댓글 수정
+     * */
+    @PreAuthorize("isAuthenticated()")
+    @Transactional
+    public ApiResponseDto<PatchCommentResponseDto> patchComment(
+            PatchCommentRequestDto dto, Long commentId, PrincipalDetails user) {
+
+        if (user == null) {
+            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
+        }
+
+        CommentEntity commentEntity = commentRepository.findByIdWithUser(commentId)
+                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_COMMENT));
+
+        if (!commentEntity.getUser().getUserId().equals(user.getUserId())) {
+            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
+        }
+
+        commentEntity.patchComment(dto);
+
+        commentRepository.save(commentEntity);
+
+        PatchCommentResponseDto responseDto = PatchCommentResponseDto.fromEntity(commentEntity);
+        return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
+
     }
 
     /**
