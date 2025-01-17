@@ -22,17 +22,18 @@ import { GetUserResponseDto } from 'apis/response/user';
 import { useCookies } from 'react-cookie';
 import { PatchUserRequestDto } from 'apis/request/user';
 import { PatchUserResponseDto } from 'apis/response/user';
-import InputBox from '../../components/InputBox';
 import { IonIcon } from '@ionic/react';
 import { personOutline } from 'ionicons/icons';
-import { GetLatestBoardListResponseDto, GetUserBoardListResponseDto } from '../../apis/response/board';
+import { GetUserBoardListResponseDto } from '../../apis/response/board';
 
 
 /**
  *  TODO: component: User 컴포넌트
  * */
 export default function UserPage() {
-
+  /**
+   *  TODO:  state: 상태
+   * */
   const { email } = useParams();
 
   const [isMyPage, setMyPage] = useState<boolean>(true);
@@ -152,13 +153,11 @@ export default function UserPage() {
 
     const fileUploadResponse = (responseBody: ApiResponseDto<string> | null) => {
       if (!responseBody || !responseBody.data) {
-        console.error("File upload failed or response is null.");
         return;
       }
 
       const profileImage = responseBody.data;
       if (!profileImage) {
-        console.error("Profile image is null.");
         return;
       }
 
@@ -477,7 +476,7 @@ export default function UserPage() {
                     <div className="icon-box">
                       <div className="icon edit-icon"></div>
                     </div>
-                    <div className="user-bottom-side-text">{'글쓰기'}</div>
+                    <div className="user-bottom-side-text">{'글 작성'}</div>
               </div>
             </div>
 

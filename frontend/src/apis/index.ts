@@ -22,6 +22,7 @@ import PostCommentRequestDto from './request/comment/post-comment.request.dto';
 import PostCommentResponseDto from './response/comment/post-comment.response.dto';
 import { GetPopularListResponseDto, GetRelationListResponseDto } from './response/search';
 import { PatchUserRequestDto } from './request/user';
+import GetAllBoardListResponseDto from './response/board/get-all-board-list.response.dto';
 
 
 const DOMAIN = 'http://localhost:9994';
@@ -292,6 +293,22 @@ export const getLatestBoardListRequest = async (accessToken: string) => {
     .catch(error => {
       if (!error.response) return null;
       const responseBody: ApiResponseDto<GetLatestBoardListResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+};
+
+// 모든 게시물 목록
+const GET_BOARD_LIST_URL = () => `${API_DOMAIN}/boards/list`;
+export const getAllBoardListRequest = async (accessToken: string) => {
+  const result = await axios.get(GET_BOARD_LIST_URL(), authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<GetAllBoardListResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<GetAllBoardListResponseDto> = error.response.data;
       return responseBody;
     })
   return result;

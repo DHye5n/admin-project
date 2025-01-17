@@ -37,10 +37,10 @@ export default function Aside() {
    *   TODO:  item: 메뉴 아이템
    */
   const navItems = [
-    { icon: homeOutline, title: "Dashboard" },
-    { icon: clipboardOutline, title: "Board" },
-    { icon: personOutline, title: "User" },
-    { icon: settingsOutline, title: "Setting" },
+    { icon: homeOutline, title: "Dashboard", path: "/dashboard" },
+    { icon: clipboardOutline, title: "Board", path: "/boards/list" },
+    { icon: personOutline, title: "User", path: "/users" },
+    { icon: settingsOutline, title: "Setting", path: "/settings" },
   ];
 
   const handleOpenInNewTab = (url: string) => { window.open(url, '_blank', 'noopener,noreferrer'); };
@@ -84,7 +84,7 @@ export default function Aside() {
         <div className="aside-nav-middle">
           {navItems.map((item, index) => (
             <div key={index} className="aside-nav-links-box" onMouseEnter={() => setHoverIndex(index)}
-                 onMouseLeave={() => setHoverIndex(null)} >
+                 onMouseLeave={() => setHoverIndex(null)} onClick={() => navigator(item.path)} >
               <IonIcon icon={item.icon}
                        style={{ width: "24px", height: "24px", color: hoverIndex === index ? "rgba(116, 148, 236, 1)" : "white", transition: "color 0.3s ease", }} />
               <span className="aside-nav-links-title"

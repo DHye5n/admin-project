@@ -80,6 +80,21 @@ public class BoardService {
     }
 
     /**
+     *   TODO: 모든 게시물
+     * */
+    @Transactional(readOnly = true)
+    public ApiResponseDto<GetAllBoardListResponseDto> getAllBoardList() {
+
+        List<BoardListViewEntity> allBoardList = boardListViewRepository.findAllBoards();
+
+        List<BoardListItem> boardListItems = BoardListItem.fromEntityList(allBoardList);
+
+        GetAllBoardListResponseDto responseDto = new GetAllBoardListResponseDto(boardListItems);
+
+        return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
+    }
+
+    /**
      *   TODO: 특정 유저 게시물
      * */
     @Transactional(readOnly = true)
@@ -97,6 +112,7 @@ public class BoardService {
     /**
      *   TODO: 게시물 수정
      * */
+    @PreAuthorize("isAuthenticated()")
     @Transactional
     public ApiResponseDto<PatchBoardResponseDto> patchBoard(
             PatchBoardRequestDto dto, Long boardId, PrincipalDetails user) {

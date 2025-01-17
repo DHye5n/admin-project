@@ -5,6 +5,7 @@ import GetSearchBoardListResponseDto from './get-search-board-list.response.dto'
 import GetUserBoardListResponseDto from './get-user-board-list.response.dto';
 import GetCommentListResponseDto from '../comment/get-comment-list.response.dto';
 import GetLikeListResponseDto from './get-like-list.response.dto';
+import GetAllBoardListResponseDto from './get-all-board-list.response.dto';
 
 import PostBoardResponseDto from './post-board.response.dto';
 import PostCommentResponseDto from '../comment/post-comment.response.dto';
@@ -29,6 +30,7 @@ export type {
   GetUserBoardListResponseDto,
   GetCommentListResponseDto,
   GetLikeListResponseDto,
+  GetAllBoardListResponseDto,
 
   PostBoardResponseDto,
   PostCommentResponseDto,

@@ -7,6 +7,7 @@ import BoardUpdate from 'views/Board/Update';
 import Main from 'views/Main';
 import Search from 'views/Search';
 import UserPage from 'views/User';
+import BoardRead from '../../views/Board/Read';
 
 export default function Content() {
   /**
@@ -18,8 +19,10 @@ export default function Content() {
   return (
     <div id='content'>
       {pathname.startsWith('/boards/write') && <BoardWrite />}
-      {pathname.startsWith('/boards/detail') && <BoardDetail />}
+      {pathname.startsWith('/boards/list') && <BoardRead />}
       {pathname.startsWith('/boards/update') && <BoardUpdate />}
+      {pathname.startsWith('/boards/detail') && <BoardDetail />}
+
       {pathname.startsWith('/dashboard') && <Main />}
       {pathname.startsWith('/search') && searchWord && <Search />}
       {pathname.startsWith('/users/profile') && <UserPage />}

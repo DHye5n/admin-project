@@ -20,10 +20,6 @@
     margin: 0 auto;
 }
 
-/*.slick-prev, .slick-next {*/
-/*    display: none !important; !* 기본 화살표 숨기기 *!*/
-/*}*/
-
 /* 커스텀 IonIcon 크기 조정 */
 .slick-arrow .ion-icon {
     font-size: 30px;

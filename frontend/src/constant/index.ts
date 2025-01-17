@@ -4,6 +4,7 @@ export const SEARCH_PATH = (searchWord: string) => `/search/${searchWord}`;
 export const USER_PATH = (email: string) => `/users/profile/${email}`;
 export const BOARD_PATH = () => '/boards';
 export const BOARD_WRITE_PATH = () => 'write';
+export const BOARD_READ_PATH = () => 'list';
 export const BOARD_DETAIL_PATH = (boardId: string | number) =>
   `detail/${boardId}`;
 export const BOARD_UPDATE_PATH = (boardId: string | number) =>

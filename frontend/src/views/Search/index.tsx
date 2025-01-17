@@ -9,7 +9,7 @@ import BoardItem from 'components/BoardItem';
 import Pagination from 'components/Pagination';
 import { usePagination } from 'hooks';
 import { getRelationListRequest, getSearchBoardListRequest } from 'apis';
-import { ApiResponseDto } from '../../apis/response';
+import { ApiResponseDto } from 'apis/response';
 import { GetSearchBoardListResponseDto } from 'apis/response/board';
 import { GetRelationListResponseDto } from 'apis/response/search';
 

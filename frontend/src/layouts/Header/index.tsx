@@ -10,7 +10,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   AUTH_PATH,
   BOARD_DETAIL_PATH,
-  BOARD_PATH,
+  BOARD_PATH, BOARD_READ_PATH,
   BOARD_UPDATE_PATH,
   BOARD_WRITE_PATH,
   MAIN_PATH,
@@ -53,6 +53,8 @@ export default function Header() {
   const [isSearchPage, setSearchPage] = useState<boolean>(false);
 
   const [isBoardWritePage, setBoardWritePage] = useState<boolean>(false);
+
+  const [isBoardReadPage, setBoardReadPage] = useState<boolean>(false);
 
   const [isBoardDetailPage, setBoardDetailPage] = useState<boolean>(false);
 
@@ -229,7 +231,7 @@ export default function Header() {
       resetBoard();
 
       if (!signInUser) return;
-      navigator(USER_PATH(':email'));
+      navigator(MAIN_PATH());
     }
 
     /**
@@ -334,6 +336,9 @@ export default function Header() {
     const isBoardWritePage = pathname.startsWith(BOARD_PATH() + '/' + BOARD_WRITE_PATH());
     setBoardWritePage(isBoardWritePage);
 
+    const isBoardReadPage = pathname.startsWith(BOARD_PATH() + '/' + BOARD_READ_PATH());
+    setBoardReadPage(isBoardReadPage);
+
     const isBoardDetailPage = pathname.startsWith(BOARD_PATH() + '/' + BOARD_DETAIL_PATH(''));
     setBoardDetailPage(isBoardDetailPage);
 
@@ -342,6 +347,7 @@ export default function Header() {
 
     const isUserPage = pathname.startsWith(USER_PATH(''));
     setUserPage(isUserPage);
+
   }, [pathname]);
 
   useEffect(() => {
@@ -362,7 +368,9 @@ export default function Header() {
         </div>
 
         <div className='header-middle-box'>
-          {(isAuthPage || isUserPage || isMainPage || isSearchPage || isBoardDetailPage) && (
+          {(isAuthPage || isUserPage ||
+            isBoardReadPage || isBoardWritePage || isBoardUpdatePage
+            || isMainPage || isSearchPage || isBoardDetailPage) && (
             <SearchButton />
           )}
         </div>

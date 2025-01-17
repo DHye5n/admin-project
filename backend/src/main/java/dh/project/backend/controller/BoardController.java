@@ -43,6 +43,15 @@ public class BoardController {
     }
 
     /**
+     *   TODO: 모든 게시물 리스트
+     * */
+    @GetMapping("/list")
+    public ResponseEntity<ApiResponseDto<GetAllBoardListResponseDto>> getAllBoardList() {
+        ApiResponseDto<GetAllBoardListResponseDto> responseDto = boardService.getAllBoardList();
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
+    /**
      *   TODO: 특정 유저 게시물
      * */
     @GetMapping("/user-board-list/{email}")

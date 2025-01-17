@@ -147,6 +147,7 @@ export default function Main() {
 
       const { latestList } = responseBody.data as GetLatestBoardListResponseDto;
       setTotalList(latestList);
+      setCount(latestList.length);
     }
 
     /**
@@ -172,6 +173,7 @@ export default function Main() {
             </div>
 
           </div>
+
           <div className="main-bottom-pagination-box">
             {count !== 0 &&
               <Pagination currentPage={currentPage} currentSection={currentSection}
