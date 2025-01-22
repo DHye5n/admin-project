@@ -55,7 +55,10 @@
   line-height: 140%;
 }
 
-.comment-list-item-update-button {
+.comment-list-item-save-button,
+.comment-list-item-cancel-button,
+.comment-list-item-update-button,
+.comment-list-item-delete-button {
   color: rgba(0, 0, 0, 0.7);
   font-size: 12px;
   font-weight: 500;
@@ -63,12 +66,17 @@
   cursor: pointer;
 }
 
-.comment-list-item-delete-button {
+
+.comment-list-item-content-input {
   color: rgba(0, 0, 0, 0.7);
   font-size: 12px;
   font-weight: 500;
   line-height: 140%;
-  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  border: none;
+  outline: none;
 }
 
 .comment-list-item-time {
@@ -80,7 +88,7 @@
 
 .comment-list-item-content {
   color: rgba(0, 0, 0, 0.7);
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 500;
-  line-height: 150%;
+  line-height: 140%;
 }

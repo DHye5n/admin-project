@@ -292,14 +292,17 @@ export default function Header() {
 
       const isWriterPage = pathname === BOARD_PATH() + '/' + BOARD_WRITE_PATH();
       if (isWriterPage) {
-        const requestBody: PostBoardRequestDto = { title, content, boardImageList };
+        const requestBody: PostBoardRequestDto = {
+          title, content, boardImageList
+        };
 
         postBoardRequest(requestBody, accessToken).then(postBoardResponse);
       } else {
         if (!boardId) return;
         const requestBody: PatchBoardRequestDTO = {
           title, content, boardImageList
-        }
+        };
+
         patchBoardRequest(boardId, requestBody, accessToken).then(patchBoardResponse);
       }
     };

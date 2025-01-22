@@ -24,7 +24,7 @@ import { PatchUserRequestDto } from 'apis/request/user';
 import { PatchUserResponseDto } from 'apis/response/user';
 import { IonIcon } from '@ionic/react';
 import { personOutline } from 'ionicons/icons';
-import { GetUserBoardListResponseDto } from '../../apis/response/board';
+import { GetUserBoardListResponseDto } from 'apis/response/board';
 
 
 /**
@@ -187,8 +187,6 @@ export default function UserPage() {
         return;
       }
 
-      if (!email) return;
-
       if (signInUser) {
         setSignInUser({
           ...signInUser,
@@ -197,7 +195,7 @@ export default function UserPage() {
         });
       }
 
-      getUserRequest(email, cookie.accessToken).then(getUserResponse);
+      getUserRequest(cookie.accessToken).then(getUserResponse);
 
       alert('프로필 수정이 완료되었습니다.');
       navigator(MAIN_PATH());
@@ -314,10 +312,8 @@ export default function UserPage() {
       const accessToken = cookie.accessToken;
       if (!checkLoginStatus(accessToken)) return;
 
-      if (!email) return;
-
-      getUserRequest(email, accessToken).then(getUserResponse);
-    }, [email]);
+      getUserRequest(accessToken).then(getUserResponse);
+    }, []);
 
     /**
      *  TODO:  render: User 상단 컴포넌트 렌더링
@@ -453,11 +449,10 @@ export default function UserPage() {
      *  TODO: effect: 마운트 시 실행할 함수
      * */
     useEffect(() => {
-      if (!email) return;
 
-      getUserBoardListRequest(email, cookie.accessToken).then(getUserBoardListResponse);
+      getUserBoardListRequest(cookie.accessToken).then(getUserBoardListResponse);
 
-    }, [email]);
+    }, []);
 
     /**
      *  TODO:  render: User 하단 컴포넌트 렌더링

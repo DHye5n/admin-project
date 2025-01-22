@@ -5,6 +5,7 @@ import dh.project.backend.domain.CommentEntity;
 import dh.project.backend.dto.ApiResponseDto;
 import dh.project.backend.dto.request.comment.PatchCommentRequestDto;
 import dh.project.backend.dto.request.comment.PostCommentRequestDto;
+import dh.project.backend.dto.response.comment.DeleteCommentResponseDto;
 import dh.project.backend.dto.response.comment.GetCommentListResponseDto;
 import dh.project.backend.dto.response.comment.PatchCommentResponseDto;
 import dh.project.backend.dto.response.comment.PostCommentResponseDto;
@@ -12,6 +13,7 @@ import dh.project.backend.enums.ResponseStatus;
 import dh.project.backend.exception.ErrorException;
 import dh.project.backend.repository.BoardRepository;
 import dh.project.backend.repository.CommentRepository;
+import dh.project.backend.service.auth.AuthService;
 import dh.project.backend.service.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,6 +28,7 @@ public class CommentService {
 
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
+    private final AuthService authService;
 
     /**
      *   TODO: 댓글 작성
@@ -80,13 +83,13 @@ public class CommentService {
     @PreAuthorize("isAuthenticated()")
     @Transactional
     public ApiResponseDto<PatchCommentResponseDto> patchComment(
-            PatchCommentRequestDto dto, Long commentId, PrincipalDetails user) {
+            PatchCommentRequestDto dto, Long boardId, Long commentId, PrincipalDetails user) {
 
         if (user == null) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
-        CommentEntity commentEntity = commentRepository.findByIdWithUser(commentId)
+        CommentEntity commentEntity = commentRepository.findByIdWithUser(boardId, commentId)
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_COMMENT));
 
         if (!commentEntity.getUser().getUserId().equals(user.getUserId())) {
@@ -98,6 +101,33 @@ public class CommentService {
         commentRepository.save(commentEntity);
 
         PatchCommentResponseDto responseDto = PatchCommentResponseDto.fromEntity(commentEntity);
+
+        return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
+
+    }
+
+    /**
+     *   TODO: 댓글 삭제
+     * */
+    @PreAuthorize("isAuthenticated()")
+    @Transactional
+    public ApiResponseDto<DeleteCommentResponseDto> deleteComment(Long boardId, Long commentId, PrincipalDetails user) {
+
+        if (user == null) {
+            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
+        }
+
+        CommentEntity commentEntity = commentRepository.findByIdWithUser(boardId, commentId)
+                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_COMMENT));
+
+        if (!commentEntity.getUser().getUserId().equals(user.getUserId())) {
+            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
+        }
+
+        commentRepository.delete(commentEntity);
+
+        DeleteCommentResponseDto responseDto = DeleteCommentResponseDto.fromEntity(commentEntity);
+
         return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
 
     }

@@ -15,9 +15,10 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
     @Query("UPDATE board b SET b.commentCount = b.commentCount + 1 WHERE b.boardId = :boardId")
     int increaseCommentCount(@Param("boardId") Long boardId);
 
-    @Query("SELECT c FROM comment c JOIN FETCH c.user u WHERE c.board.boardId = :boardId AND c.deletedDate IS NULL ORDER BY c.createdDate DESC")
+    @Query("SELECT c FROM comment c JOIN FETCH c.user u WHERE c.board.boardId = :boardId AND c.deletedDate IS NULL " +
+            "ORDER BY CASE WHEN c.modifiedDate IS NOT NULL THEN c.modifiedDate ELSE c.createdDate END DESC")
     List<CommentEntity> findCommentsWithUserByBoardId(@Param("boardId") Long boardId);
 
-    @Query("SELECT c FROM comment c LEFT JOIN FETCH c.user WHERE c.commentId = :commentId")
-    Optional<CommentEntity> findByIdWithUser(@Param("commentId") Long commentId);
+    @Query("SELECT c FROM comment c LEFT JOIN FETCH c.user WHERE c.board.boardId = :boardId AND c.commentId = :commentId")
+    Optional<CommentEntity> findByIdWithUser(@Param("boardId") Long boardId, @Param("commentId") Long commentId);
 }

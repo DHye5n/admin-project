@@ -13,6 +13,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PatchBoardRequestDto {
 
+    private Long boardId;
+
     @NotBlank
     private String title;
 
@@ -26,7 +28,8 @@ public class PatchBoardRequestDto {
 
 
     @Builder
-    public PatchBoardRequestDto(String title, String content, List<String> boardImageList, String modifiedDte) {
+    public PatchBoardRequestDto(Long boardId, String title, String content, List<String> boardImageList, String modifiedDte) {
+        this.boardId = boardId;
         this.title = title;
         this.content = content;
         this.boardImageList = boardImageList;

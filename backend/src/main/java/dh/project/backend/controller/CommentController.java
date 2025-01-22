@@ -3,6 +3,7 @@ package dh.project.backend.controller;
 import dh.project.backend.dto.ApiResponseDto;
 import dh.project.backend.dto.request.comment.PatchCommentRequestDto;
 import dh.project.backend.dto.request.comment.PostCommentRequestDto;
+import dh.project.backend.dto.response.comment.DeleteCommentResponseDto;
 import dh.project.backend.dto.response.comment.GetCommentListResponseDto;
 import dh.project.backend.dto.response.comment.PatchCommentResponseDto;
 import dh.project.backend.dto.response.comment.PostCommentResponseDto;
@@ -38,12 +39,26 @@ public class CommentController {
     /**
      *   TODO: 댓글 수정
      * */
-    @PatchMapping("/{commentId}")
+    @PatchMapping("/{boardId}/{commentId}")
     public ResponseEntity<ApiResponseDto<PatchCommentResponseDto>> patchBoard(
             @Valid @RequestBody PatchCommentRequestDto dto,
+            @PathVariable("boardId") Long boardId,
             @PathVariable("commentId") Long commentId,
             @AuthenticationPrincipal PrincipalDetails user) {
-        ApiResponseDto<PatchCommentResponseDto> responseDto = commentService.patchComment(dto, commentId, user);
+        ApiResponseDto<PatchCommentResponseDto> responseDto = commentService.patchComment(dto, boardId, commentId, user);
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
+    /**
+     *   TODO: 댓글 삭제
+     * */
+    @DeleteMapping("/{boardId}/{commentId}")
+    public ResponseEntity<ApiResponseDto<DeleteCommentResponseDto>> deleteComment(
+            @PathVariable("boardId") Long boardId,
+            @PathVariable("commentId") Long commentId,
+            @AuthenticationPrincipal PrincipalDetails user
+    ) {
+        ApiResponseDto<DeleteCommentResponseDto> responseDto = commentService.deleteComment(boardId, commentId, user);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 

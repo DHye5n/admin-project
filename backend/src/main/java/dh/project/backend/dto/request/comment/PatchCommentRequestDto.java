@@ -11,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PatchCommentRequestDto {
 
+    private Long commentId;
 
     @NotBlank
     private String comment;
@@ -19,7 +20,8 @@ public class PatchCommentRequestDto {
 
 
     @Builder
-    public PatchCommentRequestDto(String comment, String modifiedDte) {
+    public PatchCommentRequestDto(Long commentId, String comment, String modifiedDte) {
+        this.commentId = commentId;
         this.comment = comment;
         this.modifiedDate = modifiedDte;
     }

@@ -39,7 +39,7 @@ export default function Aside() {
   const navItems = [
     { icon: homeOutline, title: "Dashboard", path: "/dashboard" },
     { icon: clipboardOutline, title: "Board", path: "/boards/list" },
-    { icon: personOutline, title: "User", path: "/users" },
+    { icon: personOutline, title: "User", path: "/users/profile" },
     { icon: settingsOutline, title: "Setting", path: "/settings" },
   ];
 

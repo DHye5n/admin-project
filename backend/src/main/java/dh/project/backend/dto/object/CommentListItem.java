@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentListItem {
 
+    private Long commentId;
     private String username;
     private String profileImage;
     private String comment;
@@ -21,7 +22,8 @@ public class CommentListItem {
     private String modifiedDate;
 
     @Builder
-    public CommentListItem(String username, String profileImage, String comment, String createdDate, String modifiedDate) {
+    public CommentListItem(Long commentId, String username, String profileImage, String comment, String createdDate, String modifiedDate) {
+        this.commentId = commentId;
         this.username = username;
         this.profileImage = profileImage;
         this.comment = comment;
@@ -31,6 +33,7 @@ public class CommentListItem {
 
     public static CommentListItem fromEntity(CommentEntity comment) {
         return CommentListItem.builder()
+                .commentId(comment.getCommentId())
                 .username(comment.getUser().getUsername())
                 .profileImage(comment.getUser().getProfileImage())
                 .comment(comment.getComment())

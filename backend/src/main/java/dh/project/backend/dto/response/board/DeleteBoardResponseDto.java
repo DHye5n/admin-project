@@ -11,7 +11,7 @@ public class DeleteBoardResponseDto {
 
 
     @Builder
-    public DeleteBoardResponseDto(Long boardId, boolean deleted) {
+    public DeleteBoardResponseDto(Long boardId) {
         this.boardId = boardId;
     }
 

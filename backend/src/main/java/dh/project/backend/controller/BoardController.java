@@ -54,9 +54,9 @@ public class BoardController {
     /**
      *   TODO: 특정 유저 게시물
      * */
-    @GetMapping("/user-board-list/{email}")
-    public ResponseEntity<ApiResponseDto<GetUserBoardListResponseDto>> getUserBoardList(@PathVariable("email") String email) {
-        ApiResponseDto<GetUserBoardListResponseDto> responseDto = boardService.getUserBoardList(email);
+    @GetMapping("/user-board-list")
+    public ResponseEntity<ApiResponseDto<GetUserBoardListResponseDto>> getUserBoardList(@AuthenticationPrincipal PrincipalDetails user) {
+        ApiResponseDto<GetUserBoardListResponseDto> responseDto = boardService.getUserBoardList(user);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 

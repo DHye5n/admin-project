@@ -1,8 +1,7 @@
 import './style.css';
 import LikeItem from 'components/LikeItem';
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
-import { LikeListItem } from 'types/interface';
-import { CommentListItem } from 'types/interface';
+import { Board, CommentListItem, LikeListItem } from 'types/interface';
 import CommentItem from 'components/CommentItem';
 import Pagination from 'components/Pagination';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
@@ -11,7 +10,6 @@ import { IonIcon } from '@ionic/react';
 import useSignInUserStore from 'stores/login-user.store';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AUTH_PATH, BOARD_PATH, BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from 'constant';
-import { Board } from 'types/interface';
 import {
   deleteBoardRequest,
   getBoardRequest,
@@ -24,9 +22,14 @@ import {
 import { ApiResponseDto } from 'apis/response';
 import { useCookies } from 'react-cookie';
 import { formatDate } from 'utils/dateUtils';
-import { ViewCountResponseDto, GetBoardResponseDto } from 'apis/response/board';
-import { GetCommentListResponseDto, GetLikeListResponseDto } from 'apis/response/board';
-import { DeleteBoardResponseDto, PutLikeResponseDto } from 'apis/response/board';
+import {
+  DeleteBoardResponseDto,
+  GetBoardResponseDto,
+  GetLikeListResponseDto,
+  PutLikeResponseDto,
+  ViewCountResponseDto,
+} from 'apis/response/board';
+import { GetCommentListResponseDto } from 'apis/response/comment';
 import PostCommentRequestDto from 'apis/request/comment/post-comment.request.dto';
 import PostCommentResponseDto from 'apis/response/comment/post-comment.response.dto';
 import { usePagination } from 'hooks';
@@ -298,9 +301,29 @@ export default function BoardDetail() {
 
     const [comment, setComment] = useState<string>('');
 
+    const [commentLists, setCommentLists] = useState<CommentListItem[]>([]);
+
     const [totalCommentCount, setTotalCommentCount] = useState<number>(0);
 
+    const [isUpdated, setIsUpdated] = useState(false);
+
     const { currentPage, setCurrentPage, currentSection, setCurrentSection, viewList, viewPageList, totalSection, setTotalList } = usePagination<CommentListItem>(3);
+
+    const updateComment = (updatedComment: CommentListItem) => {
+      setCommentLists(prevComments =>
+        prevComments.map(comment =>
+          comment.commentId === updatedComment.commentId ? updatedComment : comment
+        )
+      );
+      setIsUpdated(true);
+    };
+
+    const deleteComment = (deletedComment: CommentListItem) => {
+      setCommentLists(prevComments =>
+        prevComments.filter(comment => comment.commentId !== deletedComment.commentId)
+      );
+      setIsUpdated(true);
+    };
 
     /**
      *  TODO: event handler: 이벤트 핸들러
@@ -411,9 +434,11 @@ export default function BoardDetail() {
       }
 
       const { commentList } = responseBody.data as GetCommentListResponseDto;
+
       setTotalList(commentList);
       setTotalCommentCount(commentList.length);
-    }
+      setCommentLists(commentList);
+    };
 
     /**
      *  TODO: effect: 함수
@@ -426,7 +451,13 @@ export default function BoardDetail() {
 
       getLikeListRequest(boardId, accessToken).then(getLikeListResponse);
       getCommentListRequest(boardId, accessToken).then(getCommentListResponse);
-    }, []);
+
+      if (!isUpdated) {
+        return;
+      }
+
+      setIsUpdated(false);
+    }, [boardId, isUpdated]);
 
     /**
      *  TODO: render: Board Detail Bottom 렌더링
@@ -489,7 +520,10 @@ export default function BoardDetail() {
               <div className='board-detail-bottom-comment-list-container'>
                 {viewList
                   .map((item, index) => (
-                    <CommentItem key={`${item.username}-${index}`} commentListItem={item} />
+                    <CommentItem key={`${item.username}-${index}`}
+                                 commentListItem={item}
+                                 updateComment={updateComment}
+                                 deleteComment={deleteComment}/>
                   ))}
               </div>
             </div>

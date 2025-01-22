@@ -128,9 +128,9 @@ public interface BoardListViewRepository extends JpaRepository<BoardListViewEnti
                     "    GROUP BY board_id " +
                     ") AS min_image ON b.board_id = min_image.board_id " +
                     "LEFT JOIN image i ON min_image.board_id = i.board_id AND min_image.min_image_id = i.image_id " +
-                    "WHERE u.email = :email " +
+                    "WHERE u.user_id = :userId " +
                     "AND b.deleted_date IS NULL " +
                     "ORDER BY b.created_date DESC",
             nativeQuery = true)
-    List<BoardListViewEntity> findUserBoardList(@Param("email") String email);
+    List<BoardListViewEntity> findUserBoardList(@Param("userId") Long userId);
 }

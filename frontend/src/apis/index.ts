@@ -8,7 +8,6 @@ import {
   GetBoardResponseDto,
   ViewCountResponseDto,
   GetLikeListResponseDto,
-  GetCommentListResponseDto,
   PutLikeResponseDto,
   DeleteBoardResponseDto,
   PatchBoardResponseDto,
@@ -23,6 +22,8 @@ import PostCommentResponseDto from './response/comment/post-comment.response.dto
 import { GetPopularListResponseDto, GetRelationListResponseDto } from './response/search';
 import { PatchUserRequestDto } from './request/user';
 import GetAllBoardListResponseDto from './response/board/get-all-board-list.response.dto';
+import PatchCommentRequestDto from './request/comment/patch-comment.request.dto';
+import { DeleteCommentResponseDto, GetCommentListResponseDto, PatchCommentResponseDto } from './response/comment';
 
 
 const DOMAIN = 'http://localhost:9994';
@@ -42,8 +43,6 @@ const multipartFormData = {
 };
 
 const POST_BOARD_URL = () => `${API_DOMAIN}/boards`;
-
-const DELETE_BOARD_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}`;
 
 const VIEW_COUNT_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/view-counts`;
 
@@ -65,20 +64,6 @@ export const postBoardRequest = async (requestBody: PostBoardRequestDto, accessT
     .catch(error => {
       if (!error.response) return null;
       const responseBody: ApiResponseDto<PostBoardResponseDto> = error.response.data;
-      return responseBody;
-    })
-  return result;
-};
-
-export const deleteBoardRequest = async (boardId: number | string, accessToken: string) => {
-  const result = await axios.delete(DELETE_BOARD_URL(boardId), authorization(accessToken))
-    .then(response => {
-      const responseBody: ApiResponseDto<DeleteBoardResponseDto> = response.data;
-      return responseBody;
-    })
-    .catch(error => {
-      if (!error.response) return null;
-      const responseBody: ApiResponseDto<DeleteBoardResponseDto> = error.response.data;
       return responseBody;
     })
   return result;
@@ -379,9 +364,9 @@ export const getRelationListRequest = async (searchWord: string, accessToken: st
 };
 
 // 유저 게시물 목록
-const GET_USER_BOARD_LIST_URL = (email: string) => `${API_DOMAIN}/boards/user-board-list/${email}`;
-export const getUserBoardListRequest = async (email: string, accessToken: string) => {
-  const result = await axios.get(GET_USER_BOARD_LIST_URL(email), authorization(accessToken))
+const GET_USER_BOARD_LIST_URL = () => `${API_DOMAIN}/boards/user-board-list`;
+export const getUserBoardListRequest = async (accessToken: string) => {
+  const result = await axios.get(GET_USER_BOARD_LIST_URL(), authorization(accessToken))
     .then(response => {
       const responseBody: ApiResponseDto<GetUserBoardListResponseDto> = response.data;
       return responseBody;
@@ -395,9 +380,9 @@ export const getUserBoardListRequest = async (email: string, accessToken: string
 };
 
 // 유저 정보
-const GET_USER_URL = (email: string) => `${API_DOMAIN}/users/${email}`;
-export const getUserRequest = async (email: string, accessToken: string) => {
-  const result = await axios.get(GET_USER_URL(email), authorization(accessToken))
+const GET_USER_URL = () => `${API_DOMAIN}/users/myPage`;
+export const getUserRequest = async (accessToken: string) => {
+  const result = await axios.get(GET_USER_URL(), authorization(accessToken))
     .then(response => {
       const responseBody: ApiResponseDto<GetUserResponseDto> = response.data;
       return responseBody;
@@ -489,6 +474,59 @@ export const patchUserRequest = async (email: string, requestBody: PatchUserRequ
     .catch(error => {
       if (!error.response) return null;
       const responseBody: ApiResponseDto<PatchUserResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+};
+
+// 댓글 수정
+const PATCH_COMMENT_URL = (boardId: number | string, commentId: number | string) => `${API_DOMAIN}/comments/${boardId}/${commentId}`;
+export const patchCommentRequest = async (boardId: number | string, commentId: number | string, requestBody: PatchCommentRequestDto, accessToken: string) => {
+  const result = await axios.patch(PATCH_COMMENT_URL(boardId, commentId), requestBody, authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<PatchCommentResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<PatchCommentResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+};
+
+
+/**
+ *   TODO: Delete 요청
+ * */
+
+// 게시물 삭제
+const DELETE_BOARD_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}`;
+export const deleteBoardRequest = async (boardId: number | string, accessToken: string) => {
+  const result = await axios.delete(DELETE_BOARD_URL(boardId), authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<DeleteBoardResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<DeleteBoardResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+};
+
+// 댓글 삭제
+const DELETE_COMMENT_URL = (boardId: number | string, commentId: number | string) => `${API_DOMAIN}/comments/${boardId}/${commentId}`;
+export const deleteCommentRequest = async (boardId: number | string, commentId: number | string, accessToken: string) => {
+  const result = await axios.delete(DELETE_COMMENT_URL(boardId, commentId), authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<DeleteCommentResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<DeleteCommentResponseDto> = error.response.data;
       return responseBody;
     })
   return result;

@@ -38,9 +38,11 @@ public class UserService {
     /**
      *   TODO: 유저 정보
      * */
-    public ApiResponseDto<GetUserResponseDto> getUser(String email) {
+    public ApiResponseDto<GetUserResponseDto> getUser(PrincipalDetails user) {
 
-        UserEntity userEntity = userRepository.findByEmail(email)
+        Long userId = user.getUserId();
+
+        UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
 
         GetUserResponseDto responseDto = GetUserResponseDto.fromEntity(userEntity);

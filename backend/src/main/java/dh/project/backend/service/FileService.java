@@ -2,7 +2,6 @@ package dh.project.backend.service;
 
 import dh.project.backend.dto.ApiResponseDto;
 import dh.project.backend.enums.ResponseStatus;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -19,7 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-@Slf4j
 @Service
 public class FileService {
 
@@ -73,10 +71,8 @@ public class FileService {
 
         try {
             // 파일 저장
-            log.info("Saving file to: {}", savePath);
             file.transferTo(new File(savePath));
         } catch (IOException e) {
-            log.error("Error during file upload: ", e);
             return ApiResponseDto.failure(ResponseStatus.FILE_UPLOAD_FAIL);
         }
 
@@ -108,7 +104,6 @@ public class FileService {
                     .contentType(MediaType.parseMediaType(mimeType))
                     .body(resource);
         } catch (IOException e) {
-            log.error("Error during file read: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

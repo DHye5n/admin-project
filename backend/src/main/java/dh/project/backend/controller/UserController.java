@@ -33,13 +33,14 @@ public class UserController {
     /**
      *   TODO: 유저 정보
      * */
-    @GetMapping("/{email}")
-    public ResponseEntity<ApiResponseDto<GetUserResponseDto>> getUser(@PathVariable("email") String email) {
-        ApiResponseDto<GetUserResponseDto> responseDto = userService.getUser(email);
+    @GetMapping("/myPage")
+    public ResponseEntity<ApiResponseDto<GetUserResponseDto>> getUser(@AuthenticationPrincipal PrincipalDetails user) {
+        ApiResponseDto<GetUserResponseDto> responseDto = userService.getUser(user);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
     /**
+     *
      *   TODO: 프로필 수정
      * */
     @PatchMapping("/profile/{email}")
