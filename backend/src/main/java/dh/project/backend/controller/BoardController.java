@@ -5,7 +5,6 @@ import dh.project.backend.dto.request.board.PatchBoardRequestDto;
 import dh.project.backend.dto.request.board.PostBoardRequestDto;
 import dh.project.backend.dto.response.board.*;
 import dh.project.backend.service.BoardService;
-import dh.project.backend.service.CommentService;
 import dh.project.backend.service.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,6 @@ import javax.validation.Valid;
 public class BoardController {
 
     private final BoardService boardService;
-    private final CommentService commentService;
 
     /**
      *   TODO: 게시물 작성
@@ -54,9 +52,9 @@ public class BoardController {
     /**
      *   TODO: 특정 유저 게시물
      * */
-    @GetMapping("/user-board-list")
-    public ResponseEntity<ApiResponseDto<GetUserBoardListResponseDto>> getUserBoardList(@AuthenticationPrincipal PrincipalDetails user) {
-        ApiResponseDto<GetUserBoardListResponseDto> responseDto = boardService.getUserBoardList(user);
+    @GetMapping("/user-board-list/{userId}")
+    public ResponseEntity<ApiResponseDto<GetUserBoardListResponseDto>> getUserBoardList(@PathVariable("userId") Long userId) {
+        ApiResponseDto<GetUserBoardListResponseDto> responseDto = boardService.getUserBoardList(userId);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 

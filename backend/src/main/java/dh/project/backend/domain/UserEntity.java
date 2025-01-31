@@ -60,13 +60,17 @@ public class UserEntity extends BaseTime {
     @Column(length = 20)
     private Role role;
 
+    private int followersCount = 0;
+
+    private int followingsCount = 0;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<BoardEntity> boards = new ArrayList<>();
 
     @Builder
     public UserEntity(Long userId, String email, String password, String username, String phone,
                       String zonecode, String address, String addressDetail, String profileImage,
-                      boolean agreedPersonal, Role role) {
+                      boolean agreedPersonal, Role role, int followersCount, int followingsCount) {
         this.userId = userId;
         this.email = email;
         this.password = password;
@@ -78,6 +82,8 @@ public class UserEntity extends BaseTime {
         this.profileImage = profileImage;
         this.agreedPersonal = agreedPersonal;
         this.role = role != null ? role : Role.USER;
+        this.followersCount = followersCount;
+        this.followingsCount = followingsCount;
     }
 
     public void updateUsername(String username) {

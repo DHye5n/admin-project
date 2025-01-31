@@ -208,7 +208,17 @@
   border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
 
-.emphasis { font-weight: bolder; }
+.small-divider {
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 140%;
+}
+
+.emphasis {
+  font-size: 16px;
+  font-weight: bolder;
+}
 
 .word-badge {
   display: inline-flex;

@@ -6,13 +6,17 @@ import BoardItem from 'components/BoardItem';
 import Pagination from 'components/Pagination';
 import { useNavigate } from 'react-router-dom';
 import { AUTH_PATH, MAIN_PATH, SEARCH_PATH } from 'constant';
-import { getLatestBoardListRequest, getPopularListRequest, getTop3BoardListRequest } from 'apis';
+import { getAllUserListRequest, getLatestBoardListRequest, getPopularListRequest, getTop3BoardListRequest } from 'apis';
 import { ApiResponseDto } from 'apis/response';
 import { GetTop3BoardListResponseDto } from 'apis/response/board';
 import { useCookies } from 'react-cookie';
 import { usePagination } from 'hooks';
 import { GetLatestBoardListResponseDto } from 'apis/response/board';
 import { GetPopularListResponseDto } from 'apis/response/search';
+import { UserListItem } from 'types/interface';
+import { GetAllUserListResponseDto } from 'apis/response/user';
+import UserItem from 'components/UserItem';
+import useSignInUserStore from '../../stores/login-user.store';
 
 /**
  *  TODO: component: Main 컴포넌트
@@ -193,6 +197,85 @@ export default function Main() {
     /**
      *  TODO: state: 상태
      * */
+    const [userList, setUserList] = useState<UserListItem[]>([]);
+
+    const [count, setCount] = useState<number>(2);
+
+    const { signInUser, setSignInUser } = useSignInUserStore();
+
+    const {
+      currentPage,
+      setCurrentPage,
+      currentSection,
+      setCurrentSection,
+      viewList,
+      viewPageList,
+      totalSection,
+      setTotalList } = usePagination<UserListItem>(5);
+
+    /**
+     *  TODO: function: 함수
+     * */
+    const getAllUserListResponse = (responseBody: ApiResponseDto<GetAllUserListResponseDto> | null) => {
+      if (!responseBody) return;
+
+      const { code } = responseBody;
+      if (code !== 'SU') {
+        handleApiError(code);
+        return;
+      }
+
+      const { userList } = responseBody.data as GetAllUserListResponseDto;
+
+      const userListFilter = userList.filter((user) => user.userId !== signInUser?.userId);
+
+      setTotalList(userListFilter);
+      setCount(userListFilter.length);
+    };
+
+    /**
+     *  TODO: effect: 마운트 시 실행될 함수
+     * */
+    useEffect(() => {
+      const accessToken = cookie.accessToken;
+      if (!checkLoginStatus(accessToken)) return;
+
+      getAllUserListRequest(accessToken).then(getAllUserListResponse);
+    }, []);
+
+    return (
+      <div id="main-bottom-wrapper">
+        <div className="main-bottom-container">
+          <div className="main-bottom-contents-box">
+            <div className="main-bottom-title">{'유저 리스트'}</div>
+
+            <div className="main-bottom-latest-contents-box">
+              {viewList.map((userListItem) => (
+                <UserItem key={userListItem.userId} userListItem={userListItem} />
+              ))}
+            </div>
+
+          </div>
+
+          <div className="main-bottom-pagination-box">
+            {count !== 0 &&
+              <Pagination currentPage={currentPage} currentSection={currentSection}
+                          setCurrentPage={setCurrentPage} setCurrentSection={setCurrentSection}
+                          viewPageList={viewPageList} totalSection={totalSection} />
+            }
+          </div>
+        </div>
+      </div>
+    )
+  };
+
+  /**
+   *  TODO: component: Main 하단 컴포넌트
+   * */
+  const MainBottom3 = () => {
+    /**
+     *  TODO: state: 상태
+     * */
     const [popularWordList, setPopularWordList] = useState<string[]>([]);
 
     /**
@@ -209,14 +292,14 @@ export default function Main() {
 
       const { popularWordList } = responseBody.data as GetPopularListResponseDto;
       setPopularWordList(popularWordList);
-    }
+    };
 
     /**
      *  TODO: event handler: 클릭 이벤트 처리 함수
      * */
     const onPopularWordClickHandler = (word: string) => {
       navigator(SEARCH_PATH(word));
-    }
+    };
 
     /**
      *  TODO: effect: 마운트 시 실행될 함수
@@ -256,6 +339,7 @@ export default function Main() {
         <MainBottom />
         <MainBottom2 />
       </div>
+      <MainBottom3 />
     </>
   )
 }

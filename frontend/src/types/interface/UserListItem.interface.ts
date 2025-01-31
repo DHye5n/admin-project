@@ -1,10 +1,8 @@
-export default interface User {
+export default interface UserListItem {
   userId: number;
   email: string;
   username: string;
   profileImage: string | null;
-  phone: string;
   followersCount: number;
   followingsCount: number;
-  following: boolean;
 }

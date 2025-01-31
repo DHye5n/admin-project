@@ -93,7 +93,8 @@ public interface BoardListViewRepository extends JpaRepository<BoardListViewEnti
                     "b.view_count AS view_count, " +
                     "DATE_FORMAT(b.created_date, '%Y-%m-%d %H:%i:%s') AS created_date, " +
                     "u.username AS username, " +
-                    "u.profile_image AS profile_image " +
+                    "u.profile_image AS profile_image, " +
+                    "u.user_id AS userId " +
                     "FROM board b " +
                     "INNER JOIN user u ON b.user_id = u.user_id " +
                     "LEFT JOIN ( " +

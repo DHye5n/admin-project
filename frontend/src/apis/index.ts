@@ -2,7 +2,12 @@ import { SignInRequestDto, SignUpRequestDto } from './request/auth';
 import axios from 'axios';
 import { DuplicateCheckResponseDto, SignInResponseDto, SignUpResponseDto } from './response/auth';
 import { ApiResponseDto } from './response';
-import { GetUserResponseDto, PatchUserResponseDto, SignInUserResponseDto } from './response/user';
+import {
+  GetAllUserListResponseDto,
+  GetUserResponseDto,
+  PatchUserResponseDto, PutFollowResponseDto,
+  SignInUserResponseDto,
+} from './response/user';
 import {
   PostBoardResponseDto,
   GetBoardResponseDto,
@@ -45,8 +50,6 @@ const multipartFormData = {
 const POST_BOARD_URL = () => `${API_DOMAIN}/boards`;
 
 const VIEW_COUNT_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/view-counts`;
-
-const PUT_LIKE_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/like`
 
 const POST_COMMENT_URL = (boardId: number | string) => `${API_DOMAIN}/comments/${boardId}/comment`;
 
@@ -102,19 +105,7 @@ export const viewCountRequest = async (boardId: number | string, accessToken: st
   return result;
 };
 
-export const putLikeRequest = async (boardId: number | string, accessToken: string) => {
-  const result = await axios.put(PUT_LIKE_URL(boardId), {}, authorization(accessToken))
-    .then(response => {
-      const responseBody: ApiResponseDto<PutLikeResponseDto> = response.data;
-      return responseBody;
-    })
-    .catch(error => {
-      if (!error.response) return null;
-      const responseBody: ApiResponseDto<PutLikeResponseDto> = error.response.data;
-      return responseBody;
-    })
-  return result;
-};
+
 
 export const postCommentRequest = async (boardId: number | string, requestBody: PostCommentRequestDto, accessToken: string) => {
   const result = await axios.post(POST_COMMENT_URL(boardId), requestBody, authorization(accessToken))
@@ -364,9 +355,9 @@ export const getRelationListRequest = async (searchWord: string, accessToken: st
 };
 
 // 유저 게시물 목록
-const GET_USER_BOARD_LIST_URL = () => `${API_DOMAIN}/boards/user-board-list`;
-export const getUserBoardListRequest = async (accessToken: string) => {
-  const result = await axios.get(GET_USER_BOARD_LIST_URL(), authorization(accessToken))
+const GET_USER_BOARD_LIST_URL = (userId: number | string) => `${API_DOMAIN}/boards/user-board-list/${userId}`;
+export const getUserBoardListRequest = async (userId: number | string, accessToken: string) => {
+  const result = await axios.get(GET_USER_BOARD_LIST_URL(userId), authorization(accessToken))
     .then(response => {
       const responseBody: ApiResponseDto<GetUserBoardListResponseDto> = response.data;
       return responseBody;
@@ -380,9 +371,9 @@ export const getUserBoardListRequest = async (accessToken: string) => {
 };
 
 // 유저 정보
-const GET_USER_URL = () => `${API_DOMAIN}/users/myPage`;
-export const getUserRequest = async (accessToken: string) => {
-  const result = await axios.get(GET_USER_URL(), authorization(accessToken))
+const GET_USER_URL = (userId: number | string) => `${API_DOMAIN}/users/${userId}`;
+export const getUserRequest = async (userId: number | string, accessToken: string) => {
+  const result = await axios.get(GET_USER_URL(userId), authorization(accessToken))
     .then(response => {
       const responseBody: ApiResponseDto<GetUserResponseDto> = response.data;
       return responseBody;
@@ -410,6 +401,22 @@ export const signInUserRequest = async (accessToken: string): Promise<ApiRespons
     });
   return result;
 };
+
+// 유저 리스트
+const GET_USER_LIST_URL = () => `${API_DOMAIN}/users/list`;
+export const getAllUserListRequest = async (accessToken: string) => {
+  const result = await axios.get(GET_USER_LIST_URL(), authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<GetAllUserListResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<GetAllUserListResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+}
 
 // 좋아요 리스트
 const GET_LIKE_LIST_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/likes`;
@@ -464,9 +471,9 @@ export const patchBoardRequest = async (boardId: number | string, requestBody: P
 };
 
 // 프로필 수정
-const PATCH_USER_URL = (email: string) => `${API_DOMAIN}/users/profile/${email}`;
-export const patchUserRequest = async (email: string, requestBody: PatchUserRequestDto, accessToken: string) => {
-  const result = await axios.patch(PATCH_USER_URL(email), requestBody, authorization(accessToken))
+const PATCH_USER_URL = (userId: number | string) => `${API_DOMAIN}/users/profile/${userId}`;
+export const patchUserRequest = async (userId: number | string, requestBody: PatchUserRequestDto, accessToken: string) => {
+  const result = await axios.patch(PATCH_USER_URL(userId), requestBody, authorization(accessToken))
     .then(response => {
       const responseBody: ApiResponseDto<PatchUserResponseDto> = response.data;
       return responseBody;
@@ -495,6 +502,40 @@ export const patchCommentRequest = async (boardId: number | string, commentId: n
   return result;
 };
 
+/**
+ *   TODO: Put 요청
+ * */
+// 좋아요
+const PUT_LIKE_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/like`;
+export const putLikeRequest = async (boardId: number | string, accessToken: string) => {
+  const result = await axios.put(PUT_LIKE_URL(boardId), {}, authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<PutLikeResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<PutLikeResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+};
+
+// 팔로우
+const PUT_FOLLOW_URL = (userId: number | string) => `${API_DOMAIN}/users/follows/${userId}`;
+export const putFollowRequest = async (userId: number | string, accessToken: string) => {
+  const result = await axios.put(PUT_FOLLOW_URL(userId), {}, authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<PutFollowResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<PutFollowResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+};
 
 /**
  *   TODO: Delete 요청

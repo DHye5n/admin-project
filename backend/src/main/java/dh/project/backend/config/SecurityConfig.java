@@ -43,7 +43,7 @@ public class SecurityConfig {
                                         "/file/**", "/files/**", "/error"
                                 ).permitAll()
                                 .antMatchers(
-                                        "/api/v1/users/**",
+                                        "/api/v1/users/**/**",
                                         "/api/v1/users/profile",
                                         "/api/v1/boards/**/**",
                                         "/api/v1/comments/**/**",

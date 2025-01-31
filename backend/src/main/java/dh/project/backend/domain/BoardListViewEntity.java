@@ -41,7 +41,6 @@ public class BoardListViewEntity {
 
     private String profileImage;
 
-
     @Builder
     public BoardListViewEntity(Long boardId, String title, String content, String titleImage, int likeCount,
                                int commentCount, int viewCount, String createdDate,

@@ -8,8 +8,8 @@ import { usePagination } from 'hooks';
 import { BoardListItem } from 'types/interface';
 import { getAllBoardListRequest } from 'apis';
 import { useCookies } from 'react-cookie';
-import { ApiResponseDto } from '../../../apis/response';
-import { GetAllBoardListResponseDto, GetLatestBoardListResponseDto } from '../../../apis/response/board';
+import { ApiResponseDto } from 'apis/response';
+import { GetAllBoardListResponseDto } from 'apis/response/board';
 
 
 /**

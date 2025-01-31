@@ -185,7 +185,7 @@ export default function BoardDetail() {
      * */
     const onUsernameClickHandler = () => {
       if (!board) return;
-      navigator(USER_PATH(':email'));
+      navigator(USER_PATH(':userId'));
     }
 
     const onMoreButtonClickHandler = () => {

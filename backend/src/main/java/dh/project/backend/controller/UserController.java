@@ -2,9 +2,7 @@ package dh.project.backend.controller;
 
 import dh.project.backend.dto.ApiResponseDto;
 import dh.project.backend.dto.request.user.PatchUserRequestDto;
-import dh.project.backend.dto.response.user.GetUserResponseDto;
-import dh.project.backend.dto.response.user.PatchUserResponseDto;
-import dh.project.backend.dto.response.user.SignInUserResponseDto;
+import dh.project.backend.dto.response.user.*;
 import dh.project.backend.service.UserService;
 import dh.project.backend.service.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +31,11 @@ public class UserController {
     /**
      *   TODO: 유저 정보
      * */
-    @GetMapping("/myPage")
-    public ResponseEntity<ApiResponseDto<GetUserResponseDto>> getUser(@AuthenticationPrincipal PrincipalDetails user) {
-        ApiResponseDto<GetUserResponseDto> responseDto = userService.getUser(user);
+    @GetMapping("/{userId}")
+    public ResponseEntity<ApiResponseDto<GetUserResponseDto>> getUser(
+            @AuthenticationPrincipal PrincipalDetails user,
+            @PathVariable("userId") Long userId) {
+        ApiResponseDto<GetUserResponseDto> responseDto = userService.getUser(user, userId);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
@@ -43,13 +43,34 @@ public class UserController {
      *
      *   TODO: 프로필 수정
      * */
-    @PatchMapping("/profile/{email}")
+    @PatchMapping("/profile/{userId}")
     public ResponseEntity<ApiResponseDto<PatchUserResponseDto>> patchProfile(
             @Valid @RequestBody PatchUserRequestDto dto,
-            @PathVariable("email") String email,
+            @PathVariable("userId") Long userId,
             @AuthenticationPrincipal PrincipalDetails user
             ) {
-        ApiResponseDto<PatchUserResponseDto> responseDto = userService.patchProfile(dto, email, user);
+        ApiResponseDto<PatchUserResponseDto> responseDto = userService.patchProfile(dto, userId, user);
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
+    /**
+     *   TODO: 유저 리스트
+     * */
+    @GetMapping("/list")
+    public ResponseEntity<ApiResponseDto<GetAllUserListResponseDto>> getAllUserList() {
+        ApiResponseDto<GetAllUserListResponseDto> responseDto = userService.getAllUserList();
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
+    /**
+     *   TODO: 유저 팔로우
+     * */
+    @PutMapping("/follows/{userId}")
+    public ResponseEntity<ApiResponseDto<PutFollowResponseDto>> toggleFollow(
+            @AuthenticationPrincipal PrincipalDetails user,
+            @PathVariable("userId") Long userId
+    ) {
+        ApiResponseDto<PutFollowResponseDto> responseDto = userService.toggleFollow(user, userId);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 

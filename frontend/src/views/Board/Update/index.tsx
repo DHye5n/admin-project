@@ -4,11 +4,11 @@ import { useBoardStore } from 'stores';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AUTH_PATH, MAIN_PATH } from 'constant';
 import { useCookies } from 'react-cookie';
-import useSignInUserStore from '../../../stores/login-user.store';
-import { getBoardRequest } from '../../../apis';
-import { ApiResponseDto } from '../../../apis/response';
-import { GetBoardResponseDto } from '../../../apis/response/board';
-import { convertUrlsToFile } from '../../../utils';
+import useSignInUserStore from 'stores/login-user.store';
+import { getBoardRequest } from 'apis';
+import { ApiResponseDto } from 'apis/response';
+import { GetBoardResponseDto } from 'apis/response/board';
+import { convertUrlsToFile } from 'utils';
 
 /**
  *  TODO: component: BoardUpdate 컴포넌트

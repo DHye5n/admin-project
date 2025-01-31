@@ -1,21 +1,19 @@
 import './style.css';
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { BoardListItem, User } from 'types/interface';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
 import { data, useNavigate, useParams } from 'react-router-dom';
 import useSignInUserStore from 'stores/login-user.store';
 import Pagination from 'components/Pagination';
 import { usePagination } from 'hooks';
-import { latestBoardListMock } from 'mocks';
 import BoardItem from 'components/BoardItem';
-import { AUTH_PATH, BOARD_PATH, BOARD_WRITE_PATH, MAIN_PATH } from 'constant';
+import { AUTH_PATH, BOARD_PATH, BOARD_WRITE_PATH, MAIN_PATH, USER_PATH } from 'constant';
 import {
   checkUsernameExists,
   fileUploadRequest,
   getUserBoardListRequest,
   getUserRequest,
-  patchUserRequest,
-  signInUserRequest,
+  patchUserRequest, putFollowRequest,
 } from 'apis';
 import { ApiResponseDto } from 'apis/response';
 import { GetUserResponseDto } from 'apis/response/user';
@@ -23,8 +21,9 @@ import { useCookies } from 'react-cookie';
 import { PatchUserRequestDto } from 'apis/request/user';
 import { PatchUserResponseDto } from 'apis/response/user';
 import { IonIcon } from '@ionic/react';
-import { personOutline } from 'ionicons/icons';
+import { personAddOutline, personOutline, personRemoveOutline } from 'ionicons/icons';
 import { GetUserBoardListResponseDto } from 'apis/response/board';
+import { PutFollowResponseDto } from 'apis/response/user';
 
 
 /**
@@ -34,15 +33,15 @@ export default function UserPage() {
   /**
    *  TODO:  state: 상태
    * */
-  const { email } = useParams();
+  const { userId, followId } = useParams();
 
-  const [isMyPage, setMyPage] = useState<boolean>(true);
+  const [isMyPage, setMyPage] = useState<boolean>(false);
 
   const [isAlertShown, setIsAlertShown] = useState<boolean>(false);
 
   const alertTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const { signInUser, setSignInUser } = useSignInUserStore(state => state);
+  const { signInUser, setSignInUser } = useSignInUserStore();
 
   const navigator = useNavigate();
 
@@ -109,9 +108,20 @@ export default function UserPage() {
 
     const [username, setUsername] = useState<string>('');
 
+    const [email, setEmail] = useState<string>('');
+
     const [phone, setPhone] = useState<string>('');
 
+    const [followersCount, setFollowersCount] = useState<number>(0);
+
+    const [followingsCount, setFollowingsCount] = useState<number>(0);
+
+    const [isFollow, setFollow] = useState<boolean>(false);
+
+    const [user, setUser] = useState<User | null>(null);
+
     const [profileImage, setProfileImage] = useState<string | null>(null);
+
 
     const imageInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -124,6 +134,27 @@ export default function UserPage() {
     const [usernameSuccessMessage, setUsernameSuccessMessage] = useState<string>('');
 
     const [usernameButtonIcon, setUsernameButtonIcon] = useState<'person' | 'personError' | 'personSuccess'>('person');
+
+    const formatPhoneNumber = (phone: string) => {
+      const phoneStr = phone.replace(/[^0-9]/g, '');
+
+      if (phoneStr.length === 11) {
+        return phoneStr.replace(/^(\d{3})(\d{4})(\d{1})(\d{3})$/, '$1-$2-$3xxx');
+      }
+      return phone;
+    };
+
+    const formatMyPhoneNumber = (phone: string) => {
+      const phoneStr = phone.replace(/[^0-9]/g, '');
+
+      if (phoneStr.length === 11) {
+        return phoneStr.replace(/^(\d{3})(\d{4})(\d{4})$/, '$1-$2-$3');
+      }
+      return phone;
+    };
+
+    const phoneNumber = '01012345678';
+    console.log(formatPhoneNumber(phoneNumber));
 
     /**
      *  TODO:  function: response 처리 함수
@@ -140,16 +171,24 @@ export default function UserPage() {
         return;
       }
 
-      const { email, username, profileImage, phone } = responseBody.data as GetUserResponseDto;
-      setUsername(username);
-      setProfileImage(profileImage);
-      setPhone(phone);
+      const user: User = { ...responseBody.data as GetUserResponseDto };
 
-      const isMyPage = email === signInUser?.email;
+      setUser(user);
+
+      if (!signInUser) {
+        setMyPage(false);
+        return;
+      }
+      const isMyPage = user.userId === signInUser?.userId;
+      setProfileImage(user.profileImage);
+      setEmail(user.email);
+      setUsername(user.username);
+      setPhone(user.phone);
+      setFollowersCount(user.followersCount);
+      setFollowingsCount(user.followingsCount);
+      setFollow(user.following);
       setMyPage(isMyPage);
-
     };
-
 
     const fileUploadResponse = (responseBody: ApiResponseDto<string> | null) => {
       if (!responseBody || !responseBody.data) {
@@ -161,8 +200,8 @@ export default function UserPage() {
         return;
       }
 
-      if (!email) {
-        console.error("Email is null.");
+      if (!userId) {
+        console.error("userId is null.");
         return;
       }
 
@@ -173,9 +212,7 @@ export default function UserPage() {
       if (username) {
         requestBody.username = username;
       }
-
       setProfileImage(profileImage);
-     
     };
 
     const patchUserResponse = (responseBody: ApiResponseDto<PatchUserResponseDto> | null) => {
@@ -195,10 +232,33 @@ export default function UserPage() {
         });
       }
 
-      getUserRequest(cookie.accessToken).then(getUserResponse);
+      if (!userId) return;
+
+      getUserRequest(userId, cookie.accessToken).then(getUserResponse);
 
       alert('프로필 수정이 완료되었습니다.');
-      navigator(MAIN_PATH());
+      if (!userId) return;
+      navigator(USER_PATH(userId));
+    };
+
+    const putFollowResponse = (responseBody: ApiResponseDto<PutFollowResponseDto> | null) => {
+      console.log("팔로우 응답 수신:", responseBody);
+      if (!responseBody || !responseBody.data) return;
+
+      const accessToken = cookie.accessToken;
+      if (!checkLoginStatus(accessToken)) return;
+
+      const { code } = responseBody;
+      if (code !== 'SU') {
+        handleApiError(code);
+        return;
+      }
+
+      setFollow(responseBody.data?.following);
+
+      if (!userId) return;
+
+      getUserRequest(userId, cookie.accessToken).then(getUserResponse);
 
     };
 
@@ -219,6 +279,7 @@ export default function UserPage() {
     const onProfileImageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
       if (!event.target || !event.target.files || !event.target.files.length) return;
       const file = event.target.files[0];
+
       const data = new FormData();
       data.append('file', file);
 
@@ -269,8 +330,8 @@ export default function UserPage() {
       }
 
       if (Object.keys(requestBody).length > 0) {
-        if (email != null) {
-          patchUserRequest(email, requestBody as PatchUserRequestDto, cookie.accessToken).then(patchUserResponse);
+        if (userId != null) {
+          patchUserRequest(userId, requestBody as PatchUserRequestDto, cookie.accessToken).then(patchUserResponse);
         }
       } else {
         console.log("변경된 내용이 없습니다.");
@@ -304,6 +365,15 @@ export default function UserPage() {
       }
     };
 
+    const onFollowButtonClickHandler = () => {
+      const accessToken = cookie.accessToken;
+      if (!checkLoginStatus(accessToken)) return;
+
+      if (!userId) return;
+
+      putFollowRequest(userId, accessToken).then(putFollowResponse);
+    };
+
     /**
      *  TODO:  effect: 함수
      * */
@@ -312,30 +382,47 @@ export default function UserPage() {
       const accessToken = cookie.accessToken;
       if (!checkLoginStatus(accessToken)) return;
 
-      getUserRequest(accessToken).then(getUserResponse);
-    }, []);
+      if (!userId) return;
+
+      getUserRequest(userId, accessToken).then(getUserResponse);
+    }, [userId]);
 
     /**
      *  TODO:  render: User 상단 컴포넌트 렌더링
      * */
+    if (!user) return <></>;
     return (
       <div id='user-top-wrapper'>
         <div className="user-top-container">
 
           <div className="user-top-top-box">
-            <div className="user-bottom-title">
-              {isMyPage ? '프로필 ' : '게시물 '}
+            <div className="user-top-title">
+              {'프로필'}
             </div>
-
-            <div className="user-bottom-top-move-box" onClick={onSaveButtonClickHandler}>
-              <div className="icon-box">
-                <div className="icon edit-icon"></div>
+            {isMyPage ?
+              <div className="user-profile-edit-box" onClick={onSaveButtonClickHandler}>
+                <div className="icon-box">
+                  <div className="icon edit-icon"></div>
+                </div>
+                <div className="user-side-text">{'프로필 수정'}</div>
+              </div> :
+              <div className="user-follow-box" onClick={onFollowButtonClickHandler}>
+                {isFollow ? (
+                  <div className="user-follow-button">
+                    <IonIcon icon={personRemoveOutline} style={{ width: '16px', height: '16px' }} />
+                    <span className="user-follow-text">언팔로우</span>
+                  </div>
+                ) : (
+                  <div className='user-follow-button'>
+                    <IonIcon icon={personAddOutline} style={{ width: '16px', height: '16px' }} />
+                    <span className="user-follow-text">팔로우</span>
+                  </div>
+                )}
               </div>
-              <div className="user-bottom-side-text">{'프로필 수정'}</div>
-            </div>
+            }
           </div>
 
-          <div className='user-top-information-box'>
+          <div className="user-top-information-box">
             {isMyPage ?
               <div className="user-top-my-profile-image-box" onClick={onProfileBoxClickHandler}>
                 {profileImage !== null ?
@@ -354,8 +441,12 @@ export default function UserPage() {
               </div>
             }
 
-
             <div className="user-top-info-box">
+              <div className='user-top-info-follow-box'>
+                팔로워: {followersCount}
+                <div className="user-top-divider">{'\|'}</div>
+                팔로잉: {followingsCount}
+              </div>
               <div className="user-top-info-email">이메일: {email}</div>
               <div className="user-top-info-username-box">
                 {isMyPage ? (
@@ -392,7 +483,11 @@ export default function UserPage() {
                   <div className="user-top-info-username">아이디: {username}</div>
                 )}
               </div>
-              <div className="user-top-info-phone">핸드폰: {phone}</div>
+              {isMyPage ?
+                <div className="user-top-info-phone">핸드폰: {formatMyPhoneNumber(phone)}</div> :
+                <div className="user-top-info-phone">핸드폰: {formatPhoneNumber(phone)}</div>
+              }
+
             </div>
           </div>
 
@@ -409,6 +504,10 @@ export default function UserPage() {
      *  TODO: state: 상태
      * */
     const [count, setCount] = useState<number>();
+
+    const { userId } = useParams();
+
+    const [username, setUsername] = useState<string>('');
 
     const {
       currentPage,
@@ -446,13 +545,39 @@ export default function UserPage() {
     };
 
     /**
+     *  TODO:  function: response 처리 함수
+     * */
+    const getUserResponse = (responseBody: ApiResponseDto<GetUserResponseDto> | null) => {
+      if (!responseBody) {
+        navigator(MAIN_PATH());
+        return;
+      }
+
+      const { code } = responseBody;
+      if (code !== 'SU') {
+        handleApiError(code);
+        return;
+      }
+
+      const user: User = { ...responseBody.data as GetUserResponseDto };
+
+      setUsername(user.username);
+    };
+
+    /**
      *  TODO: effect: 마운트 시 실행할 함수
      * */
     useEffect(() => {
 
-      getUserBoardListRequest(cookie.accessToken).then(getUserBoardListResponse);
+      const accessToken = cookie.accessToken;
+      if (!checkLoginStatus(accessToken)) return;
 
-    }, []);
+      if (!userId) return;
+
+      getUserBoardListRequest(userId, accessToken).then(getUserBoardListResponse);
+      getUserRequest(userId, accessToken).then(getUserResponse);
+
+    }, [userId]);
 
     /**
      *  TODO:  render: User 하단 컴포넌트 렌더링
@@ -463,15 +588,17 @@ export default function UserPage() {
           <div className='user-bottom-contents-box'>
             <div className="user-bottom-top-box">
               <div className="user-bottom-title">
-                {isMyPage ? '내 게시물 ' : '게시물 '}
+                {isMyPage ? (<>내 게시물 </>) : (
+                  <><span className="emphasis">{username}</span>님의 게시물{' '}</>
+                )}
                 <span className="emphasis">{count}</span>
               </div>
 
-              <div className='user-bottom-top-move-box' onClick={onMoveClickHandler}>
+              <div className='user-board-write-box' onClick={onMoveClickHandler}>
                     <div className="icon-box">
                       <div className="icon edit-icon"></div>
                     </div>
-                    <div className="user-bottom-side-text">{'글 작성'}</div>
+                    <div className="user-side-text">{'글 작성'}</div>
               </div>
             </div>
 

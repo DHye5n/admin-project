@@ -27,7 +27,7 @@ export default function BoardItem({ boardListItem }: Props) {
     return modifiedDate && modifiedDate !== createdDate
       ? `${formatDate(modifiedDate)}`
       : `${formatDate(createdDate)}`;
-  }
+  };
 
   /**
    *  TODO: function: navigate 함수
@@ -49,19 +49,20 @@ export default function BoardItem({ boardListItem }: Props) {
       <div className='board-list-item-main-box'>
         <div className='board-list-item-top'>
           <div className='board-list-item-profile-box'>
-            <div
-              className='board-list-item-profile-image'
+            <div className='board-list-item-profile-image'
               style={{
                 backgroundImage: `url(${profileImage ? profileImage : defaultProfileImage})`,
               }}
             ></div>
           </div>
+
           <div className='board-list-item-write-box'>
             <div className='board-list-item-username'>{username}</div>
             <div className='board-list-item-write-date'>
               {getFormattedDate(createdDate, modifiedDate)}
             </div>
           </div>
+
         </div>
 
         <div className='board-list-item-middle'>

@@ -14,7 +14,7 @@
     gap: 25px;
     padding: 40px 20px;
     width: 100%;
-    height: 100%;
+    height: 300px;
 }
 
 .user-top-information-box {
@@ -31,12 +31,20 @@
     width: 100%;
 }
 
+.user-top-title {
+    color: var(--black);
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 140%;
+    padding: 0 24px;
+}
+
 .user-top-my-profile-image-box {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 120px;
-    height: 120px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     background-color: rgba(217, 217, 217, 1);
     cursor: pointer;
@@ -127,6 +135,16 @@
     top: 100%;
 }
 
+.user-top-info-follow-box {
+    display: flex;
+    align-items: center;
+    color: var(--black);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 140%;
+    gap: 20px;
+}
+
 .user-top-info-email {
     color: var(--black);
     font-size: 12px;
@@ -171,7 +189,7 @@
     justify-content: space-between;
 }
 
-.user-bottom-top-move-box {
+.user-profile-edit-box {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -179,13 +197,38 @@
     cursor: pointer;
 }
 
-.user-bottom-top-move-box:hover {
-    color: rgba(0, 0, 0, 0.5);
+.user-profile-edit-box:hover {color: rgba(0, 0, 0, 0.5);}
+
+.user-board-write-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 24px;
+    cursor: pointer;
 }
+
+.user-board-write-box:hover {color: rgba(0, 0, 0, 0.5);}
+
+.user-follow-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-follow-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 24px;
+    cursor: pointer;
+    gap: 5px;
+}
+
+.user-follow-text:hover {color: rgba(0, 0, 0, 0.5);}
 
 .user-bottom-title {
     color: var(--black);
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     line-height: 140%;
     padding: 0 24px;

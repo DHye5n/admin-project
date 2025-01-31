@@ -11,7 +11,7 @@ import { useCookies } from 'react-cookie';
 import { ApiResponseDto } from 'apis/response';
 import { PatchCommentResponseDto } from 'apis/response/comment';
 import { AUTH_PATH, MAIN_PATH } from 'constant';
-import { DeleteCommentResponseDto } from '../../apis/response/comment';
+import { DeleteCommentResponseDto } from 'apis/response/comment';
 
 
 /**

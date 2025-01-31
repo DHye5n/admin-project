@@ -3,4 +3,5 @@ import { BoardListItem } from 'types/interface';
 
 export default interface GetUserBoardListResponseDto extends ApiResponseDto {
   userBoardList: BoardListItem[];
+  userId: number;
 }

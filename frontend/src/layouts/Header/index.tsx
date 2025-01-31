@@ -166,15 +166,15 @@ export default function Header() {
     /**
      *  TODO: state: USER email path 상태
      * */
-    const { email } = useParams<{ email: string }>();
+    const { userId } = useParams<{ userId: string }>();
 
     /**
      *  TODO: event handler: 마이페이지 버튼 클릭 이벤트 처리 함수
      * */
     const onMyPageButtonClickHandler = () => {
       if (!signInUser) return;
-      const { email } = signInUser;
-      navigator(USER_PATH(email));
+      const { userId } = signInUser;
+      navigator(USER_PATH(userId));
     };
 
     /**
@@ -383,7 +383,7 @@ export default function Header() {
 
           </div>
           {(isBoardWritePage || isBoardUpdatePage) && <UploadButton />}
-          {(isMainPage || isSearchPage || isBoardDetailPage || isUserPage || isBoardWritePage || isBoardUpdatePage) && (
+          {(isMainPage || isSearchPage || isBoardDetailPage || isUserPage || isBoardReadPage || isBoardWritePage || isBoardUpdatePage) && (
             <MyPageButton />
           )}
           {isSignIn && signInUser && (
