@@ -93,4 +93,8 @@ public class UserEntity extends BaseTime {
     public void updateProfileImage(String profileImage) {
         this.profileImage = profileImage;
     }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
 }

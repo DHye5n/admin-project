@@ -9,7 +9,7 @@ import { usePagination } from 'hooks';
 import BoardItem from 'components/BoardItem';
 import { AUTH_PATH, BOARD_PATH, BOARD_WRITE_PATH, MAIN_PATH, USER_PATH } from 'constant';
 import {
-  checkUsernameExists,
+  duplicateUsernameCheck,
   fileUploadRequest,
   getUserBoardListRequest,
   getUserRequest,
@@ -24,6 +24,7 @@ import { IonIcon } from '@ionic/react';
 import { personAddOutline, personOutline, personRemoveOutline } from 'ionicons/icons';
 import { GetUserBoardListResponseDto } from 'apis/response/board';
 import { PutFollowResponseDto } from 'apis/response/user';
+import Modal from 'components/Modal';
 
 
 /**
@@ -122,6 +123,17 @@ export default function UserPage() {
 
     const [profileImage, setProfileImage] = useState<string | null>(null);
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [mode, setMode] = useState<'updatePassword'>('updatePassword');
+
+    const openModal = () => {
+      setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+      setIsModalOpen(false);
+    };
 
     const imageInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -152,9 +164,6 @@ export default function UserPage() {
       }
       return phone;
     };
-
-    const phoneNumber = '01012345678';
-    console.log(formatPhoneNumber(phoneNumber));
 
     /**
      *  TODO:  function: response 처리 함수
@@ -319,6 +328,7 @@ export default function UserPage() {
     };
 
     const onSaveButtonClickHandler = () => {
+      const accessToken = cookie.accessToken;
       const requestBody: Partial<PatchUserRequestDto> = {};
 
       if (profileImage && profileImage !== defaultProfileImage) {
@@ -331,7 +341,7 @@ export default function UserPage() {
 
       if (Object.keys(requestBody).length > 0) {
         if (userId != null) {
-          patchUserRequest(userId, requestBody as PatchUserRequestDto, cookie.accessToken).then(patchUserResponse);
+          patchUserRequest(userId, requestBody as PatchUserRequestDto, accessToken).then(patchUserResponse);
         }
       } else {
         console.log("변경된 내용이 없습니다.");
@@ -340,7 +350,7 @@ export default function UserPage() {
 
     const onUsernameButtonClickHandler = async () => {
 
-      const response = await checkUsernameExists(changeUsername);
+      const response = await duplicateUsernameCheck(changeUsername);
 
       if (!username) {
         alert('아이디를 입력해주세요.');
@@ -447,7 +457,7 @@ export default function UserPage() {
                 <div className="user-top-divider">{'\|'}</div>
                 팔로잉: {followingsCount}
               </div>
-              <div className="user-top-info-email">이메일: {email}</div>
+              <div className="user-top-info-email">*이메일: {email}</div>
               <div className="user-top-info-username-box">
                 {isMyPage ? (
                   <>
@@ -467,7 +477,7 @@ export default function UserPage() {
                         }
                       </div>
                     ) : (
-                      <div className="user-top-info-username">아이디: {username}</div>
+                      <div className="user-top-info-username">*아이디: {username}</div>
                     )}
                     {isUsernameChange && (
                       <div className="icon-button" onClick={onUsernameButtonClickHandler}>
@@ -480,12 +490,26 @@ export default function UserPage() {
                     </div>
                   </>
                 ) : (
-                  <div className="user-top-info-username">아이디: {username}</div>
+                  <div className="user-top-info-username">*아이디: {username}</div>
                 )}
               </div>
               {isMyPage ?
-                <div className="user-top-info-phone">핸드폰: {formatMyPhoneNumber(phone)}</div> :
-                <div className="user-top-info-phone">핸드폰: {formatPhoneNumber(phone)}</div>
+                <div className="user-top-info-phone">*핸드폰: {formatMyPhoneNumber(phone)}</div> :
+                <div className="user-top-info-phone">*핸드폰: {formatPhoneNumber(phone)}</div>
+              }
+
+              {isMyPage ?
+                <div className='user-top-info-update-box'>
+                  <div className="user-top-info-password-update" onClick={() => openModal()}>
+                    *비밀번호 변경
+                    <div className="icon-button" onClick={() => openModal()}>
+                      <div className="icon edit-icon"></div>
+                    </div>
+                  </div>
+                  {isModalOpen && <Modal isOpen={isModalOpen} mode={mode} onClose={closeModal} />}
+                </div>
+                :
+                <></>
               }
 
             </div>

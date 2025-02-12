@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
@@ -33,6 +34,23 @@ public class EmailCodeService {
         int code = random.nextInt((int) Math.pow(10, CODE_LENGTH));
 
         return String.format("%0" + CODE_LENGTH + "d", code);
+    }
+
+    /**
+     *   ✅ TODO: 임시 비밀번호 생성
+     * */
+    public String generateTemporaryPassword() {
+        int length = 10;
+        String charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder();
+
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(charSet.length());
+            password.append(charSet.charAt(index));
+        }
+
+        return password.toString();
     }
 
     /**

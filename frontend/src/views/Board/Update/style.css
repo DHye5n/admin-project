@@ -20,6 +20,12 @@
     gap: 40px;
 }
 
+.board-write-upload-box {
+    min-height: 30px;
+    display: flex;
+    justify-content: flex-end;
+}
+
 .board-update-title-box {
     width: 100%;
 }
@@ -63,8 +69,8 @@
 }
 
 .board-update-image-box {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     position: relative;
     flex: 0 0 auto;
 }

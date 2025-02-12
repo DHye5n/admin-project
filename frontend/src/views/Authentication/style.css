@@ -182,3 +182,12 @@
     text-align: center;
     letter-spacing: -1.2px;
 }
+
+
+/* 모달 CSS */
+.find-pwd-text {
+    color: rgba(0, 0, 0, 1);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 140%;
+}

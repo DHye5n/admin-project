@@ -1,12 +1,10 @@
 package dh.project.backend.controller;
 
 import dh.project.backend.dto.ApiResponseDto;
-import dh.project.backend.dto.request.auth.EmailCodeRequestDto;
-import dh.project.backend.dto.request.auth.SignInRequestDto;
-import dh.project.backend.dto.request.auth.SignUpRequestDto;
-import dh.project.backend.dto.response.auth.DuplicateCheckResponseDto;
+import dh.project.backend.dto.request.auth.*;
 import dh.project.backend.dto.response.auth.SignInResponseDto;
 import dh.project.backend.dto.response.auth.SignUpResponseDto;
+import dh.project.backend.dto.response.auth.UserCheckResponseDto;
 import dh.project.backend.service.auth.AuthService;
 import dh.project.backend.service.auth.EmailCodeService;
 import lombok.RequiredArgsConstructor;
@@ -72,23 +70,45 @@ public class AuthController {
      *   TODO: 이메일 중복 체크
      * */
     @GetMapping("/check-email")
-    public ResponseEntity<ApiResponseDto<DuplicateCheckResponseDto>> checkEmailExists (@RequestParam String email) {
-        ApiResponseDto<DuplicateCheckResponseDto> responseDto = authService.checkEmailExists(email);
+    public ResponseEntity<ApiResponseDto<UserCheckResponseDto>> checkEmailExists (@RequestParam String email) {
+        ApiResponseDto<UserCheckResponseDto> responseDto = authService.checkEmailExists(email);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
     /**
      *   TODO: 아이디 중복 체크
      * */
-    @GetMapping("/username/{username}/exists")
-    public ResponseEntity<ApiResponseDto<DuplicateCheckResponseDto>> checkUsernameExists (@PathVariable String username) {
-        ApiResponseDto<DuplicateCheckResponseDto> responseDto = authService.checkUsernameExists(username);
+    @GetMapping("/username/{username}/duplicates")
+    public ResponseEntity<ApiResponseDto<UserCheckResponseDto>> duplicateUsernameCheck (@PathVariable String username) {
+        ApiResponseDto<UserCheckResponseDto> responseDto = authService.duplicateUsernameCheck(username);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<ApiResponseDto<SignInResponseDto>> refresh(@RequestHeader("Authorization") String refreshToken) {
-        ApiResponseDto<SignInResponseDto> responseDto = authService.refreshAccessToken(refreshToken);
+    /**
+     *   TODO: 아이디 존재 여부 체크
+     * */
+    @GetMapping("/username/{username}/exists")
+    public ResponseEntity<ApiResponseDto<UserCheckResponseDto>> existUsernameCheck (@PathVariable String username) {
+        ApiResponseDto<UserCheckResponseDto> responseDto = authService.existUsernameCheck(username);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
+
+    /**
+     *   TODO: 비밀번호 찾기(email, username, 인증코드) 검증
+     * */
+    @PostMapping("/find-password")
+    public ResponseEntity<ApiResponseDto<Boolean>> findPassword(@RequestBody FindPasswordRequestDto dto) {
+        ApiResponseDto<Boolean> responseDto = authService.findPassword(dto);
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
+    /**
+     *   TODO: 아이디 찾기(email, 인증코드) 검증
+     * */
+    @PostMapping("/find-username")
+    public ResponseEntity<ApiResponseDto<Boolean>> findUsername(@RequestBody FindUsernameRequestDto dto) {
+        ApiResponseDto<Boolean> responseDto = authService.findUsername(dto);
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
 }

@@ -1,14 +1,16 @@
 import './style.css';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useBoardStore } from 'stores';
-import { useNavigate, useParams } from 'react-router-dom';
-import { AUTH_PATH, MAIN_PATH } from 'constant';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_PATH, MAIN_PATH } from 'constant';
 import { useCookies } from 'react-cookie';
 import useSignInUserStore from 'stores/login-user.store';
-import { getBoardRequest } from 'apis';
+import { fileUploadRequest, getBoardRequest, patchBoardRequest } from 'apis';
 import { ApiResponseDto } from 'apis/response';
 import { GetBoardResponseDto } from 'apis/response/board';
 import { convertUrlsToFile } from 'utils';
+import { PatchBoardResponseDto} from 'apis/response/board';
+import { PatchBoardRequestDTO } from 'apis/request/board';
 
 /**
  *  TODO: component: BoardUpdate 컴포넌트
@@ -35,6 +37,8 @@ export default function BoardUpdate() {
   const [cookie, setCookie] = useCookies();
 
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+
+  const { pathname } = useLocation();
 
   const handleApiError = (code: string) => {
     switch (code) {
@@ -145,7 +149,7 @@ export default function BoardUpdate() {
 
     if (!imageInputRef.current) return;
     imageInputRef.current.value = '';
-  }
+  };
   
   /**
    *  TODO:  event handler: 버튼 클릭 이벤트 처리
@@ -153,7 +157,7 @@ export default function BoardUpdate() {
   const onImageUploadButtonClickHandler = () => {
     if (!imageInputRef.current) return;
     imageInputRef.current.click();
-  }
+  };
 
   const onImageCloseButtonClickHandler = (deleteIndex: number) => {
     if (!imageInputRef.current) return;
@@ -164,7 +168,99 @@ export default function BoardUpdate() {
 
     const newBoardImageFileList = boardImageFileList.filter((filter, index) => index !== deleteIndex);
     setBoardImageFileList(newBoardImageFileList);
-  }
+  };
+
+  /**
+   *  TODO: component: 업로드 버튼 컴포넌트
+   * */
+  const UploadButton = () => {
+    /**
+     *  TODO: state: 게시물 상태
+     * */
+    const { title, content, boardImageFileList, resetBoard } = useBoardStore();
+
+    const { boardId } = useParams();
+
+    /**
+     *  TODO: function: board patch response 처리 함수
+     * */
+    const patchBoardResponse = (responseBody: PatchBoardResponseDto | ApiResponseDto<PatchBoardResponseDto> | null) => {
+      if (!responseBody) return;
+
+      const { code } = responseBody;
+
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code === 'AF' || code === 'NFU') navigator(AUTH_PATH());
+      if (code === 'VF') alert('제목과 내용은 필수입니다.');
+      if (code === 'NFB') alert('게시물이 존재하지 않습니다.');
+      if (code !== 'SU') return;
+
+      if (!boardId) return;
+      navigator(BOARD_PATH() + '/' + BOARD_DETAIL_PATH(boardId));
+    };
+
+    /**
+     *  TODO: event handler: 업로드 버튼 클릭 이벤트 처리 함수
+     * */
+    const onUploadButtonClickHandler = async () => {
+      const accessToken = cookie.accessToken;
+      if (!accessToken) return;
+
+      if (!title || title.trim() === "") {
+        alert('제목은 필수 입력사항입니다.');
+        return;
+      }
+
+      if (!content || content.trim() === "") {
+        alert('내용은 필수 입력사항입니다.');
+        return;
+      }
+
+      if (boardImageFileList.length === 0) {
+        alert('이미지는 필수 입력사항입니다.');
+        return;
+      }
+
+      const boardImageList: string[] = [];
+
+      for (const file of boardImageFileList) {
+        const data = new FormData();
+        data.append('file', file);
+
+        const url = await fileUploadRequest(data, accessToken);
+
+        if (url && url.data) {
+          console.log("URL successfully uploaded:", url.data);
+          boardImageList.push(url.data);
+        } else {
+          console.log("No URL data in the response.");
+        }
+      }
+
+      if (!boardId) return;
+      const requestBody: PatchBoardRequestDTO = {
+        title, content, boardImageList
+      };
+
+      patchBoardRequest(boardId, requestBody, accessToken).then(patchBoardResponse);
+
+    };
+
+    /**
+     *  TODO: render: 업로드 버튼 컴포넌트 렌더링
+     * */
+    if (title && content && boardImageFileList.length > 0)
+      return (
+        <div className='blue-button' onClick={onUploadButtonClickHandler}>
+          {'업로드'}
+        </div>
+      );
+
+    /**
+     *  TODO: render: 업로드 불가 버튼 컴포넌트 렌더링
+     * */
+    return <div className='disable-button'>{'업로드'}</div>;
+  };
 
   /**
    *  TODO:  effect: 마운트 시 실행할 함수
@@ -185,9 +281,12 @@ export default function BoardUpdate() {
     <div id='board-update-wrapper'>
       <div className='board-update-container'>
         <div className='board-update-box'>
+          <div className='board-write-upload-box'>
+            <UploadButton />
+          </div>
           <div className='board-update-title-box'>
             <textarea ref={titleRef} className='board-update-title-textarea' placeholder='제목을 작성해주세요.'
-                   value={title} onChange={onTitleChangeHandler} rows={1} />
+                      value={title} onChange={onTitleChangeHandler} rows={1} />
           </div>
 
           <div className='divider'></div>
@@ -199,7 +298,7 @@ export default function BoardUpdate() {
               <div className='icon image-box-light-icon'></div>
             </div>
             <input ref={imageInputRef} type='file' multiple accept='image/*' style={{ display: 'none' }}
-                   onChange={onImageChangeHandler}/>
+                   onChange={onImageChangeHandler} />
           </div>
 
           <div className='board-update-images-box'>

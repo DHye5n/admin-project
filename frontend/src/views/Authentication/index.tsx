@@ -1,10 +1,10 @@
 import './style.css';
-import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import InputBox from 'components/InputBox';
 import { SignInRequestDto } from 'apis/request/auth';
 import {
   checkEmailExists,
-  checkUsernameExists,
+  duplicateUsernameCheck,
   resendVerificationCode,
   sendVerificationCode,
   signInRequest,
@@ -20,6 +20,7 @@ import { SignUpRequestDto } from 'apis/request/auth';
 import { SignUpResponseDto } from 'apis/response/auth';
 import { IonIcon } from '@ionic/react';
 import { checkmarkCircle, checkmarkCircleOutline } from 'ionicons/icons';
+import Modal from 'components/Modal';
 
 /**
  *   TODO:  component: Main Authentication 컴포넌트
@@ -95,6 +96,19 @@ function SignInCard() {
 
   const [passwordButtonIcon, setPasswordButtonIcon] = useState<'eyeOff' | 'eyeOn'>('eyeOff');
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [mode, setMode] = useState<'findPassword' | 'findUsername'>('findPassword');
+
+  const openModal = (type: 'findPassword' | 'findUsername') => {
+    setMode(type);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   /**
    *   TODO:  state: 에러 상태
    */
@@ -104,6 +118,8 @@ function SignInCard() {
    *   TODO:  state: 아이디 저장 상태
    */
   const [rememberMe, setRememberMe] = useState<boolean>(false);
+
+
 
   /**
    *   TODO:  effect: 컴포넌트 마운트 시 localStorage에서 아이디 불러오기
@@ -256,9 +272,10 @@ function SignInCard() {
             </div>
             <div className="find-id-pwd-box">
               <div> |</div>
-              <div className='find-id-link'>{'아이디 찾기'}</div>
+              <div className='find-id-link' onClick={() => openModal('findUsername')}>{'아이디 찾기'}</div>
               <div> |</div>
-              <div className='find-pwd-link'>{'비밀번호 찾기'}</div>
+              <div className='find-pwd-link' onClick={() => openModal('findPassword')}>{'비밀번호 찾기'}</div>
+              {isModalOpen && <Modal isOpen={isModalOpen} mode={mode} onClose={closeModal} />}
             </div>
           </div>
         </div>
@@ -682,6 +699,8 @@ function SignUpCard() {
       setEmailButtonIcon('email');
       return;
     }
+
+    // 이메일 버튼 상태가 기본 상태인 'email'일 때
     if (emailButtonIcon === 'email') {
       // 이메일 중복 체크
       const response = await checkEmailExists(email);
@@ -706,21 +725,26 @@ function SignUpCard() {
       } else {
         alert('이메일 중복 체크에 실패했습니다.');
       }
-    } else if (emailButtonIcon === 'emailSuccess' || emailButtonIcon === 'emailError') {
+    }
+
+    // 이메일 인증 코드 발송 후 상태 처리
+    else if (emailButtonIcon === 'emailSuccess' || emailButtonIcon === 'emailError') {
       // 인증 코드 발송
       const sendCodeResponse = await sendVerificationCode(email);
       if (sendCodeResponse && sendCodeResponse.code === 'SU') {
         alert('인증 코드가 발송되었습니다.');
-        setEmailButtonIcon('email');
+        setEmailButtonIcon('email'); // 상태 초기화
       } else {
         alert('인증 코드 발송에 실패했습니다.');
       }
-    } else if (emailButtonIcon === 'emailSuccess') {
-      // 인증 코드 재발송
+    }
+
+    // 인증 코드 재발송 (이메일 인증 성공 상태)
+    else if (emailButtonIcon === 'emailSuccess') {
       const resendResponse = await resendVerificationCode(email);
       if (resendResponse && resendResponse.code === 'SU') {
         alert('인증 코드가 재발송되었습니다.');
-        setEmailButtonIcon('email');
+        setEmailButtonIcon('email'); // 상태 초기화
       } else {
         alert('인증 코드 재발송에 실패했습니다.');
       }
@@ -768,7 +792,7 @@ function SignUpCard() {
 
   const onUsernameButtonClickHandler = async () => {
 
-    const response = await checkUsernameExists(username);
+    const response = await duplicateUsernameCheck(username);
 
     if (!username) {
       alert('아이디를 입력해주세요.');

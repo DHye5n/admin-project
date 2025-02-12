@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 public class PatchUserRequestDto {
 
     private Long userId;
-
     private String username;
-
     private String profileImage;
 
     @Builder

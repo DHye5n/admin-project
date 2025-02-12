@@ -1,0 +1,22 @@
+.modal-content-body-input-box {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.modal-content-body-success-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--black);
+    text-align: center;
+    height: 250px;
+}
+
+.modal-content-body-success-text span {
+    color: var(--black);
+    font-size: 20px;
+}

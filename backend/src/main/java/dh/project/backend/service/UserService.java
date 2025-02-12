@@ -5,6 +5,7 @@ import dh.project.backend.domain.UserEntity;
 import dh.project.backend.domain.UserListViewEntity;
 import dh.project.backend.dto.ApiResponseDto;
 import dh.project.backend.dto.object.UserListItem;
+import dh.project.backend.dto.request.user.PatchPasswordRequestDto;
 import dh.project.backend.dto.request.user.PatchUserRequestDto;
 import dh.project.backend.dto.response.user.*;
 import dh.project.backend.enums.ResponseStatus;
@@ -15,6 +16,7 @@ import dh.project.backend.repository.UserRepository;
 import dh.project.backend.service.principal.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,9 +28,10 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-
     private final UserListViewRepository userListViewRepository;
     private final FollowRepository followRepository;
+    private final PasswordEncoder passwordEncoder;
+
 
     /**
      *   TODO: 로그인 유저 정보
@@ -187,5 +190,47 @@ public class UserService {
         PutFollowResponseDto responseDto = PutFollowResponseDto.fromEntity(userEntity, isFollowing);
 
         return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
-    };
+    }
+
+    /**
+     *   TODO: 비밀번호 변경
+     * */
+    @PreAuthorize("isAuthenticated()")
+    @Transactional
+    public ApiResponseDto<PatchPasswordResponseDto> patchPassword(PatchPasswordRequestDto dto, Long userId, PrincipalDetails user) {
+
+        if (user == null) {
+            throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
+        }
+
+        if (!user.getUserId().equals(userId)) {
+            throw new ErrorException(ResponseStatus.NO_PERMISSION);
+        }
+
+        try {
+            UserEntity userEntity = userRepository.findById(userId)
+                    .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
+
+            // 비밀번호가 일치하는지 체크
+            if (!dto.isNewPasswordMatching()) {
+                throw new ErrorException(ResponseStatus.PASSWORD_MISMATCH);
+            }
+
+            // 비밀번호 암호화
+            String encodedPassword = passwordEncoder.encode(dto.getNewPassword());
+            userEntity.updatePassword(encodedPassword);
+
+            // 비밀번호 수정 후 사용자 정보 저장
+            userRepository.save(userEntity);
+
+            PatchPasswordResponseDto responseDto = PatchPasswordResponseDto.fromEntity(userEntity);
+
+            return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErrorException(ResponseStatus.DATABASE_ERROR);
+        }
+    }
+
 }

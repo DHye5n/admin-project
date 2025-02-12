@@ -18,15 +18,8 @@ import {
   USER_PATH,
 } from 'constant';
 import { useCookies } from 'react-cookie';
-import { useBoardStore } from 'stores';
 import useSignInUserStore from 'stores/login-user.store';
-import { fileUploadRequest, patchBoardRequest, postBoardRequest } from 'apis';
-import { PostBoardRequestDto } from 'apis/request/board';
-import { PostBoardResponseDto } from 'apis/response/board';
-import { ApiResponseDto } from 'apis/response';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
-import { PatchBoardRequestDTO } from 'apis/request/board';
-import { PatchBoardResponseDto } from 'apis/response/board';
 import { closeOutline, searchOutline } from 'ionicons/icons';
 import { IonIcon } from '@ionic/react';
 
@@ -205,125 +198,6 @@ export default function Header() {
   };
 
   /**
-   *  TODO: component: 업로드 버튼 컴포넌트
-   * */
-  const UploadButton = () => {
-    /**
-     *  TODO: state: 게시물 상태
-     * */
-    const { title, content, boardImageFileList, resetBoard } = useBoardStore();
-
-    const { boardId } = useParams();
-
-    /**
-     *  TODO: function: board post response 처리 함수
-     * */
-    const postBoardResponse = (responseBody: PostBoardResponseDto | ApiResponseDto<PostBoardResponseDto> | null) => {
-      if (!responseBody) return;
-
-      const { code } = responseBody;
-
-      if (code === 'DBE') alert('데이터베이스 오류입니다.');
-      if (code === 'AF' || code === 'NFU') navigator(AUTH_PATH());
-      if (code === 'VF') alert('제목과 내용은 필수입니다.');
-      if (code !== 'SU') return;
-
-      resetBoard();
-
-      if (!signInUser) return;
-      navigator(MAIN_PATH());
-    }
-
-    /**
-     *  TODO: function: board patch response 처리 함수
-     * */
-    const patchBoardResponse = (responseBody: PatchBoardResponseDto | ApiResponseDto<PatchBoardResponseDto> | null) => {
-      if (!responseBody) return;
-
-      const { code } = responseBody;
-
-      if (code === 'DBE') alert('데이터베이스 오류입니다.');
-      if (code === 'AF' || code === 'NFU') navigator(AUTH_PATH());
-      if (code === 'VF') alert('제목과 내용은 필수입니다.');
-      if (code === 'NFB') alert('게시물이 존재하지 않습니다.');
-      if (code !== 'SU') return;
-
-      if (!boardId) return;
-      navigator(BOARD_PATH() + '/' + BOARD_DETAIL_PATH(boardId));
-    }
-
-    /**
-     *  TODO: event handler: 업로드 버튼 클릭 이벤트 처리 함수
-     * */
-    const onUploadButtonClickHandler = async () => {
-      const accessToken = cookie.accessToken;
-      if (!accessToken) return;
-
-      if (!title || title.trim() === "") {
-        alert('제목은 필수 입력사항입니다.');
-        return;
-      }
-
-      if (!content || content.trim() === "") {
-        alert('내용은 필수 입력사항입니다.');
-        return;
-      }
-
-      if (boardImageFileList.length === 0) {
-        alert('이미지는 필수 입력사항입니다.');
-        return;
-      }
-
-      const boardImageList: string[] = [];
-
-      for (const file of boardImageFileList) {
-        const data = new FormData();
-        data.append('file', file);
-
-        const url = await fileUploadRequest(data, accessToken);
-
-        if (url && url.data) {
-          console.log("URL successfully uploaded:", url.data);
-          boardImageList.push(url.data);
-        } else {
-          console.log("No URL data in the response.");
-        }
-      }
-
-      const isWriterPage = pathname === BOARD_PATH() + '/' + BOARD_WRITE_PATH();
-      if (isWriterPage) {
-        const requestBody: PostBoardRequestDto = {
-          title, content, boardImageList
-        };
-
-        postBoardRequest(requestBody, accessToken).then(postBoardResponse);
-      } else {
-        if (!boardId) return;
-        const requestBody: PatchBoardRequestDTO = {
-          title, content, boardImageList
-        };
-
-        patchBoardRequest(boardId, requestBody, accessToken).then(patchBoardResponse);
-      }
-    };
-
-    /**
-     *  TODO: render: 업로드 버튼 컴포넌트 렌더링
-     * */
-    if (title && content && boardImageFileList.length > 0)
-      return (
-        <div className='blue-button' onClick={onUploadButtonClickHandler}>
-          {'업로드'}
-        </div>
-      );
-
-    /**
-     *  TODO: render: 업로드 불가 버튼 컴포넌트 렌더링
-     * */
-    return <div className='disable-button'>{'업로드'}</div>;
-  };
-
-  /**
    *  TODO:  effect: path가 변경될 때마다 실행될 함수
    * */
   useEffect(() => {
@@ -382,7 +256,6 @@ export default function Header() {
           <div className='popular-keyword-box'>
 
           </div>
-          {(isBoardWritePage || isBoardUpdatePage) && <UploadButton />}
           {(isMainPage || isSearchPage || isBoardDetailPage || isUserPage || isBoardReadPage || isBoardWritePage || isBoardUpdatePage) && (
             <MyPageButton />
           )}

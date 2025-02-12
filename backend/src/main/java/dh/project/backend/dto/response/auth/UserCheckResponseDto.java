@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class DuplicateCheckResponseDto {
+public class UserCheckResponseDto {
 
     private final boolean exist;
 

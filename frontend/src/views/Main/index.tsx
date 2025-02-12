@@ -269,65 +269,65 @@ export default function Main() {
     )
   };
 
-  /**
-   *  TODO: component: Main 하단 컴포넌트
-   * */
-  const MainBottom3 = () => {
-    /**
-     *  TODO: state: 상태
-     * */
-    const [popularWordList, setPopularWordList] = useState<string[]>([]);
-
-    /**
-     *  TODO: function: 함수
-     * */
-    const getPopularListResponse = (responseBody: ApiResponseDto<GetPopularListResponseDto> | null) => {
-      if (!responseBody) return;
-
-      const { code } = responseBody;
-      if (code !== 'SU') {
-        handleApiError(code);
-        return;
-      }
-
-      const { popularWordList } = responseBody.data as GetPopularListResponseDto;
-      setPopularWordList(popularWordList);
-    };
-
-    /**
-     *  TODO: event handler: 클릭 이벤트 처리 함수
-     * */
-    const onPopularWordClickHandler = (word: string) => {
-      navigator(SEARCH_PATH(word));
-    };
-
-    /**
-     *  TODO: effect: 마운트 시 실행될 함수
-     * */
-    useEffect(() => {
-      const accessToken = cookie.accessToken;
-      if (!checkLoginStatus(accessToken)) return;
-
-      getPopularListRequest(accessToken).then(getPopularListResponse);
-    }, []);
-
-    return (
-      <div id='main-bottom-wrapper'>
-        <div className='main-bottom-container'>
-          <div className="main-bottom-contents-box">
-            <div className="main-bottom-title">{'인기 검색어'}</div>
-
-            <div className='main-bottom-popular-card'>
-              <div className="main-bottom-popular-contents-box">
-                {popularWordList.map(word => <div className="word-badge" onClick={() => onPopularWordClickHandler(word)}>{word}</div>)}
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    )
-  };
+  // /**
+  //  *  TODO: component: Main 하단 컴포넌트
+  //  * */
+  // const MainBottom3 = () => {
+  //   /**
+  //    *  TODO: state: 상태
+  //    * */
+  //   const [popularWordList, setPopularWordList] = useState<string[]>([]);
+  //
+  //   /**
+  //    *  TODO: function: 함수
+  //    * */
+  //   const getPopularListResponse = (responseBody: ApiResponseDto<GetPopularListResponseDto> | null) => {
+  //     if (!responseBody) return;
+  //
+  //     const { code } = responseBody;
+  //     if (code !== 'SU') {
+  //       handleApiError(code);
+  //       return;
+  //     }
+  //
+  //     const { popularWordList } = responseBody.data as GetPopularListResponseDto;
+  //     setPopularWordList(popularWordList);
+  //   };
+  //
+  //   /**
+  //    *  TODO: event handler: 클릭 이벤트 처리 함수
+  //    * */
+  //   const onPopularWordClickHandler = (word: string) => {
+  //     navigator(SEARCH_PATH(word));
+  //   };
+  //
+  //   /**
+  //    *  TODO: effect: 마운트 시 실행될 함수
+  //    * */
+  //   useEffect(() => {
+  //     const accessToken = cookie.accessToken;
+  //     if (!checkLoginStatus(accessToken)) return;
+  //
+  //     getPopularListRequest(accessToken).then(getPopularListResponse);
+  //   }, []);
+  //
+  //   return (
+  //     <div id='main-bottom-wrapper'>
+  //       <div className='main-bottom-container'>
+  //         <div className="main-bottom-contents-box">
+  //           <div className="main-bottom-title">{'인기 검색어'}</div>
+  //
+  //           <div className='main-bottom-popular-card'>
+  //             <div className="main-bottom-popular-contents-box">
+  //               {popularWordList.map(word => <div className="word-badge" onClick={() => onPopularWordClickHandler(word)}>{word}</div>)}
+  //             </div>
+  //           </div>
+  //
+  //         </div>
+  //       </div>
+  //     </div>
+  //   )
+  // };
 
   /**
    *  TODO:  render: Main 컴포넌트 렌더링
@@ -339,7 +339,7 @@ export default function Main() {
         <MainBottom />
         <MainBottom2 />
       </div>
-      <MainBottom3 />
+      {/*<MainBottom3 />*/}
     </>
   )
 }

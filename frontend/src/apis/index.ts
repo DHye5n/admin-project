@@ -1,10 +1,10 @@
 import { SignInRequestDto, SignUpRequestDto } from './request/auth';
 import axios from 'axios';
-import { DuplicateCheckResponseDto, SignInResponseDto, SignUpResponseDto } from './response/auth';
+import { UserCheckResponseDto, SignInResponseDto, SignUpResponseDto } from './response/auth';
 import { ApiResponseDto } from './response';
 import {
   GetAllUserListResponseDto,
-  GetUserResponseDto,
+  GetUserResponseDto, PatchPasswordResponseDto,
   PatchUserResponseDto, PutFollowResponseDto,
   SignInUserResponseDto,
 } from './response/user';
@@ -25,7 +25,7 @@ import { PatchBoardRequestDTO, PostBoardRequestDto } from './request/board';
 import PostCommentRequestDto from './request/comment/post-comment.request.dto';
 import PostCommentResponseDto from './response/comment/post-comment.response.dto';
 import { GetPopularListResponseDto, GetRelationListResponseDto } from './response/search';
-import { PatchUserRequestDto } from './request/user';
+import { PatchPasswordRequestDto, PatchUserRequestDto } from './request/user';
 import GetAllBoardListResponseDto from './response/board/get-all-board-list.response.dto';
 import PatchCommentRequestDto from './request/comment/patch-comment.request.dto';
 import { DeleteCommentResponseDto, GetCommentListResponseDto, PatchCommentResponseDto } from './response/comment';
@@ -47,8 +47,6 @@ const multipartFormData = {
   }
 };
 
-const POST_BOARD_URL = () => `${API_DOMAIN}/boards`;
-
 const VIEW_COUNT_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/view-counts`;
 
 const POST_COMMENT_URL = (boardId: number | string) => `${API_DOMAIN}/comments/${boardId}/comment`;
@@ -57,20 +55,7 @@ const FILE_DOMAIN = `${DOMAIN}/files`;
 
 const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
 
-// 게시물 작성
-export const postBoardRequest = async (requestBody: PostBoardRequestDto, accessToken: string): Promise<ApiResponseDto<PostBoardResponseDto> | null> => {
-  const result = await axios.post(POST_BOARD_URL(), requestBody, authorization(accessToken))
-    .then(response => {
-      const responseBody: PostBoardResponseDto = response.data;
-      return responseBody;
-    })
-    .catch(error => {
-      if (!error.response) return null;
-      const responseBody: ApiResponseDto<PostBoardResponseDto> = error.response.data;
-      return responseBody;
-    })
-  return result;
-};
+
 
 // 파일 업로드
 export const fileUploadRequest = async (data: FormData, accessToken: string) => {
@@ -105,21 +90,6 @@ export const viewCountRequest = async (boardId: number | string, accessToken: st
   return result;
 };
 
-
-
-export const postCommentRequest = async (boardId: number | string, requestBody: PostCommentRequestDto, accessToken: string) => {
-  const result = await axios.post(POST_COMMENT_URL(boardId), requestBody, authorization(accessToken))
-    .then(response => {
-      const responseBody: ApiResponseDto<PostCommentResponseDto> = response.data;
-      return responseBody;
-    })
-    .catch(error => {
-      if (!error.response) return null;
-      const responseBody: ApiResponseDto<PostCommentResponseDto> = error.response.data;
-      return responseBody;
-    })
-    return result;
-};
 
 /**
  *   TODO: Auth 요청
@@ -159,31 +129,47 @@ export const signUpRequest = async (requestBody: SignUpRequestDto) => {
 
 // 이메일 중복 체크
 const CHECK_EMAIL_URL = (email: string) => `${API_DOMAIN}/auth/check-email?email=${email}`;
-export const checkEmailExists = async (email: string): Promise<ApiResponseDto<DuplicateCheckResponseDto> | null> => {
+export const checkEmailExists = async (email: string): Promise<ApiResponseDto<UserCheckResponseDto> | null> => {
   const result = await axios.get(CHECK_EMAIL_URL(email))
     .then(response => {
-      const responseBody: ApiResponseDto<DuplicateCheckResponseDto> = response.data;
+      const responseBody: ApiResponseDto<UserCheckResponseDto> = response.data;
       return responseBody;
     })
     .catch(error => {
       if (!error.response) return null;
-      const responseBody: ApiResponseDto<DuplicateCheckResponseDto> = error.response.data;
+      const responseBody: ApiResponseDto<UserCheckResponseDto> = error.response.data;
       return responseBody;
     });
   return result;
 };
 
 // 아이디 중복 체크
-const CHECK_USERNAME_URL = (username: string) => `${API_DOMAIN}/auth/username/${encodeURIComponent(username)}/exists`;
-export const checkUsernameExists = async (username: string): Promise<ApiResponseDto<DuplicateCheckResponseDto> | null> => {
-  const result = await axios.get(CHECK_USERNAME_URL(username))
+const DUPLICATE_USERNAME_URL = (username: string) => `${API_DOMAIN}/auth/username/${encodeURIComponent(username)}/duplicates`;
+export const duplicateUsernameCheck = async (username: string): Promise<ApiResponseDto<UserCheckResponseDto> | null> => {
+  const result = await axios.get(DUPLICATE_USERNAME_URL(username))
     .then(response => {
-      const responseBody: ApiResponseDto<DuplicateCheckResponseDto> = response.data;
+      const responseBody: ApiResponseDto<UserCheckResponseDto> = response.data;
       return responseBody;
     })
     .catch(error => {
       if (!error.response) return null;
-      const responseBody: ApiResponseDto<DuplicateCheckResponseDto> = error.response.data;
+      const responseBody: ApiResponseDto<UserCheckResponseDto> = error.response.data;
+      return responseBody;
+    });
+  return result;
+};
+
+// 아이디 존재 여부 체크
+const EXIST_USERNAME_URL = (username: string) => `${API_DOMAIN}/auth/username/${encodeURIComponent(username)}/exists`;
+export const existUsernameCheck = async (username: string): Promise<ApiResponseDto<UserCheckResponseDto> | null> => {
+  const result = await axios.get(EXIST_USERNAME_URL(username))
+    .then(response => {
+      const responseBody: ApiResponseDto<UserCheckResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<UserCheckResponseDto> = error.response.data;
       return responseBody;
     });
   return result;
@@ -451,6 +437,75 @@ export const getCommentListRequest = async (boardId: number | string, accessToke
 };
 
 /**
+ *   TODO: Post 요청
+ * */
+
+// 게시물 작성
+const POST_BOARD_URL = () => `${API_DOMAIN}/boards`;
+export const postBoardRequest = async (requestBody: PostBoardRequestDto, accessToken: string): Promise<ApiResponseDto<PostBoardResponseDto> | null> => {
+  const result = await axios.post(POST_BOARD_URL(), requestBody, authorization(accessToken))
+    .then(response => {
+      const responseBody: PostBoardResponseDto = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<PostBoardResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+};
+
+// 비밀번호 찾기(유저 정보) 검증
+const FIND_PASSWORD_URL = () => `${API_DOMAIN}/auth/find-password`;
+export const findPasswordRequest = async (email: string, username: string, verificationCode: string): Promise<ApiResponseDto<boolean> | null> => {
+  const requestBody = { email, username, verificationCode };
+  const result = await axios.post(FIND_PASSWORD_URL(), requestBody)
+    .then(response => {
+      const responseBody: ApiResponseDto<boolean> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<boolean> = error.response.data;
+      return responseBody;
+    });
+  return result;
+};
+
+// 아이디 찾기(유저 정보) 검증
+const FIND_USERNAME_URL = () => `${API_DOMAIN}/auth/find-username`;
+export const findUsernameRequest = async (email: string, verificationCode: string): Promise<ApiResponseDto<boolean> | null> => {
+  const requestBody = { email, verificationCode };
+  const result = await axios.post(FIND_USERNAME_URL(), requestBody)
+    .then(response => {
+      const responseBody: ApiResponseDto<boolean> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<boolean> = error.response.data;
+      return responseBody;
+    });
+  return result;
+};
+
+// 댓글 작성
+export const postCommentRequest = async (boardId: number | string, requestBody: PostCommentRequestDto, accessToken: string) => {
+  const result = await axios.post(POST_COMMENT_URL(boardId), requestBody, authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<PostCommentResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<PostCommentResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+};
+
+/**
  *   TODO: Patch 요청
  * */
 
@@ -481,6 +536,22 @@ export const patchUserRequest = async (userId: number | string, requestBody: Pat
     .catch(error => {
       if (!error.response) return null;
       const responseBody: ApiResponseDto<PatchUserResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+};
+
+// 비밀번호 변경
+const PATCH_PASSWORD_URL = (userId: number | string) => `${API_DOMAIN}/users/password/${userId}`;
+export const patchPasswordRequest = async (userId: number | string, requestBody: PatchPasswordRequestDto, accessToken: string) => {
+  const result = await axios.patch(PATCH_PASSWORD_URL(userId), requestBody, authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<PatchPasswordResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<PatchPasswordResponseDto> = error.response.data;
       return responseBody;
     })
   return result;

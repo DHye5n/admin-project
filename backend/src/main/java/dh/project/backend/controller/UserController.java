@@ -1,6 +1,7 @@
 package dh.project.backend.controller;
 
 import dh.project.backend.dto.ApiResponseDto;
+import dh.project.backend.dto.request.user.PatchPasswordRequestDto;
 import dh.project.backend.dto.request.user.PatchUserRequestDto;
 import dh.project.backend.dto.response.user.*;
 import dh.project.backend.service.UserService;
@@ -71,6 +72,19 @@ public class UserController {
             @PathVariable("userId") Long userId
     ) {
         ApiResponseDto<PutFollowResponseDto> responseDto = userService.toggleFollow(user, userId);
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
+    /**
+     *   TODO: 비밀번호 변경
+     * */
+    @PatchMapping("/password/{userId}")
+    public ResponseEntity<ApiResponseDto<PatchPasswordResponseDto>> patchPassword(
+            @Valid @RequestBody PatchPasswordRequestDto dto,
+            @PathVariable("userId") Long userId,
+            @AuthenticationPrincipal PrincipalDetails user
+    ) {
+        ApiResponseDto<PatchPasswordResponseDto> responseDto = userService.patchPassword(dto, userId, user);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 

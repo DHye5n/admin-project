@@ -5,21 +5,21 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class EmailCodeRequestDto {
+public class FindUsernameRequestDto {
 
+    @NotBlank
     private String email;
+
+    @NotBlank
     private String verificationCode;
-    private LocalDateTime expiryDate;
 
     @Builder
-    public EmailCodeRequestDto(String email, String verificationCode, LocalDateTime expiryDate) {
+    public FindUsernameRequestDto(String email, String verificationCode) {
         this.email = email;
         this.verificationCode = verificationCode;
-        this.expiryDate = expiryDate;
     }
-
 }

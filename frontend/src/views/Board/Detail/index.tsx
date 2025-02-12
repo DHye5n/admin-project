@@ -9,7 +9,13 @@ import { chatbubbleEllipsesOutline, heart, heartOutline } from 'ionicons/icons';
 import { IonIcon } from '@ionic/react';
 import useSignInUserStore from 'stores/login-user.store';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AUTH_PATH, BOARD_PATH, BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from 'constant';
+import {
+  AUTH_PATH,
+  BOARD_PATH,
+  BOARD_UPDATE_PATH,
+  MAIN_PATH,
+  USER_PATH,
+} from 'constant';
 import {
   deleteBoardRequest,
   getBoardRequest,
@@ -178,7 +184,7 @@ export default function BoardDetail() {
       return modifiedDate && modifiedDate !== createdDate
         ? `${formatDate(modifiedDate)}`
         : `${formatDate(createdDate)}`;
-    }
+    };
 
     /**
      *  TODO: event handler: 버튼 클릭 이벤트 처리
@@ -186,17 +192,17 @@ export default function BoardDetail() {
     const onUsernameClickHandler = () => {
       if (!board) return;
       navigator(USER_PATH(':userId'));
-    }
+    };
 
     const onMoreButtonClickHandler = () => {
       setShowMore(!showMore);
-    }
+    };
 
     const onUpdateButtonClickHandler = () => {
       if (!board || !signInUser) return;
       if (signInUser.email !== board.email) return;
       navigator(BOARD_PATH() + '/' + BOARD_UPDATE_PATH(board.boardId));
-    }
+    };
 
     const onDeleteButtonClickHandler = () => {
       if (!board || !signInUser || !boardId) return;
@@ -206,7 +212,7 @@ export default function BoardDetail() {
       if (!checkLoginStatus(accessToken)) return;
 
       deleteBoardRequest(boardId, accessToken).then(deleteBoardResponse);
-    }
+    };
 
     /**
      *  TODO: effect: 마운트 시 실행할 함수
@@ -223,6 +229,7 @@ export default function BoardDetail() {
 
       getBoardRequest(boardId, accessToken).then(getBoardResponse);
     }, [boardId]);
+
 
     /**
      *  TODO: render: Board Detail Top 렌더링
@@ -248,8 +255,10 @@ export default function BoardDetail() {
               </div>
             </div>
             {signInUser && isWriter && (
-              <div className='icon-button' onClick={onMoreButtonClickHandler}>
-                <div className='icon more-icon'></div>
+              <div>
+                <div className='icon-button' onClick={onMoreButtonClickHandler}>
+                  <div className='icon more-icon'></div>
+                </div>
               </div>
             )}
             {showMore &&

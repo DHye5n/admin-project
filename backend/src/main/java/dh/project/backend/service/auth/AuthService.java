@@ -2,9 +2,8 @@ package dh.project.backend.service.auth;
 
 import dh.project.backend.domain.UserEntity;
 import dh.project.backend.dto.ApiResponseDto;
-import dh.project.backend.dto.request.auth.SignInRequestDto;
-import dh.project.backend.dto.request.auth.SignUpRequestDto;
-import dh.project.backend.dto.response.auth.DuplicateCheckResponseDto;
+import dh.project.backend.dto.request.auth.*;
+import dh.project.backend.dto.response.auth.UserCheckResponseDto;
 import dh.project.backend.dto.response.auth.SignInResponseDto;
 import dh.project.backend.dto.response.auth.SignUpResponseDto;
 import dh.project.backend.enums.ResponseStatus;
@@ -25,6 +24,8 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final EmailCodeService emailCodeService;
+    private final EmailService emailService;
 
     /**
      *   TODO: 회원가입
@@ -67,10 +68,10 @@ public class AuthService {
     /**
      *   TODO: 이메일 중복 체크
      * */
-    public ApiResponseDto<DuplicateCheckResponseDto> checkEmailExists(String email) {
+    public ApiResponseDto<UserCheckResponseDto> checkEmailExists(String email) {
 
         boolean exists = userRepository.existsByEmail(email);
-        DuplicateCheckResponseDto responseDto = new DuplicateCheckResponseDto(exists);
+        UserCheckResponseDto responseDto = new UserCheckResponseDto(exists);
         ResponseStatus status = exists ? ResponseStatus.DUPLICATE_EMAIL : ResponseStatus.SUCCESS;
         return ApiResponseDto.success(status, responseDto);
     }
@@ -78,13 +79,82 @@ public class AuthService {
     /**
      *   TODO: 아이디 중복 체크
      * */
-    public ApiResponseDto<DuplicateCheckResponseDto> checkUsernameExists(String username) {
+    public ApiResponseDto<UserCheckResponseDto> duplicateUsernameCheck(String username) {
 
         boolean exists = userRepository.existsByUsername(username);
 
-        DuplicateCheckResponseDto responseDto = new DuplicateCheckResponseDto(exists);
+        UserCheckResponseDto responseDto = new UserCheckResponseDto(exists);
         ResponseStatus status = exists ? ResponseStatus.DUPLICATE_USERNAME : ResponseStatus.SUCCESS;
         return ApiResponseDto.success(status, responseDto);
+    }
+
+    /**
+     *   TODO: 아이디 존재 여부 체크
+     * */
+    public ApiResponseDto<UserCheckResponseDto> existUsernameCheck(String username) {
+
+        boolean exists = userRepository.existsByUsername(username);
+
+        UserCheckResponseDto responseDto = new UserCheckResponseDto(exists);
+        ResponseStatus status = exists ? ResponseStatus.SUCCESS : ResponseStatus.NOT_EXISTED_USER;
+        return ApiResponseDto.success(status, responseDto);
+    }
+
+    /**
+     *   TODO: 비밀번호 찾기(email, username, 인증코드) 검증
+     * */
+    @Transactional
+    public ApiResponseDto<Boolean> findPassword(FindPasswordRequestDto dto) {
+
+        // 1. 이메일 인증 코드 검증
+        EmailCodeRequestDto emailCodeRequestDto = EmailCodeRequestDto.builder()
+                .email(dto.getEmail())
+                .verificationCode(dto.getVerificationCode())
+                .build();
+
+        emailCodeService.verifyCode(emailCodeRequestDto);
+
+        // 2. 이메일과 사용자 이름이 일치하는 사용자 정보 확인
+        UserEntity userEntity = userRepository.findByEmailAndUsername(dto.getEmail(), dto.getUsername())
+                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
+
+        // 3. 임시 비밀번호 생성 및 암호화 후 저장
+        String temporaryPassword = emailCodeService.generateTemporaryPassword();
+        String encodedPassword = passwordEncoder.encode(temporaryPassword);
+        userEntity.updatePassword(encodedPassword);
+
+        userRepository.save(userEntity);
+
+        // 4. 임시 비밀번호 이메일 전송
+        emailService.sendTemporaryPassword(userEntity.getEmail(), temporaryPassword);
+
+        // 5. 성공 응답 반환
+        return ApiResponseDto.success(true);
+    }
+
+    /**
+     *   TODO: 아이디 찾기(email, 인증코드) 검증
+     * */
+    @Transactional
+    public ApiResponseDto<Boolean> findUsername(FindUsernameRequestDto dto) {
+
+        // 1. 이메일 인증 코드 검증
+        EmailCodeRequestDto emailCodeRequestDto = EmailCodeRequestDto.builder()
+                .email(dto.getEmail())
+                .verificationCode(dto.getVerificationCode())
+                .build();
+
+        emailCodeService.verifyCode(emailCodeRequestDto);
+
+        // 2. 이메일을 기반으로 등록된 사용자 조회
+        UserEntity userEntity = userRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
+
+        // 3. 이메일로 아이디 전송
+        emailService.sendUsername(userEntity.getEmail(), userEntity.getUsername());
+
+        // 4. 성공 응답 반환
+        return ApiResponseDto.success(true);
     }
 
     /**
@@ -98,9 +168,6 @@ public class AuthService {
         if (userRepository.existsByUsername(dto.getUsername())) {
             throw new ErrorException(ResponseStatus.DUPLICATE_USERNAME);
         }
-//      if (userRepository.existsByPhone(dto.getPhone())) {
-//          return ApiResponseDto.failure(ResponseStatus.DUPLICATE_PHONE);
-//      }
 
         if (!dto.isPasswordMatching()) {
             throw new ErrorException(ResponseStatus.PASSWORD_MISMATCH);
@@ -117,21 +184,4 @@ public class AuthService {
         }
     }
 
-    public ApiResponseDto<SignInResponseDto> refreshAccessToken(String refreshToken) {
-
-        if (!jwtService.validateRefreshToken(refreshToken)) {
-            throw new ErrorException(ResponseStatus.INVALID_REFRESH_TOKEN);
-        }
-
-        String email = jwtService.getUsername(refreshToken);
-
-        UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
-
-        PrincipalDetails principalDetails = new PrincipalDetails(user);
-
-        SignInResponseDto responseDto = jwtService.generateAccessToken(principalDetails);
-
-        return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
-    }
 }
