@@ -9,6 +9,7 @@
 
 .board-list-item:hover {
   background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 10px;
 }
 
 .board-list-item-main-box {

@@ -86,15 +86,15 @@ public class UserEntity extends BaseTime {
         this.followingsCount = followingsCount;
     }
 
-    public void updateUsername(String username) {
+    public void patchUsername(String username) {
         this.username = username;
     }
 
-    public void updateProfileImage(String profileImage) {
+    public void patchProfileImage(String profileImage) {
         this.profileImage = profileImage;
     }
 
-    public void updatePassword(String newPassword) {
+    public void patchPassword(String newPassword) {
         this.password = newPassword;
     }
 }

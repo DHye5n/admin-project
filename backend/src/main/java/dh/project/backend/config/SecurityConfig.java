@@ -49,7 +49,8 @@ public class SecurityConfig {
                                         "/api/v1/users/password",
                                         "/api/v1/boards/**/**",
                                         "/api/v1/comments/**/**",
-                                        "/api/v1/searches/**/**"
+                                        "/api/v1/searches/**/**",
+                                        "/api/v1/messages/**/**"
                                 ).authenticated()
                                 .anyRequest().authenticated()
                 )

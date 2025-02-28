@@ -36,7 +36,7 @@ public class BoardService {
      *   TODO: 게시물 작성
      * */
     @Transactional
-    public ApiResponseDto<PostBoardResponseDto> createBoard(PostBoardRequestDto dto, PrincipalDetails user) {
+    public ApiResponseDto<PostBoardResponseDto> postBoard(PostBoardRequestDto dto, PrincipalDetails user) {
 
         if (user == null) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);

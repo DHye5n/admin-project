@@ -10,13 +10,14 @@
     align-items: center;
     animation: fadeIn 0.3s ease-out;
     z-index: 1000;  /* 충분히 높은 z-index 설정 */
+    cursor: default;
 }
 
 .modal-card-container {
     display: flex;
     flex-direction: column;
     background-color: white !important;
-    padding: 40px 20px;
+    padding: 40px 0;
     border-radius: 8px;
     width: 500px;
     height: 500px;
@@ -29,14 +30,16 @@
 .modal-card-content-box {
     display: flex;
     flex-direction: column;
-    gap: 50px;
+    height: 100%;
+    gap: 20px;
 }
 
-.modal-content-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+/*.modal-content-top {*/
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*    align-items: center;*/
+/*    padding: 0 24px;*/
+/*}*/
 
 .modal-content-subject {
     color: var(--black);
@@ -47,7 +50,7 @@
 
 .modal-close-button {
     cursor: pointer;
-    z-index: 1200;  /* 닫기 버튼이 항상 위로 */
+    z-index: 2000;  /* 닫기 버튼이 항상 위로 */
     position: relative;
 }
 

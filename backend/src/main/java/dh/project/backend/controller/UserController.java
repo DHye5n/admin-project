@@ -64,6 +64,24 @@ public class UserController {
     }
 
     /**
+     *   TODO: 팔로잉 리스트
+     * */
+    @GetMapping("/followings/{userId}")
+    public ResponseEntity<ApiResponseDto<GetFollowingListResponseDto>> getFollowingList(@PathVariable("userId") Long userId) {
+        ApiResponseDto<GetFollowingListResponseDto> responseDto = userService.getFollowingList(userId);
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
+    /**
+     *   TODO: 팔로워 리스트
+     */
+    @GetMapping("/followers/{userId}")
+    public ResponseEntity<ApiResponseDto<GetFollowerListResponseDto>> getFollowerList(@PathVariable("userId") Long userId) {
+        ApiResponseDto<GetFollowerListResponseDto> responseDto = userService.getFollowerList(userId);
+        return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
+    }
+
+    /**
      *   TODO: 유저 팔로우
      * */
     @PutMapping("/follows/{userId}")
@@ -78,13 +96,12 @@ public class UserController {
     /**
      *   TODO: 비밀번호 변경
      * */
-    @PatchMapping("/password/{userId}")
+    @PatchMapping("/password")
     public ResponseEntity<ApiResponseDto<PatchPasswordResponseDto>> patchPassword(
             @Valid @RequestBody PatchPasswordRequestDto dto,
-            @PathVariable("userId") Long userId,
             @AuthenticationPrincipal PrincipalDetails user
     ) {
-        ApiResponseDto<PatchPasswordResponseDto> responseDto = userService.patchPassword(dto, userId, user);
+        ApiResponseDto<PatchPasswordResponseDto> responseDto = userService.patchPassword(dto, user);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 

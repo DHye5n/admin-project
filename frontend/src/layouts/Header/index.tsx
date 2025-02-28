@@ -14,7 +14,7 @@ import {
   BOARD_UPDATE_PATH,
   BOARD_WRITE_PATH,
   MAIN_PATH,
-  SEARCH_PATH,
+  SEARCH_PATH, USER_LIST_PATH,
   USER_PATH,
 } from 'constant';
 import { useCookies } from 'react-cookie';
@@ -54,6 +54,8 @@ export default function Header() {
   const [isBoardUpdatePage, setBoardUpdatePage] = useState<boolean>(false);
 
   const [isUserPage, setUserPage] = useState<boolean>(false);
+
+  const [isUserList, setUserList] = useState<boolean>(false);
 
   /**
    *  TODO:  function: navigate 함수
@@ -225,6 +227,9 @@ export default function Header() {
     const isUserPage = pathname.startsWith(USER_PATH(''));
     setUserPage(isUserPage);
 
+    const isUserList = pathname.startsWith(USER_LIST_PATH());
+    setUserList(isUserList);
+
   }, [pathname]);
 
   useEffect(() => {
@@ -245,7 +250,7 @@ export default function Header() {
         </div>
 
         <div className='header-middle-box'>
-          {(isAuthPage || isUserPage ||
+          {(isAuthPage || isUserPage || isUserList ||
             isBoardReadPage || isBoardWritePage || isBoardUpdatePage
             || isMainPage || isSearchPage || isBoardDetailPage) && (
             <SearchButton />
@@ -256,7 +261,7 @@ export default function Header() {
           <div className='popular-keyword-box'>
 
           </div>
-          {(isMainPage || isSearchPage || isBoardDetailPage || isUserPage || isBoardReadPage || isBoardWritePage || isBoardUpdatePage) && (
+          {(isMainPage || isSearchPage || isBoardDetailPage || isUserPage || isUserList || isBoardReadPage || isBoardWritePage || isBoardUpdatePage) && (
             <MyPageButton />
           )}
           {isSignIn && signInUser && (
@@ -269,6 +274,9 @@ export default function Header() {
               </div>
               <div className='user-info-username'>
                 <span>{signInUser.username}</span>
+              </div>
+              <div className='user-info-role'>
+                <span>{signInUser.role}</span>
               </div>
             </div>
           )}

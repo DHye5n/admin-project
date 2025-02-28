@@ -32,7 +32,7 @@ public class CommentController {
             @PathVariable("boardId") Long boardId,
             @AuthenticationPrincipal PrincipalDetails user
             ) {
-        ApiResponseDto<PostCommentResponseDto> responseDto = commentService.createComment(dto, boardId, user);
+        ApiResponseDto<PostCommentResponseDto> responseDto = commentService.postComment(dto, boardId, user);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 

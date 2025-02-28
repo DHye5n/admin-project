@@ -1,11 +1,11 @@
-#board-read-wrapper {
+#user-list-wrapper {
     display: flex;
     justify-content: center;
     background-color: var(--white);
     height: 100%;
 }
 
-.board-read-container {
+.user-list-container {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -15,13 +15,13 @@
     gap: 20px;
 }
 
-.board-read-contents-box {
+.user-list-contents-box {
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
-.board-read-top-box {
+.user-list-top-box {
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -29,7 +29,7 @@
     border-bottom: 1px solid var(--gray);
 }
 
-.board-read-title {
+.user-list-title {
     color: var(--black);
     font-size: 16px;
     font-weight: 500;
@@ -38,7 +38,7 @@
     align-items: center;
 }
 
-.read-emphasis {
+.list-emphasis {
     color: rgba(0, 0, 0, 0.7);
     font-size: 12px;
     font-weight: 400;
@@ -46,29 +46,18 @@
     margin-left: 5px;
 }
 
-.read-divider {
+.list-divider {
     color: rgba(0, 0, 0, 0.7);
     margin-left: 5px;
 }
 
-.board-read-write-box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-}
-
-.board-read-write-box:hover {
-    color: rgba(0, 0, 0, 0.5);
-}
-
-.board-read-list-contents-box {
+.user-list-box {
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
-.board-read-contents-nothing {
+.user-list-contents-nothing {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -79,13 +68,13 @@
     padding-top: 200px;
 }
 
-.board-read-contents {
+.user-list-contents {
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
-.board-read-pagination-box {
+.user-list-pagination-box {
     margin-top: 60px;
     display: flex;
     justify-content: center;

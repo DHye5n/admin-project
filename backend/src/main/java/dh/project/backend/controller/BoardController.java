@@ -27,7 +27,7 @@ public class BoardController {
     public ResponseEntity<ApiResponseDto<PostBoardResponseDto>> createBoard(
             @Valid @RequestBody PostBoardRequestDto dto,
             @AuthenticationPrincipal PrincipalDetails user) {
-        ApiResponseDto<PostBoardResponseDto> responseDto = boardService.createBoard(dto, user);
+        ApiResponseDto<PostBoardResponseDto> responseDto = boardService.postBoard(dto, user);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 

@@ -1,7 +1,10 @@
 .modal-content-body-input-box {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    padding: 0 24px;
     gap: 30px;
+    height: 420px;
 }
 
 .modal-content-body-success-text {
@@ -13,10 +16,24 @@
     font-weight: bold;
     color: var(--black);
     text-align: center;
-    height: 250px;
 }
 
 .modal-content-body-success-text span {
     color: var(--black);
     font-size: 20px;
 }
+
+.modal-content-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-content-body {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+
+

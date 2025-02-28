@@ -7,7 +7,7 @@
   width: calc(100% - 250px);
   border-bottom: 1px solid var(--gray);
   height: 80px;
-  z-index: 1000;
+  z-index: 10;
   background-color: var(--white);
 }
 
@@ -84,6 +84,13 @@
 
 .user-info-username {
   font-size: 14px;
+  font-weight: 400;
+  line-height: 140%;
+  color: var(--black);
+}
+
+.user-info-role {
+  font-size: 12px;
   font-weight: 400;
   line-height: 140%;
   color: var(--black);

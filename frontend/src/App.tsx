@@ -1,5 +1,5 @@
 import './App.css';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import Main from 'views/Main';
 import Authentication from 'views/Authentication';
 import Search from 'views/Search';
@@ -34,6 +34,8 @@ function App() {
    * */
   const { setSignInUser, resetSignInUser } = useSignInUserStore();
 
+  const navigator = useNavigate();
+
   /**
    *  TODO: state: accessToken cookie 상태
    * */
@@ -47,14 +49,19 @@ function App() {
 
     const { code, data } = responseBody;
 
-    if (code === 'AF' || code === 'NFU' || code === 'DBE') {
+    if (code === 'AF') {
+      alert('토큰이 만료되었습니다. 다시 로그인해주세요.');
+      navigator(AUTH_PATH());
+    }
+
+    if (code === 'NFU' || code === 'DBE') {
       resetSignInUser();
       return;
     }
 
     if (data) {
-      const { userId, email, username, profileImage, phone, followersCount, followingsCount, following } = data;
-      const signInUser = { userId, email, username, profileImage, phone, followersCount, followingsCount, following };
+      const { userId, email, username, profileImage, phone, followersCount, followingsCount, following, role } = data;
+      const signInUser = { userId, email, username, profileImage, phone, followersCount, followingsCount, following, role };
       setSignInUser(signInUser);
     }
 

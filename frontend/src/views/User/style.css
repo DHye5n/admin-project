@@ -74,16 +74,17 @@
     gap: 20px;
 }
 
-.user-top-info-username-box {
+.user-top-info-username-box, .user-top-info-password-box {
     display: flex;
     align-items: center;
     position: relative;
-    width: 200px;
+    width: 100%;
     gap: 5px;
 }
 
 .user-top-info-username,
-.user-top-info-username-input {
+.user-top-info-username-input,
+.user-top-info-password-input {
     font-family: inherit;
     font-size: 12px;
     font-weight: 500;
@@ -91,34 +92,37 @@
     letter-spacing: normal;
     margin: 0;
     padding: 0;
-    width: 100px;
+    /*width: 100%;*/
 }
 
-.user-top-info-username-input.active {
+.user-top-info-username-input.active,
+.user-top-info-password-input.active {
     border: 1px solid var(--gray);
     border-radius: 4px;
 }
 
-.user-top-info-username-input:focus {
+.user-top-info-username-input:focus,
+.user-top-info-password-input:focus {
     border: 1px solid var(--gray);
     border-radius: 4px;
     cursor: text;
 }
 
-.user-top-info-username-input-container {
+.user-top-info-username-input-container, .user-top-info-password-input-container {
     display: flex;
     flex-direction: column;  /* 세로로 배치 */
     align-items: flex-start;  /* 좌측 정렬 */
     position: relative;
 }
 
-.username-input-icon { cursor: pointer; }
+.username-input-icon, .password-input-icon { cursor: pointer; }
 
-.user-top-info-username-input.error {
+.user-top-info-username-input.error,
+.user-top-info-password-input.error {
     border: 1px solid red; /* 에러 시 빨간 테두리 */
 }
 
-.username-error-message {
+.username-error-message, .password-error-message {
     color: red;
     font-size: 8px;
     margin-top: 5px;
@@ -126,7 +130,7 @@
     top: 100%;
 }
 
-.username-success-message {
+.username-success-message, .password-success-message {
     color: green;
     font-size: 8px;
     margin-top: 5px;
@@ -142,6 +146,13 @@
     font-weight: 500;
     line-height: 140%;
     gap: 20px;
+}
+
+.user-top-info-following, .user-top-info-follower {
+    border: 1px solid var(--black);
+    border-radius: 10px;
+    padding: 5px;
+    cursor: pointer;
 }
 
 .user-top-info-email {

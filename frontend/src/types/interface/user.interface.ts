@@ -1,3 +1,6 @@
+import { Role } from '../enum';
+
+
 export default interface User {
   userId: number;
   email: string;
@@ -7,4 +10,5 @@ export default interface User {
   followersCount: number;
   followingsCount: number;
   following: boolean;
+  role: Role;
 }

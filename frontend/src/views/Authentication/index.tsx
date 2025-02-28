@@ -21,6 +21,7 @@ import { SignUpResponseDto } from 'apis/response/auth';
 import { IonIcon } from '@ionic/react';
 import { checkmarkCircle, checkmarkCircleOutline } from 'ionicons/icons';
 import Modal from 'components/Modal';
+import useSignInUserStore from 'stores/login-user.store';
 
 /**
  *   TODO:  component: Main Authentication 컴포넌트
@@ -87,6 +88,8 @@ function SignInCard() {
    *   TODO:  state: 상태
    */
   const [cookie, setCookie] = useCookies();
+
+  const { signInUser } = useSignInUserStore(state => state);
 
   const [email, setEmail] = useState<string>('');
 

@@ -19,7 +19,7 @@ export default function UserItem({ userListItem }: Props) {
   /**
    *  TODO: state: properties
    * */
-  const { userId, email, username, profileImage, followersCount, followingsCount } = userListItem;
+  const { userId, email, username, profileImage, followersCount, followingsCount, role } = userListItem;
 
   /**
    *  TODO: function: navigate 함수
@@ -49,11 +49,15 @@ export default function UserItem({ userListItem }: Props) {
           </div>
 
           <div className='user-list-item-username'>{username}</div>
+          <div className='user-list-item-role'>{role}</div>
           <div className='user-list-item-email'>{email}</div>
           <div className='user-list-item-counts'>
-            팔로워: {followersCount}
-            <div className="small-divider">{'\|'}</div>
-            팔로잉: {followingsCount}
+            <div>
+              팔로워: {followersCount}명
+            </div>
+            <div>
+              팔로잉: {followingsCount}명
+            </div>
           </div>
         </div>
       </div>

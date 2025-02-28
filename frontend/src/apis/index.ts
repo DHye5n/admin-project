@@ -3,7 +3,7 @@ import axios from 'axios';
 import { UserCheckResponseDto, SignInResponseDto, SignUpResponseDto } from './response/auth';
 import { ApiResponseDto } from './response';
 import {
-  GetAllUserListResponseDto,
+  GetAllUserListResponseDto, GetFollowerListResponseDto, GetFollowingListResponseDto,
   GetUserResponseDto, PatchPasswordResponseDto,
   PatchUserResponseDto, PutFollowResponseDto,
   SignInUserResponseDto,
@@ -29,6 +29,7 @@ import { PatchPasswordRequestDto, PatchUserRequestDto } from './request/user';
 import GetAllBoardListResponseDto from './response/board/get-all-board-list.response.dto';
 import PatchCommentRequestDto from './request/comment/patch-comment.request.dto';
 import { DeleteCommentResponseDto, GetCommentListResponseDto, PatchCommentResponseDto } from './response/comment';
+import useSignInUserStore from '../stores/login-user.store';
 
 
 const DOMAIN = 'http://localhost:9994';
@@ -404,6 +405,38 @@ export const getAllUserListRequest = async (accessToken: string) => {
   return result;
 }
 
+// 팔로잉 리스트
+const GET_FOLLOWING_LIST_URL = (userId: number | string) => `${API_DOMAIN}/users/followings/${userId}`;
+export const getFollowingListRequest = async (userId: number | string, accessToken: string) => {
+  const result = await axios.get(GET_FOLLOWING_LIST_URL(userId), authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<GetFollowingListResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<GetFollowingListResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+};
+
+// 팔로워 리스트
+const GET_FOLLOWER_LIST_URL = (userId: number | string) => `${API_DOMAIN}/users/followers/${userId}`;
+export const getFollowerListRequest = async (userId: number | string, accessToken: string) => {
+  const result = await axios.get(GET_FOLLOWER_LIST_URL(userId), authorization(accessToken))
+    .then(response => {
+      const responseBody: ApiResponseDto<GetFollowerListResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<GetFollowerListResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+};
+
 // 좋아요 리스트
 const GET_LIKE_LIST_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/likes`;
 export const getLikeListRequest = async (boardId: number | string, accessToken: string) => {
@@ -542,9 +575,9 @@ export const patchUserRequest = async (userId: number | string, requestBody: Pat
 };
 
 // 비밀번호 변경
-const PATCH_PASSWORD_URL = (userId: number | string) => `${API_DOMAIN}/users/password/${userId}`;
-export const patchPasswordRequest = async (userId: number | string, requestBody: PatchPasswordRequestDto, accessToken: string) => {
-  const result = await axios.patch(PATCH_PASSWORD_URL(userId), requestBody, authorization(accessToken))
+const PATCH_PASSWORD_URL = () => `${API_DOMAIN}/users/password`;
+export const patchPasswordRequest = async (requestBody: PatchPasswordRequestDto, accessToken: string) => {
+  const result = await axios.patch(PATCH_PASSWORD_URL(), requestBody, authorization(accessToken))
     .then(response => {
       const responseBody: ApiResponseDto<PatchPasswordResponseDto> = response.data;
       return responseBody;

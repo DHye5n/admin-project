@@ -121,7 +121,7 @@ public class AuthService {
         // 3. 임시 비밀번호 생성 및 암호화 후 저장
         String temporaryPassword = emailCodeService.generateTemporaryPassword();
         String encodedPassword = passwordEncoder.encode(temporaryPassword);
-        userEntity.updatePassword(encodedPassword);
+        userEntity.patchPassword(encodedPassword);
 
         userRepository.save(userEntity);
 

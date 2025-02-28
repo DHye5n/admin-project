@@ -11,12 +11,10 @@ import java.util.stream.Collectors;
 @Getter
 public class GetFollowingListResponseDto {
 
-    private final List<UserListItem> followList;
+    private final List<UserListItem> followingList;
 
     @Builder
-    public GetFollowingListResponseDto(List<UserListItem> followList) {
-        this.followList = followList;
-    }
+    public GetFollowingListResponseDto(List<UserListItem> followingList) { this.followingList = followingList; }
 
     public static GetFollowingListResponseDto fromEntity(List<FollowEntity> followEntities ) {
         List<UserListItem> followingList = followEntities.stream()

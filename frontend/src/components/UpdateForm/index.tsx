@@ -10,18 +10,22 @@ import { useCookies } from 'react-cookie';
 import { ApiResponseDto } from 'apis/response';
 import { PatchPasswordResponseDto } from 'apis/response/user';
 import { AUTH_PATH, MAIN_PATH, USER_PATH } from 'constant';
+import { IonIcon } from '@ionic/react';
+import { closeOutline } from 'ionicons/icons';
+import useSignInUserStore from 'stores/login-user.store';
 
-function UpdateForm({ mode }: { mode: 'findPassword' | 'findUsername' | 'updatePassword' }) {
+function UpdateForm({ mode, onClose }: { mode: 'findPassword' | 'findUsername' | 'updatePassword'; onClose: () => void }) {
   /**
    *   TODO:  state: 요소 참조 상태
    */
   const newPasswordRef = useRef<HTMLInputElement | null>(null);
   const newPasswordCheckRef = useRef<HTMLInputElement | null>(null);
-  const { userId } = useParams();
+  // const { userId } = useParams();
   const [cookie, setCookie] = useCookies();
   const navigator = useNavigate();
   const [isAlertShown, setIsAlertShown] = useState<boolean>(false);
   const alertTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { signInUser } = useSignInUserStore();
 
   /**
    *   TODO:  state: 상태
@@ -103,10 +107,16 @@ function UpdateForm({ mode }: { mode: 'findPassword' | 'findUsername' | 'updateP
     }
   }, [isAlertShown, navigator]);
 
+  /**
+   *   TODO:  response: response 처리 함수
+   */
   const patchPasswordResponse = (responseBody: ApiResponseDto<PatchPasswordResponseDto> | null) => {
+    console.log('비밀번호 변경 응답:', responseBody);
+
     if (!responseBody) return;
 
     const { code } = responseBody;
+    console.log('응답 코드:', code);
 
     if (code === 'VF') {
       handleApiError(code);
@@ -114,8 +124,15 @@ function UpdateForm({ mode }: { mode: 'findPassword' | 'findUsername' | 'updateP
     }
 
     alert('비밀번호 변경이 완료되었습니다.');
-    if (!userId) return;
+    if (!signInUser) return;
+
+    const userId = signInUser.userId;
+
+    console.log('페이지 이동 시작:', USER_PATH(userId));
     navigator(USER_PATH(userId));
+
+    console.log('모달 닫기 호출');
+    onClose();
   };
 
   /**
@@ -207,6 +224,11 @@ function UpdateForm({ mode }: { mode: 'findPassword' | 'findUsername' | 'updateP
   };
 
   const onSubmitHandler = async () => {
+    if (!signInUser || !signInUser.userId) {
+      alert("로그인 정보가 없습니다. 다시 로그인해주세요.");
+      return;
+    }
+
     let isFormValid = true;
 
     // 비밀번호 검증
@@ -236,10 +258,9 @@ function UpdateForm({ mode }: { mode: 'findPassword' | 'findUsername' | 'updateP
       const accessToken = cookie.accessToken;
       const requestBody: PatchPasswordRequestDto = { newPassword, newPasswordCheck };
 
-      if (!userId) return;
-      patchPasswordRequest(userId, requestBody as PatchPasswordRequestDto, accessToken).then(patchPasswordResponse);
+      patchPasswordRequest(requestBody as PatchPasswordRequestDto, accessToken).then(patchPasswordResponse);
     } else {
-      alert("비밀번호 변경이 완료되었습니다.");
+      alert("비밀번호 필수 입력값을 입력해 주세요.");
     }
   };
 
@@ -254,11 +275,18 @@ function UpdateForm({ mode }: { mode: 'findPassword' | 'findUsername' | 'updateP
         mode === 'updatePassword' && (
           // ✅ 비밀번호 변경 폼
           <>
+          <div className="modal-content-top">
+            <div className="modal-content-subject">비밀번호 변경</div>
+            <div className="modal-close-button" onClick={onClose}>
+              <IonIcon icon={closeOutline} style={{ color: 'black', width: '24px', height: '24px' }} />
+            </div>
+          </div>
+          <div className="modal-content-body">
             <InputBox
               ref={newPasswordRef}
-              label='새 비밀번호*'
+              label="새 비밀번호*"
               type={newPasswordType}
-              placeholder='비밀번호를 입력해주세요.'
+              placeholder="비밀번호를 입력해주세요."
               value={newPassword}
               onChange={onNewPasswordChangeHandler}
               error={isNewPasswordError}
@@ -269,9 +297,9 @@ function UpdateForm({ mode }: { mode: 'findPassword' | 'findUsername' | 'updateP
             />
             <InputBox
               ref={newPasswordCheckRef}
-              label='새 비밀번호 확인*'
+              label="새 비밀번호 확인*"
               type={newPasswordCheckType}
-              placeholder='새 비밀번호를 입력해주세요.'
+              placeholder="새 비밀번호를 입력해주세요."
               value={newPasswordCheck}
               onChange={onNewPasswordCheckChangeHandler}
               error={newPasswordCheckError}
@@ -280,12 +308,15 @@ function UpdateForm({ mode }: { mode: 'findPassword' | 'findUsername' | 'updateP
               icon={newPasswordCheckButtonIcon}
               onButtonClick={onNewPasswordCheckButtonClickHandler}
             />
-            <div className='blue-button' onClick={onSubmitHandler}>비밀번호 변경</div>
+          </div>
+          <div className="modal-content-bottom">
+            <div className="blue-button" onClick={onSubmitHandler}>비밀번호 변경</div>
+          </div>
           </>
-        )
-      )}
-    </div>
-  );
-}
+          )
+          )}
+          </div>
+        );
+      }
 
-export default UpdateForm;
+      export default UpdateForm;

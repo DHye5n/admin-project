@@ -1,6 +1,7 @@
 .modal-content-body-input-box {
     display: flex;
     flex-direction: column;
+    /*padding: 0 24px;*/
     gap: 30px;
 }
 

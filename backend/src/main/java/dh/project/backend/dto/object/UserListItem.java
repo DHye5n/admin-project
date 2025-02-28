@@ -1,6 +1,7 @@
 package dh.project.backend.dto.object;
 
 import dh.project.backend.domain.UserListViewEntity;
+import dh.project.backend.enums.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,15 +19,17 @@ public class UserListItem {
     private String profileImage;
     private int followersCount;
     private int followingsCount;
+    private Role role;
 
     @Builder
-    public UserListItem(Long userId, String email, String username, String profileImage, int followersCount, int followingsCount) {
+    public UserListItem(Long userId, String email, String username, String profileImage, int followersCount, int followingsCount, Role role) {
         this.userId = userId;
         this.email = email;
         this.username = username;
         this.profileImage = profileImage;
         this.followersCount = followersCount;
         this.followingsCount = followingsCount;
+        this.role = role;
     }
 
     public static List<UserListItem> fromEntityList(List<UserListViewEntity> users) {
@@ -38,6 +41,7 @@ public class UserListItem {
                         .profileImage(user.getProfileImage())
                         .followersCount(user.getFollowersCount())
                         .followingsCount(user.getFollowingsCount())
+                        .role(user.getRole())
                         .build())
                 .collect(Collectors.toList());
     }

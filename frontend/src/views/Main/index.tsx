@@ -5,18 +5,17 @@ import { BoardListItem } from 'types/interface';
 import BoardItem from 'components/BoardItem';
 import Pagination from 'components/Pagination';
 import { useNavigate } from 'react-router-dom';
-import { AUTH_PATH, MAIN_PATH, SEARCH_PATH } from 'constant';
-import { getAllUserListRequest, getLatestBoardListRequest, getPopularListRequest, getTop3BoardListRequest } from 'apis';
+import { AUTH_PATH, MAIN_PATH } from 'constant';
+import { getAllUserListRequest, getLatestBoardListRequest, getTop3BoardListRequest } from 'apis';
 import { ApiResponseDto } from 'apis/response';
 import { GetTop3BoardListResponseDto } from 'apis/response/board';
 import { useCookies } from 'react-cookie';
 import { usePagination } from 'hooks';
 import { GetLatestBoardListResponseDto } from 'apis/response/board';
-import { GetPopularListResponseDto } from 'apis/response/search';
 import { UserListItem } from 'types/interface';
 import { GetAllUserListResponseDto } from 'apis/response/user';
 import UserItem from 'components/UserItem';
-import useSignInUserStore from '../../stores/login-user.store';
+import useSignInUserStore from 'stores/login-user.store';
 
 /**
  *  TODO: component: Main 컴포넌트

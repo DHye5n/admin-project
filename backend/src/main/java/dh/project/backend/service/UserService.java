@@ -88,11 +88,11 @@ public class UserService {
                 if (userRepository.existsByUsername(dto.getUsername())) {
                     throw new ErrorException(ResponseStatus.DUPLICATE_USERNAME);
                 }
-                userEntity.updateUsername(dto.getUsername());
+                userEntity.patchUsername(dto.getUsername());
             }
 
             if (dto.getProfileImage() != null) {
-                userEntity.updateProfileImage(dto.getProfileImage());
+                userEntity.patchProfileImage(dto.getProfileImage());
             }
 
             userRepository.save(userEntity);
@@ -134,6 +134,18 @@ public class UserService {
 
         return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
     };
+
+    /**
+     *   TODO: 팔로워 리스트
+     */
+    @Transactional(readOnly = true)
+    public ApiResponseDto<GetFollowerListResponseDto> getFollowerList(Long userId) {
+        // 나를 팔로우한 사람 리스트
+        List<FollowEntity> followerEntities = followRepository.findFollowersByUserId(userId);
+        GetFollowerListResponseDto responseDto = GetFollowerListResponseDto.fromEntity(followerEntities);
+
+        return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
+    }
 
     /**
      *   TODO: 유저 팔로우
@@ -197,15 +209,13 @@ public class UserService {
      * */
     @PreAuthorize("isAuthenticated()")
     @Transactional
-    public ApiResponseDto<PatchPasswordResponseDto> patchPassword(PatchPasswordRequestDto dto, Long userId, PrincipalDetails user) {
+    public ApiResponseDto<PatchPasswordResponseDto> patchPassword(PatchPasswordRequestDto dto, PrincipalDetails user) {
 
         if (user == null) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
-        if (!user.getUserId().equals(userId)) {
-            throw new ErrorException(ResponseStatus.NO_PERMISSION);
-        }
+        Long userId = user.getUserId();
 
         try {
             UserEntity userEntity = userRepository.findById(userId)
@@ -218,7 +228,7 @@ public class UserService {
 
             // 비밀번호 암호화
             String encodedPassword = passwordEncoder.encode(dto.getNewPassword());
-            userEntity.updatePassword(encodedPassword);
+            userEntity.patchPassword(encodedPassword);
 
             // 비밀번호 수정 후 사용자 정보 저장
             userRepository.save(userEntity);

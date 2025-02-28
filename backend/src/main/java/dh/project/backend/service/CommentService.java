@@ -34,7 +34,7 @@ public class CommentService {
      *   TODO: 댓글 작성
      * */
     @Transactional
-    public ApiResponseDto<PostCommentResponseDto> createComment(
+    public ApiResponseDto<PostCommentResponseDto> postComment(
             PostCommentRequestDto requestDto, Long boardId, PrincipalDetails user) {
 
         if (user == null) {

@@ -2,8 +2,11 @@ import React, { ChangeEvent, useRef, useState } from 'react';
 import InputBox from '../InputBox';
 import './style.css';
 import { existUsernameCheck, findPasswordRequest, findUsernameRequest, sendVerificationCode, verifyCode } from 'apis';
+import { IonIcon } from '@ionic/react';
+import { closeOutline } from 'ionicons/icons';
 
-function FindForm({ mode }: { mode: 'findPassword' | 'findUsername' | 'updatePassword' | 'updateUsername' }) {
+
+function FindForm({ mode, onClose }: { mode: 'findPassword' | 'findUsername' | 'updatePassword' | 'updateUsername'; onClose: () => void }) {
   /**
    *   TODO:  state: 요소 참조 상태
    */
@@ -19,6 +22,7 @@ function FindForm({ mode }: { mode: 'findPassword' | 'findUsername' | 'updatePas
   const [username, setUsername] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [isSuccessMessage, setIsSuccessMessage] = useState('');
+
 
   /**
    *   TODO:  state: 에러 상태
@@ -163,8 +167,6 @@ function FindForm({ mode }: { mode: 'findPassword' | 'findUsername' | 'updatePas
 
     const response = await existUsernameCheck(username);
 
-    console.log('response', response);
-
     if (!username) {
       alert('아이디를 입력해주세요.');
       setUsernameError(true);
@@ -243,11 +245,18 @@ function FindForm({ mode }: { mode: 'findPassword' | 'findUsername' | 'updatePas
         mode === 'findUsername' ? (
           // ✅ 아이디 찾기 폼
           <>
+            <div className='modal-content-top'>
+              <div className="modal-content-subject">아이디 찾기</div>
+              <div className="modal-close-button" onClick={onClose}>
+                <IonIcon icon={closeOutline} style={{ color: 'black', width: '24px', height: '24px' }} />
+              </div>
+            </div>
+            <div className='modal-content-body'>
             <InputBox
               ref={emailRef}
-              label='이메일*'
-              type='text'
-              placeholder='이메일 주소를 입력해주세요.'
+              label="이메일*"
+              type="text"
+              placeholder="이메일 주소를 입력해주세요."
               value={email}
               onChange={onEmailChangeHandler}
               error={isEmailError}
@@ -258,9 +267,9 @@ function FindForm({ mode }: { mode: 'findPassword' | 'findUsername' | 'updatePas
             />
             <InputBox
               ref={verificationCodeRef}
-              label='인증코드*'
-              type='text'
-              placeholder='인증번호를 입력해주세요.'
+              label="인증코드*"
+              type="text"
+              placeholder="인증번호를 입력해주세요."
               value={verificationCode}
               onChange={onVerificationCodeChangeHandler}
               error={isVerificationCodeError}
@@ -269,16 +278,27 @@ function FindForm({ mode }: { mode: 'findPassword' | 'findUsername' | 'updatePas
               icon={emailCheckButtonIcon}
               onButtonClick={onEmailCheckButtonClickHandler}
             />
-            <div className='blue-button' onClick={onFindUsernameHandler}>아이디 찾기</div>
+            </div>
+            <div className='modal-content-bottom'>
+              <div className="blue-button" onClick={onFindUsernameHandler}>아이디 찾기</div>
+            </div>
           </>
         ) : (
           // ✅ 비밀번호 찾기 폼
           <>
+          <div className="modal-content-top">
+            <div className="modal-content-subject">비밀번호 찾기</div>
+            <div className="modal-close-button" onClick={onClose}>
+              <IonIcon icon={closeOutline} style={{ color: 'black', width: '24px', height: '24px' }} />
+            </div>
+          </div>
+
+          <div className="modal-content-body">
             <InputBox
               ref={emailRef}
-              label='이메일*'
-              type='text'
-              placeholder='이메일 주소를 입력해주세요.'
+              label="이메일*"
+              type="text"
+              placeholder="이메일 주소를 입력해주세요."
               value={email}
               onChange={onEmailChangeHandler}
               error={isEmailError}
@@ -289,9 +309,9 @@ function FindForm({ mode }: { mode: 'findPassword' | 'findUsername' | 'updatePas
             />
             <InputBox
               ref={verificationCodeRef}
-              label='인증코드*'
-              type='text'
-              placeholder='인증번호를 입력해주세요.'
+              label="인증코드*"
+              type="text"
+              placeholder="인증번호를 입력해주세요."
               value={verificationCode}
               onChange={onVerificationCodeChangeHandler}
               error={isVerificationCodeError}
@@ -302,9 +322,9 @@ function FindForm({ mode }: { mode: 'findPassword' | 'findUsername' | 'updatePas
             />
             <InputBox
               ref={usernameRef}
-              label='아이디*'
-              type='text'
-              placeholder='아이디를 입력해주세요.'
+              label="아이디*"
+              type="text"
+              placeholder="아이디를 입력해주세요."
               value={username}
               onChange={onUsernameChangeHandler}
               error={isUsernameError}
@@ -313,13 +333,17 @@ function FindForm({ mode }: { mode: 'findPassword' | 'findUsername' | 'updatePas
               icon={usernameButtonIcon}
               onButtonClick={onUsernameButtonClickHandler}
             />
-            <div className='blue-button' onClick={onFindPasswordHandler}>비밀번호 찾기</div>
+          </div>
+
+          <div className="modal-content-bottom">
+            <div className="blue-button" onClick={onFindPasswordHandler}>비밀번호 찾기</div>
+          </div>
           </>
-        )
-      )}
-    </div>
-  );
+          )
+          )}
+          </div>
+        );
 
-}
+      }
 
-export default FindForm;
+      export default FindForm;

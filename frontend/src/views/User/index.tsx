@@ -18,7 +18,7 @@ import {
 import { ApiResponseDto } from 'apis/response';
 import { GetUserResponseDto } from 'apis/response/user';
 import { useCookies } from 'react-cookie';
-import { PatchUserRequestDto } from 'apis/request/user';
+import {  PatchUserRequestDto } from 'apis/request/user';
 import { PatchUserResponseDto } from 'apis/response/user';
 import { IonIcon } from '@ionic/react';
 import { personAddOutline, personOutline, personRemoveOutline } from 'ionicons/icons';
@@ -125,9 +125,10 @@ export default function UserPage() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const [mode, setMode] = useState<'updatePassword'>('updatePassword');
+    const [mode, setMode] = useState<'followingList' | 'followerList'>('followingList');
 
-    const openModal = () => {
+    const openModal = (type: 'followingList' | 'followerList') => {
+      setMode(type);
       setIsModalOpen(true);
     };
 
@@ -137,14 +138,24 @@ export default function UserPage() {
 
     const imageInputRef = useRef<HTMLInputElement | null>(null);
 
+    /**
+     *   TODO:  state: 에러 상태
+     */
     const [isUsernameError, setUsernameError] = useState<boolean>(false);
 
+    /**
+     *   TODO:  state: 에러 메시지 상태
+     */
     const [usernameErrorMessage, setUsernameErrorMessage] = useState<string>('');
 
-    const usernameRef = useRef<HTMLInputElement | null>(null);
-
+    /**
+     *   TODO:  state: 성공 메시지 상태
+     */
     const [usernameSuccessMessage, setUsernameSuccessMessage] = useState<string>('');
 
+    /**
+     *   TODO:  state: 버튼 아이콘 상태
+     */
     const [usernameButtonIcon, setUsernameButtonIcon] = useState<'person' | 'personError' | 'personSuccess'>('person');
 
     const formatPhoneNumber = (phone: string) => {
@@ -251,7 +262,7 @@ export default function UserPage() {
     };
 
     const putFollowResponse = (responseBody: ApiResponseDto<PutFollowResponseDto> | null) => {
-      console.log("팔로우 응답 수신:", responseBody);
+
       if (!responseBody || !responseBody.data) return;
 
       const accessToken = cookie.accessToken;
@@ -271,20 +282,10 @@ export default function UserPage() {
 
     };
 
+
     /**
-     *  TODO:  event handler: 버튼 클릭 이벤트
+     *  TODO:  handler: change handler
      * */
-    const onProfileBoxClickHandler = () => {
-      if (!isMyPage) return;
-      if (!imageInputRef.current) return;
-      imageInputRef.current.click();
-    };
-
-    const onUsernameEditButtonClickHandler = () => {
-      setChangeUsername(username);
-      setUsernameChange(!isUsernameChange);
-    };
-
     const onProfileImageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
       if (!event.target || !event.target.files || !event.target.files.length) return;
       const file = event.target.files[0];
@@ -325,6 +326,20 @@ export default function UserPage() {
         setUsernameSuccessMessage('아이디 중복 인증을 해주세요.');
         setUsernameButtonIcon('person');
       }
+    };
+
+    /**
+     *  TODO:  event handler: 버튼 클릭 이벤트
+     * */
+    const onProfileBoxClickHandler = () => {
+      if (!isMyPage) return;
+      if (!imageInputRef.current) return;
+      imageInputRef.current.click();
+    };
+
+    const onUsernameEditButtonClickHandler = () => {
+      setChangeUsername(username);
+      setUsernameChange(!isUsernameChange);
     };
 
     const onSaveButtonClickHandler = () => {
@@ -452,10 +467,14 @@ export default function UserPage() {
             }
 
             <div className="user-top-info-box">
-              <div className='user-top-info-follow-box'>
-                팔로워: {followersCount}
-                <div className="user-top-divider">{'\|'}</div>
-                팔로잉: {followingsCount}
+              <div className="user-top-info-follow-box">
+                <div className="user-top-info-follower" onClick={() => openModal('followerList')}>
+                  팔로워: {followersCount}명
+                </div>
+                <div className="user-top-info-following" onClick={() => openModal('followingList')}>
+                  팔로잉: {followingsCount}명
+                </div>
+                {isModalOpen && <Modal isOpen={isModalOpen} mode={mode} onClose={closeModal} />}
               </div>
               <div className="user-top-info-email">*이메일: {email}</div>
               <div className="user-top-info-username-box">
@@ -493,23 +512,10 @@ export default function UserPage() {
                   <div className="user-top-info-username">*아이디: {username}</div>
                 )}
               </div>
+
               {isMyPage ?
                 <div className="user-top-info-phone">*핸드폰: {formatMyPhoneNumber(phone)}</div> :
                 <div className="user-top-info-phone">*핸드폰: {formatPhoneNumber(phone)}</div>
-              }
-
-              {isMyPage ?
-                <div className='user-top-info-update-box'>
-                  <div className="user-top-info-password-update" onClick={() => openModal()}>
-                    *비밀번호 변경
-                    <div className="icon-button" onClick={() => openModal()}>
-                      <div className="icon edit-icon"></div>
-                    </div>
-                  </div>
-                  {isModalOpen && <Modal isOpen={isModalOpen} mode={mode} onClose={closeModal} />}
-                </div>
-                :
-                <></>
               }
 
             </div>

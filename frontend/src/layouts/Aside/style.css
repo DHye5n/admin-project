@@ -4,12 +4,16 @@
   width: 250px;
   height: 100%;
   position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
 }
 
 .aside-container {
   width: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   gap: 20px;
 }
@@ -71,12 +75,15 @@
 
 .aside-nav-logout-box:hover { background-color: var(--white); }
 
+.aside-nav-modal {
+  cursor: default;
+}
+
 .aside-nav-bottom {
   display: flex;
   flex-direction: column;
   width: 100%;
   padding: 20px;
-  margin-top: 170px;
 }
 
 .aside-nav-bottom-box {

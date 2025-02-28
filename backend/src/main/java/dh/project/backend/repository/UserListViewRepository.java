@@ -14,7 +14,8 @@ public interface UserListViewRepository extends JpaRepository<UserListViewEntity
                     "       u.username AS username, " +
                     "       u.profile_image AS profile_image, " +
                     "       u.followers_count AS followers_count, " +
-                    "       u.followings_count AS followings_count " +
+                    "       u.followings_count AS followings_count, " +
+                    "       u.role AS role " +
                     "FROM user u " +
                     "ORDER BY u.username ASC",
             nativeQuery = true)

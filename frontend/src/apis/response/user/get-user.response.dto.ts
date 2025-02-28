@@ -1,4 +1,6 @@
 import ApiResponseDto from '../ApiResponse.dto';
+import Role from 'types/enum/Role';
+
 
 export default interface GetUserResponseDto extends ApiResponseDto {
   userId: number;
@@ -9,4 +11,5 @@ export default interface GetUserResponseDto extends ApiResponseDto {
   followersCount: number;
   followingsCount: number;
   following: boolean;
+  role: Role;
 }
