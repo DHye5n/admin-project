@@ -60,6 +60,6 @@ jobs:
             -e ${{ secrets.DB_USERNAME }} \
             -e ${{ secrets.DB_PASSWORD }} \
             -e ${{ secrets.MAIL_USERNAME }} \
-            -e ${{ secretes.MAIL_PASSWORD }} \
+            -e ${{ secrets.MAIL_PASSWORD }} \
             -e ${{ secrets.JWT_SECRET_KEY }} \
             ${{ secrets.DOCKER_USERNAME }}/dhyeon-server:latest
