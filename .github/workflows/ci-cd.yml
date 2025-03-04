@@ -14,17 +14,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Give execute permission for gradlew
-        run: chmod +x ./gradlew
-
-      - name: Navigate to backend directory and build
-        run: |
-          cd ./backend
-          ./gradlew build
-
       # 백엔드 빌드
       - name: Build backend with Gradle
-        run: ./gradlew build
+        run: |
+          cd backend
+          chmod +x ./gradlew
+          ./gradlew clean package -x test
 
       - name: List files
         run: ls -alh
