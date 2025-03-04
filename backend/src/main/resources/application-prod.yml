@@ -4,8 +4,6 @@ server:
     uri-encoding: UTF-8
 
 spring:
-  profiles:
-    active: prod
   datasource:
     url: jdbc:mysql://dhyeon-db.cx606moisgcl.ap-northeast-2.rds.amazonaws.com:3306/admin_project?serverTimezone=UTC
     username: ENC(${DB_USERNAME})
