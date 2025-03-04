@@ -12,6 +12,15 @@ services:
       - app-network
     restart: always
 
+  frontend:
+    image: dhyeon/frontend:latest
+    container_name: frontend
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+    restart: always
+
 networks:
   app-network:
     driver: bridge
