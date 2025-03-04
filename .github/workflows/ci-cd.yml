@@ -26,6 +26,7 @@ jobs:
           cd backend
           chmod +x ./gradlew
           ./gradlew clean build -x test -Pprod
+          ls -l build/libs
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
