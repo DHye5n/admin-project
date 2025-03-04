@@ -14,12 +14,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Navigate to backend directory and build
+        run: |
+          cd ./backend
+          ./gradlew build
+
       - name: Give execute permission for gradlew
         run: chmod +x ./gradlew
 
       # 백엔드 빌드
       - name: Build backend with Gradle
         run: ./gradlew build
+
+      - name: List files
+        run: ls -alh
 
       # 2. Set up Docker Buildx (빌드 확장 기능 사용)
       - name: Set up Docker Buildx
