@@ -7,7 +7,7 @@ spring:
   profiles:
     active: prod
   datasource:
-    url: jdbc:mysql://dhyeon-mysql.cx606moisgcl.ap-northeast-2.rds.amazonaws.com:3306/admin_project?serverTimezone=UTC
+    url: jdbc:mysql://dhyeon-db.cx606moisgcl.ap-northeast-2.rds.amazonaws.com:3306/admin_project?serverTimezone=UTC
     username: ENC(${DB_USERNAME})
     password: ENC(${DB_PASSWORD})
     driver-class-name: com.mysql.cj.jdbc.Driver
