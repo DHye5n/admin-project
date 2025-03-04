@@ -56,4 +56,4 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/dhyeon-server:latest
             sudo docker stop dhyeon-server || true  # Stops the container if it's running
             sudo docker rm dhyeon-server || true    # Removes the container if it's stopped
-            sudo docker run -d --name dhyeon-server -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/dhyeon-server:latest
+            sudo docker run -d --name dhyeon-server -p 8080:8080 -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" ${{ secrets.DOCKER_USERNAME }}/dhyeon-server:latest
