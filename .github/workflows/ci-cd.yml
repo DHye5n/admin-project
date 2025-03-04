@@ -36,7 +36,7 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}  # Docker Hub Access Token
 
       - name: Build Docker
-        run: docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/dhyeon-server .
+        run: docker build --platform linux/amd64 -f backend/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/dhyeon-server .
       - name: Push Docker
         run: docker push ${{ secrets.DOCKER_USERNAME }}/dhyeon-server:latest
 
