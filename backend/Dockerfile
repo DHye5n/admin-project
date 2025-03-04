@@ -4,7 +4,7 @@ FROM openjdk:11-jdk-slim
 WORKDIR /app
 
 # 빌드된 JAR 파일을 컨테이너로 복사
-COPY build/libs/*.jar /app.jar
+COPY build/libs/backend-0.0.1.jar /app.jar
 
 RUN ls -l /app
 
