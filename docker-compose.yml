@@ -1,8 +1,9 @@
 version: '3'
 
 services:
-  backend:
+  springboot-app:
     image: dhyeon/dhyeon-server:latest
+    container_name: springboot-app
     ports:
       - "8080:8080"
     environment:
@@ -14,6 +15,7 @@ services:
       - SPRING_PROFILES_ACTIVE=prod
     networks:
       - app-network
+    restart: always
 
 networks:
   app-network:
