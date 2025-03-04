@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build-backend:
+  build:
     name: Build Backend (Spring Boot)
     runs-on: ubuntu-latest
 
@@ -41,7 +41,7 @@ jobs:
         run: docker push ${{ secrets.DOCKER_USERNAME }}/dhyeon-server:latest
 
   deploy:
-    name: Deploy to Server
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
