@@ -23,6 +23,7 @@ jobs:
 
       - name: Build with Gradle
         run: |
+          cd backend
           chmod +x ./gradlew
           ./gradlew clean build -x test -Pprod
 
