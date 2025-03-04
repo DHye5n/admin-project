@@ -41,7 +41,7 @@ public class SecurityConfig {
                                         "/api/v1/auth/check-email",
                                         "/api/v1/auth/username/**/duplicates",
                                         "/api/v1/auth/username/**/exists",
-                                        "/file/**", "/files/**", "/error"
+                                        "/api/v1/file/**", "/api/v1/files/**", "/error"
                                 ).permitAll()
                                 .antMatchers(
                                         "/api/v1/users/**/**",

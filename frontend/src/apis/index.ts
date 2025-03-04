@@ -29,10 +29,10 @@ import { PatchPasswordRequestDto, PatchUserRequestDto } from './request/user';
 import GetAllBoardListResponseDto from './response/board/get-all-board-list.response.dto';
 import PatchCommentRequestDto from './request/comment/patch-comment.request.dto';
 import { DeleteCommentResponseDto, GetCommentListResponseDto, PatchCommentResponseDto } from './response/comment';
-import useSignInUserStore from '../stores/login-user.store';
 
 
-const DOMAIN = 'http://localhost:9994';
+
+const DOMAIN = 'http://localhost:8080';
 
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 
@@ -52,7 +52,7 @@ const VIEW_COUNT_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boa
 
 const POST_COMMENT_URL = (boardId: number | string) => `${API_DOMAIN}/comments/${boardId}/comment`;
 
-const FILE_DOMAIN = `${DOMAIN}/files`;
+const FILE_DOMAIN = `${DOMAIN}/api/v1/files`;
 
 const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
 
