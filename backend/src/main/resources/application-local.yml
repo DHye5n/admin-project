@@ -6,15 +6,15 @@ server:
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/admin_project?serverTimezone=UTC
-    username: ENC(coV2QzHh9lTDI8zyZna73g==)
-    password: ENC(wI0MWPVBlr3r2aEpd+VPTw==)
+    username: ENC(${DB_USERNAME})
+    password: ENC(${DB_PASSWORD})
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   mail:
     host: smtp.naver.com
     port: 587
-    username: ENC(7+gD/4Hyy49nJYLIj2sfkLo8ifdK3Tkc9eFNBX+pw7g=)
-    password: ENC(h1lBHjiuiA+Yh+uNiDRp/2VLOYDjRdOV)
+    username: ENC(${MAIL_USERNAME})
+    password: ENC(${MAIL_PASSWORD})
     properties:
       mail:
         smtp:
