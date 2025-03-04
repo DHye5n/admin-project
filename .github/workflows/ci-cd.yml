@@ -58,6 +58,16 @@ jobs:
           source: docker-compose.yml
           target: /home/ubuntu/admin-project/docker-compose.yml
 
+      - name: SSH into Server and Install Docker Compose Plugin
+        uses: appleboy/ssh-action@master
+        with:
+          username: ubuntu
+          host: ${{ secrets.EC2_IP }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo apt-get update
+            sudo apt-get install -y docker-compose-plugin
+
       - name: SSH into Server and Pull Docker Image
         uses: appleboy/ssh-action@master
         with:
