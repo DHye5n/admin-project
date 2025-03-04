@@ -25,12 +25,6 @@ jobs:
           cd backend 
           ./gradlew clean build -x test
 
-      - name: Upload Backend JAR Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: backend-jar
-          path: backend/build/libs/*.jar
-
   docker-build-push:
     name: Build & Push Docker Image
     runs-on: ubuntu-latest
