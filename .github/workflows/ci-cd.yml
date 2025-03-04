@@ -1,0 +1,87 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main  # main 브랜치에 푸시될 때 실행
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout the code from GitHub repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # 2. Set up Docker Buildx (빌드 확장 기능 사용)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # 3. Log in to DockerHub (Docker 이미지 푸시를 위해 DockerHub 계정 설정 필요)
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      # 4. Build backend image (Spring Boot)
+      - name: Build backend Docker image
+        run: |
+          docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/backend-app ./backend
+
+      # 5. Build frontend image (React)
+      - name: Build frontend Docker image
+        run: |
+          docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/frontend-app ./frontend
+
+      # 6. Push backend Docker image to DockerHub
+      - name: Push backend Docker image
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/backend-app:latest
+
+      # 7. Push frontend Docker image to DockerHub
+      - name: Push frontend Docker image
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build  # 이 단계는 build 단계가 끝난 후 실행됩니다.
+
+    steps:
+      # 1. Checkout the code from GitHub repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # 2. Set up Docker Compose (Docker Compose 설치)
+      - name: Set up Docker Compose
+        run: |
+          curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
+
+      # 3. Pull the latest Docker images from DockerHub
+      - name: Pull Docker images
+        run: |
+          docker pull ${{ secrets.DOCKER_USERNAME }}/backend-app:latest
+          docker pull ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest
+
+      # 4. Set up SSH to connect to EC2
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      # 5. Deploy with Docker Compose on EC2
+      - name: Deploy with Docker Compose on EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} << 'EOF'
+            docker-compose -f /path/to/docker-compose.yml up -d
+          EOF
+        env:
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
