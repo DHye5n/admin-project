@@ -65,7 +65,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           source: backend/
-          target: /home/ubuntu/admin-project/backend/
+          target: /home/ubuntu/admin-project
 
 
       - name: SSH into Server and Pull Docker Image
