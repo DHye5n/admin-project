@@ -5,4 +5,4 @@ FROM openjdk:11-jdk-slim
 COPY ./backend/build/libs/*.jar /app.jar
 
 # 컨테이너 시작 시 Spring Boot 애플리케이션 실행
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "app.jar"]
