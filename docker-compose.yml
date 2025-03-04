@@ -2,7 +2,10 @@ version: '3'
 
 services:
   backend:
-    image: dhye5n/backend:latest  # 이미 푸시된 이미지 사용
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend-container
     ports:
       - "8080:8080"
     environment:
@@ -16,20 +19,13 @@ services:
       - app-network
 
   frontend:
-    image: dhye5n/frontend:latest  # 이미 푸시된 이미지 사용
-    ports:
-      - "80:80"
-    networks:
-      - app-network
-
-  nginx:
-    image: nginx:alpine
-    volumes:
-      - ./frontend/nginx.conf:/etc/nginx/nginx.conf
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend-container
     ports:
       - "80:80"
     depends_on:
-      - frontend
       - backend
     networks:
       - app-network

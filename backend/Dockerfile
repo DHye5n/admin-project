@@ -1,10 +1,3 @@
-# Gradle로 빌드
-FROM gradle:7.2-jdk17 as build
-
-WORKDIR /app
-COPY ./backend/ .
-RUN gradle clean build -x test
-
 # 애플리케이션 실행을 위한 JDK 11 이미지를 사용
 FROM openjdk:11-jdk-slim
 
