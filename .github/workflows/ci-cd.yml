@@ -38,22 +38,22 @@ jobs:
       # 4. Build backend image (Spring Boot)
       - name: Build backend Docker image
         run: |
-          docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/backend-app ./backend
+          docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/backend ./backend
 
       # 5. Build frontend image (React)
       - name: Build frontend Docker image
         run: |
-          docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/frontend-app ./frontend
+          docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/frontend ./frontend
 
       # 6. Push backend Docker image to DockerHub
       - name: Push backend Docker image
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/backend-app:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
 
       # 7. Push frontend Docker image to DockerHub
       - name: Push frontend Docker image
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -73,8 +73,8 @@ jobs:
       # 3. Pull the latest Docker images from DockerHub
       - name: Pull Docker images
         run: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/backend-app:latest
-          docker pull ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest
+          docker pull ${{ secrets.DOCKER_USERNAME }}/backend:latest
+          docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:latest
 
       # 4. Set up SSH to connect to EC2
       - name: Set up SSH key
