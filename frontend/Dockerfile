@@ -1,3 +1,11 @@
+# React 빌드 단계
+FROM node:20 AS react-build
+WORKDIR /app
+COPY frontend/package.json /app/
+RUN npm install
+COPY frontend /app
+RUN npm run build
+
 # Nginx 설정 파일을 복사
 FROM nginx:alpine
 
@@ -5,7 +13,7 @@ FROM nginx:alpine
 COPY frontend/nginx.conf /etc/nginx/nginx.conf
 
 # Nginx의 HTML 폴더에 빌드된 React 애플리케이션을 복사
-COPY --from=react-build /build /usr/share/nginx/html
+COPY --from=react-build /app/build /usr/share/nginx/html
 
 # Nginx 포트 노출
 EXPOSE 80
