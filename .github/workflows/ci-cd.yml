@@ -19,7 +19,7 @@ jobs:
         run: |
           cd backend
           chmod +x ./gradlew
-          ./gradlew clean package -x test
+          ./gradlew clean build -x test
 
       - name: List files
         run: ls -alh
