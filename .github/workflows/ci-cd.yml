@@ -78,8 +78,8 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/dhyeon-server:latest
             
             # 프론트엔드 및 Nginx 이미지 pull 및 실행
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/frontend-nginx:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:latest
             sudo docker stop frontend-nginx || true  # 기존 컨테이너 중지
             sudo docker rm frontend-nginx || true    # 기존 컨테이너 삭제
-            sudo docker run -d --name frontend-nginx -p 80:80 \
-            ${{ secrets.DOCKER_USERNAME }}/frontend-nginx:latest
+            sudo docker run -d --name frontend -p 80:80 \
+            ${{ secrets.DOCKER_USERNAME }}/frontend:latest
