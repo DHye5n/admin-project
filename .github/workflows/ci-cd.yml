@@ -24,7 +24,7 @@ jobs:
       - name: Build with Gradle
         run: |
           chmod +x ./gradlew
-          ./gradlew clean build -x test
+          ./gradlew clean build -x test -Pprod
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
@@ -35,20 +35,27 @@ jobs:
       - name: Build Docker (Backend)
         run: docker build --platform linux/amd64 -f backend/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/dhyeon-server .
 
-      - name: Build Docker (Frontend)
-        run: docker build --platform linux/amd64 -f frontend/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/frontend .
-
       - name: Push Docker (Backend)
         run: docker push ${{ secrets.DOCKER_USERNAME }}/dhyeon-server:latest
 
-      - name: Push Docker (Frontend)
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Copy docker-compose.yml to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_IP }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: docker-compose.yml
+          target: /home/ubuntu/admin-project/docker-compose.yml
+
       - name: SSH into Server and Pull Docker Image
         uses: appleboy/ssh-action@master
         with:
@@ -58,19 +65,8 @@ jobs:
           script: |
             # Docker image pull and restart
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/dhyeon-server:latest
-            sudo docker stop dhyeon-server || true  # Stops the container if it's running
-            sudo docker rm dhyeon-server || true    # Removes the container if it's stopped
-            sudo docker run -d --name dhyeon-server -p 8080:8080 \
-            -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
-            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-            -e MAIL_USERNAME=${{ secrets.MAIL_USERNAME }} \
-            -e MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }} \
-            -e JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
-            ${{ secrets.DOCKER_USERNAME }}/dhyeon-server:latest
+            cd /home/ubuntu/admin-project 
+            sudo docker-compose down || true
+            sudo docker-compose up -d --force-recreate
             
-            # 프론트엔드 및 Nginx 이미지 pull 및 실행
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:latest
-            sudo docker stop frontend-nginx || true  # 기존 컨테이너 중지
-            sudo docker rm frontend-nginx || true    # 기존 컨테이너 삭제
-            sudo docker run -d --name frontend -p 80:80 \
-            ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+        
