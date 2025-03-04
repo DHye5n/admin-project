@@ -33,43 +33,31 @@ jobs:
           cd backend 
           ./gradlew clean build -x test
 
-  docker-build-push:
-    name: Build & Push Docker Image
-    runs-on: ubuntu-latest
-    needs: build-backend  # 이전 job이 완료된 후 실행
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
       - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}  # Docker Hub 사용자명
           password: ${{ secrets.DOCKER_TOKEN }}  # Docker Hub Access Token
 
-      - name: Build Backend Docker Image
-        run: |
-          cd backend
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:latest .  # Dockerfile이 있는 디렉토리에서 빌드
-
-      - name: Push Backend Docker Image
-        run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest  # Docker Hub에 푸시
+      - name: Build Docker
+        run: docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/dhyeon-server .
+      - name: Push Docker
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/dhyeon-server:latest
 
   deploy:
     name: Deploy to Server
     runs-on: ubuntu-latest
-    needs: docker-build-push  # 이전 job이 완료된 후 실행
 
     steps:
-      - name: SSH into Server & Deploy
-        uses: appleboy/ssh-action@v0.1.10
+      - name: SSH into Server and Pull Docker Image
+        uses: appleboy/ssh-action@master
         with:
+          username: ubuntu
           host: ${{ secrets.EC2_IP }}  # 배포할 서버의 IP
           key: ${{ secrets.EC2_SSH_KEY }}  # 서버 SSH 키
           script: |
-            cd /home/ubuntu/my-project  # 서버에서 프로젝트 디렉토리로 이동
-            docker-compose pull  # 최신 이미지로 업데이트
-            docker-compose up -d  # 백그라운드에서 컨테이너 실행
-            docker system prune -f  # 사용하지 않는 Docker 리소스 정리
+            # Docker image pull and restart
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/dhyeon-server:latest
+            sudo docker stop dhyeon-server || true  # Stops the container if it's running
+            sudo docker rm dhyeon-server || true    # Removes the container if it's stopped
+            sudo docker run -d --name dhyeon-server -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/dhyeon-server:latest
