@@ -68,6 +68,8 @@ jobs:
           script: |
             # Docker image pull and restart
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/dhyeon-server:latest
+            export MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}"
+            export MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}"
             cd /home/ubuntu/admin-project 
             sudo docker compose down || true
             sudo docker compose up -d --force-recreate
