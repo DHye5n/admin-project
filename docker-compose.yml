@@ -2,7 +2,7 @@ version: '3'
 
 services:
   backend:
-    image: dhye5n/backend-app:latest  # 이미 푸시된 이미지 사용
+    image: dhye5n/backend:latest  # 이미 푸시된 이미지 사용
     ports:
       - "8080:8080"
     environment:
@@ -16,7 +16,7 @@ services:
       - app-network
 
   frontend:
-    image: dhye5n/frontend-app:latest  # 이미 푸시된 이미지 사용
+    image: dhye5n/frontend:latest  # 이미 푸시된 이미지 사용
     ports:
       - "80:80"
     networks:
