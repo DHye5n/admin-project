@@ -5,6 +5,9 @@ on:
     branches:
       - main  # main 브랜치에 push될 때 실행
 
+permissions:
+  contents: read
+
 jobs:
   build-backend:
     name: Build Backend (Spring Boot)
