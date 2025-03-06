@@ -36,6 +36,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Frontend build and deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_IP }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/dh
+            git pull origin main 
+            cd frontend
+            npm i --force
+            npm run build
+
       - name: Deploy to server
         uses: appleboy/ssh-action@master
         with:
