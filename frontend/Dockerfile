@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . .
 
-COPY public/index.html /app/public/index.html
+COPY frontend/public/index.html /app/public/index.html
 
 RUN npm run build
 
