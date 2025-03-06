@@ -1,8 +1,8 @@
-FROM nginx:latest
+FROM nginx:alpine
 
 COPY nginx.conf /etc/nginx/conf.d/nginx.conf
 
-COPY --from=builder /app/public /usr/share/nginx/html
+COPY /app/public /usr/share/nginx/html
 
 EXPOSE 80
 
