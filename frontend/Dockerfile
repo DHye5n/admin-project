@@ -8,11 +8,9 @@ RUN npm install
 
 COPY . .
 
-COPY frontend/public/index.html /app/public/index.html
+COPY public/index.html /app/public/index.html
 
 RUN npm run build
-
-RUN ls -l /app/public
 
 FROM nginx:alpine
 
