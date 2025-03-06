@@ -1,0 +1,51 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/admin_project?serverTimezone=UTC
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  mail:
+    host: smtp.naver.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  jpa:
+    open-in-view: false
+    defer-datasource-initialization: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: always
+
+file:
+  path: C:/fileUpload
+  url: http://localhost:8080/api/v1/files/
+
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+
+server:
+  port: 8080
+  env: local
+  tomcat:
+    uri-encoding: UTF-8
+
