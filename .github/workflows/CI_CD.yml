@@ -27,7 +27,7 @@ jobs:
 
       - name: Build and push Docker images
         run: |
-          docker-compose build
+          docker compose build
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker push ${{ secrets.DOCKER_USERNAME }}/myapp:latest
 
