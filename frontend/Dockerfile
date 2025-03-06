@@ -8,15 +8,15 @@ RUN npm install
 
 COPY . .
 
-COPY build/index.html /app/build/index.html
+COPY public/index.html /app/public/index.html
 
 RUN npm run build
 
 FROM nginx:alpine
 
-COPY --from=builder /app/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/nginx.conf
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/build /usr/share/nginx/html
 
 EXPOSE 80
 
