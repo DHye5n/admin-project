@@ -25,12 +25,6 @@ jobs:
           chmod +x ./gradlew
           ./gradlew assemble
 
-      - name: Build frontend
-        run: |
-          cd frontend
-          npm install
-          npm run build
-
       - name: Build and push Docker images
         run: |
           docker compose build
