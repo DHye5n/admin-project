@@ -1,6 +1,22 @@
 spring:
   profiles:
     active: local
+    group:
+      local: local, common
+      dev: dev, common
+
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: common
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 110MB
 
 logging:
   level:

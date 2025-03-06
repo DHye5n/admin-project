@@ -1,20 +1,19 @@
-server:
-  port: 8080
-  tomcat:
-    uri-encoding: UTF-8
-
 spring:
+  config:
+    activate:
+      on-profile: dev
+
   datasource:
-    url: jdbc:mysql://localhost:3306/admin_project?serverTimezone=UTC
-    username: ENC(${DB_USERNAME})
-    password: ENC(${DB_PASSWORD})
+    url: jdbc:mysql://dhyeon-db.cx606moisgcl.ap-northeast-2.rds.amazonaws.com:3306/admin_project?serverTimezone=UTC
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   mail:
     host: smtp.naver.com
     port: 587
-    username: ENC(${MAIL_USERNAME})
-    password: ENC(${MAIL_PASSWORD})
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -27,7 +26,7 @@ spring:
     defer-datasource-initialization: true
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: true
@@ -35,15 +34,15 @@ spring:
     init:
       mode: always
 
-  servlet:
-    multipart:
-      max-file-size: 100MB
-      max-request-size: 110MB
-
 file:
   path: C:/fileUpload
   url: http://localhost:8080/api/v1/files/
 
-
 jwt:
   secret-key: ${JWT_SECRET_KEY}
+
+server:
+  port: 8080
+  env: blue
+  tomcat:
+    uri-encoding: UTF-8

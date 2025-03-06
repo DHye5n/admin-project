@@ -1,10 +1,21 @@
-# 빌드된 애플리케이션을 Nginx로 서빙
+FROM node:20-alpine as builder
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
 FROM nginx:alpine
 
-# Nginx 설정 파일 복사
-COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder /app/build /usr/share/nginx/html
 
-# 빌드된 프론트엔드 파일을 Nginx HTML 디렉토리로 복사
-COPY ./frontend/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
