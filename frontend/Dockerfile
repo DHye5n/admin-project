@@ -6,7 +6,9 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY . ./
+COPY . .
+
+COPY public/index.html /app/public/index.html
 
 RUN npm run build
 
