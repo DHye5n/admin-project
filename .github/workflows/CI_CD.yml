@@ -28,7 +28,7 @@ jobs:
       - name: Build and push Docker images
         run: |
           docker compose build
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
           docker push ${{ secrets.DOCKER_USERNAME }}/myapp:latest
 
   deploy:
@@ -42,7 +42,7 @@ jobs:
           host: ${{ secrets.EC2_IP }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
             docker pull ${{ secrets.DOCKER_USERNAME }}/myapp:latest
             export DB_USERNAME="${{ secrets.DB_USERNAME }}"
             export DB_PASSWORD="${{ secrets.DB_PASSWORD }}"
