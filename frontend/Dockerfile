@@ -12,6 +12,8 @@ COPY public/index.html /app/public/index.html
 
 RUN npm run build
 
+RUN ls -l /app/public
+
 FROM nginx:alpine
 
 COPY --from=builder /app/build /usr/share/nginx/html

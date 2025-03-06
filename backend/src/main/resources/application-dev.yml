@@ -43,6 +43,5 @@ jwt:
 
 server:
   port: 8080
-  env: blue
   tomcat:
     uri-encoding: UTF-8
