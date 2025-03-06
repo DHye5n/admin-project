@@ -1,10 +1,20 @@
+FROM node:20-alpine as build
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
 FROM nginx:alpine
 
-COPY nginx.conf /etc/nginx/conf.d/nginx.conf
+COPY --from=build /build /usr/share/nginx/html
 
-RUN ls -al ./
+RUN rm /etc/nginx/conf.d/default.conf
 
-COPY ./build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d
 
 EXPOSE 80
 
