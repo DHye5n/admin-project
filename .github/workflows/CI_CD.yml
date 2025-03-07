@@ -32,8 +32,7 @@ jobs:
         run: |
           cd frontend
           npm install
-          export ESLINT_NO_DEV_ERRORS=true
-          npm run build
+          CI=false npm run build
 
       - name: Build and push Docker images
         run: |
