@@ -30,7 +30,7 @@
   "scripts": {
     "start": "REACT_APP_PORT=3000 react-scripts start",
     "build:local": "REACT_APP_API_URL=http://localhost:8080 REACT_APP_PORT=3000 react-scripts build",
-    "build:prod": "REACT_APP_API_URL=https://3.38.222.97 REACT_APP_PORT=80 react-scripts build",
+    "build:prod": "REACT_APP_API_URL=https://3.38.222.97:8080 REACT_APP_PORT=80 react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "format": "prettier --check ./src",
