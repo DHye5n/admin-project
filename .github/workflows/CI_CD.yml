@@ -86,6 +86,6 @@ jobs:
               ${{ secrets.DOCKER_USERNAME }}/backend-app:latest
 
             docker run -d --name frontend-container \
-              -e BACKEND_URL=http://3.38.222.97:8080 \
+              -e BACKEND_URL=http://backend-container:8080 \
               -p 80:80 \
               ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest
