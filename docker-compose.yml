@@ -23,7 +23,7 @@ services:
 #    env_file:
 #      - ./frontend/.env.prod
     environment:
-      - REACT_APP_API_URL=http://backend-container:8080
+      - NODE_ENV=prod
     depends_on:
       - backend
     networks:
