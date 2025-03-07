@@ -32,7 +32,7 @@ jobs:
         run: |
           cd frontend
           npm install
-          CI=false npm run build:prod  #ESLint 오류,경고가 빌드시에는 에러로 판단함 그래서 빌드단계에서 CI=false 지정해줘야 함
+          CI=false REACT_APP_API_URL=http://3.38.222.97:8080 npm run build:prod  #ESLint 오류,경고가 빌드시에는 에러로 판단함 그래서 빌드단계에서 CI=false 지정해줘야 함
 
       - name: Build and push Docker images
         run: |
