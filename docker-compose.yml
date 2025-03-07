@@ -20,8 +20,8 @@ services:
     container_name: frontend-container
     ports:
       - "80:80"
-    env_file:
-      - ./frontend/.env.prod
+#    env_file:
+#      - ./frontend/.env.prod
     environment:
       - REACT_APP_API_URL=http://backend-container:8080
     depends_on:
