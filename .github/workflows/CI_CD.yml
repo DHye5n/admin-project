@@ -69,6 +69,23 @@ jobs:
             export MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}"
             export JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}"
             
-            # 기존 컨테이너 종료 후 새로운 컨테이너 실행
-            docker-compose down
-            docker-compose up -d
+            # 기존 컨테이너 종료
+            docker stop backend-container || true
+            docker stop frontend-container || true
+            docker rm backend-container || true
+            docker rm frontend-container || true
+            
+            # 새로운 컨테이너 실행
+            docker run -d --name backend-container \
+              -e DB_USERNAME=${DB_USERNAME} \
+              -e DB_PASSWORD=${DB_PASSWORD} \
+              -e MAIL_USERNAME=${MAIL_USERNAME} \
+              -e MAIL_PASSWORD=${MAIL_PASSWORD} \
+              -e JWT_SECRET_KEY=${JWT_SECRET_KEY} \
+              -p 8080:8080 \
+              ${{ secrets.DOCKER_USERNAME }}/backend-app:latest
+
+            docker run -d --name frontend-container \
+              -e BACKEND_URL=http://backend-container:8080 \
+              -p 80:80 \
+              ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest
