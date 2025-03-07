@@ -32,7 +32,7 @@ import { DeleteCommentResponseDto, GetCommentListResponseDto, PatchCommentRespon
 
 
 
-const DOMAIN = process.env.REACT_APP_API_URL;
+const DOMAIN = 'http://3.38.222.97:8080';
 
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 
