@@ -16,7 +16,7 @@ export default [
     rules: {
       "react/react-in-jsx-scope": "off", // React 17+에서는 JSX 범위 필요 없음
       "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": "error"
+      "@typescript-eslint/no-unused-vars": ["error"]
     },
   },
   pluginJs.configs.recommended,
