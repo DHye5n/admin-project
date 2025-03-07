@@ -32,7 +32,7 @@ jobs:
         run: |
           cd frontend
           npm install
-          CI=false npm run build
+          CI=false npm run build:prod
 
       - name: Build and push Docker images
         run: |
