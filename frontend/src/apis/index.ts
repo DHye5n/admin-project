@@ -32,7 +32,7 @@ import { DeleteCommentResponseDto, GetCommentListResponseDto, PatchCommentRespon
 
 
 
-const DOMAIN = 'http://localhost:8080';
+const DOMAIN = 'http://3.38.222.97:8080';
 
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 
