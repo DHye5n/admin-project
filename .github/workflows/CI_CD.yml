@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -23,13 +26,21 @@ jobs:
         run: |
           cd backend
           chmod +x ./gradlew
-          ./gradlew assemble
+          ./gradlew clean build -x test
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
 
       - name: Build and push Docker images
         run: |
-          docker compose build
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
-          docker push ${{ secrets.DOCKER_USERNAME }}/myapp:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/backend-app:latest ./backend
+          docker push ${{ secrets.DOCKER_USERNAME }}/backend-app:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest ./frontend
+          docker push ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest
 
   deploy:
     needs: build
@@ -42,24 +53,21 @@ jobs:
           host: ${{ secrets.EC2_IP }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            mkdir -p /home/ubuntu/app  # 디렉토리 없으면 생성
+            cd /home/ubuntu/app
+            
+             # Docker Hub 로그인 후 최신 이미지 가져오기
             docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
-            docker pull ${{ secrets.DOCKER_USERNAME }}/myapp:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/backend-app:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest
+            
+            # 환경변수 설정
             export DB_USERNAME="${{ secrets.DB_USERNAME }}"
             export DB_PASSWORD="${{ secrets.DB_PASSWORD }}"
             export MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}"
             export MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}"
             export JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}"
+            
+            # 기존 컨테이너 종료 후 새로운 컨테이너 실행
             docker-compose down
             docker-compose up -d
-
-      - name: Frontend build and deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_IP }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd /home/ubuntu/dh
-            git pull origin main 
-            cd frontend
-            npm i --force
-            npm run build
