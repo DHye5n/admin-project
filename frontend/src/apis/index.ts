@@ -33,7 +33,8 @@ import { DeleteCommentResponseDto, GetCommentListResponseDto, PatchCommentRespon
 
 
 // const DOMAIN = 'http://3.38.222.97:8080';
-const DOMAIN = 'http://localhost:8080';
+// const DOMAIN = 'http://localhost:8080';
+const DOMAIN = process.env.REACT_APP_API_URL;
 console.log("API DOMAIN", DOMAIN);
 
 const API_DOMAIN = `${DOMAIN}/api/v1`;
