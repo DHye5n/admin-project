@@ -69,7 +69,7 @@ jobs:
             export MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}"
             export MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}"
             export JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}"
-            export REACT_APP_API_URL="${{ secrets.REACT_APP_API_URL }}"
+        
             
             # 기존 컨테이너 종료
             docker stop backend-container || true
