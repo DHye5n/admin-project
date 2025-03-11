@@ -63,7 +63,7 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest
             
             # 환경변수 설정
-            export DB_URL="${{ secrets.DB_URL }}
+            export DB_URL="${{ secrets.DB_URL }}"
             export DB_USERNAME="${{ secrets.DB_USERNAME }}"
             export DB_PASSWORD="${{ secrets.DB_PASSWORD }}"
             export MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}"
