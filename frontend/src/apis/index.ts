@@ -32,7 +32,8 @@ import { DeleteCommentResponseDto, GetCommentListResponseDto, PatchCommentRespon
 
 
 
-const DOMAIN = 'http://3.38.222.97:8080';
+// const DOMAIN = 'http://3.38.222.97:8080';
+const DOMAIN = 'http://localhost:8080';
 console.log("API DOMAIN", DOMAIN);
 
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -53,13 +54,9 @@ const VIEW_COUNT_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boa
 
 const POST_COMMENT_URL = (boardId: number | string) => `${API_DOMAIN}/comments/${boardId}/comment`;
 
-const FILE_DOMAIN = `${DOMAIN}/api/v1/files`;
-
-const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
-
-
 
 // 파일 업로드
+const FILE_UPLOAD_URL = () => `${API_DOMAIN}/files/upload`;
 export const fileUploadRequest = async (data: FormData, accessToken: string) => {
 
   const headers = {
