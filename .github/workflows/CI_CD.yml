@@ -70,6 +70,7 @@ jobs:
             export MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}"
             export MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}"
             export JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}"
+            export REACT_APP_API_URL="${{ secrets.REACT_APP_API_URL }}"
             
             # 기존 컨테이너 종료
             docker stop backend-container || true
@@ -89,6 +90,6 @@ jobs:
               ${{ secrets.DOCKER_USERNAME }}/backend-app:latest
 
             docker run -d --name frontend-container \
-              -e REACT_APP_API_URL="${{ secrets.EC2_IP }}"
+              -e REACT_APP_API_URL=${REACT_APP_API_URL}
               -p 80:80 \
               ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest
