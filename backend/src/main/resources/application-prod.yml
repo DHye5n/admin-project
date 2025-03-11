@@ -1,10 +1,10 @@
 spring:
   config:
     activate:
-      on-profile: dev
+      on-profile: prod
 
   datasource:
-    url: jdbc:mysql://dhyeon-db.cx606moisgcl.ap-northeast-2.rds.amazonaws.com:3306/admin_project?serverTimezone=UTC
+    url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
