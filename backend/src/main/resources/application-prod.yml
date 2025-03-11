@@ -4,7 +4,7 @@ spring:
       on-profile: dev
 
   datasource:
-    url: jdbc:mysql://${DB_URL}:3306/admin_project?serverTimezone=UTC
+    url: jdbc:mysql://dhyeon-db.cx606moisgcl.ap-northeast-2.rds.amazonaws.com:3306/admin_project?serverTimezone=UTC
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
