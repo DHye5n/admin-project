@@ -89,5 +89,6 @@ jobs:
               ${{ secrets.DOCKER_USERNAME }}/backend-app:latest
 
             docker run -d --name frontend-container \
+              -e REACT_APP_API_URL="${{ secrets.EC2_IP }}"
               -p 80:80 \
               ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest

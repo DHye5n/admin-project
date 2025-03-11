@@ -21,6 +21,8 @@ services:
     container_name: frontend-container
     ports:
       - "80:80"
+    environment:
+      REACT_APP_API_URL: ${REACT_APP_API_URL}
     depends_on:
       - backend
     networks:
