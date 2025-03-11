@@ -32,7 +32,6 @@ jobs:
         run: |
           cd frontend
           npm install
-          export NODE_ENV=production
           CI=false npm run build  #ESLint 오류,경고가 빌드시에는 에러로 판단함 그래서 빌드단계에서 CI=false 지정해줘야 함
 
       - name: Build and push Docker images
