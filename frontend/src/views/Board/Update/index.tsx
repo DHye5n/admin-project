@@ -177,7 +177,7 @@ export default function BoardUpdate() {
     /**
      *  TODO: state: 게시물 상태
      * */
-    const { title, content, boardImageFileList, resetBoard } = useBoardStore();
+    const { title, content, boardImageFileList, existingBoardImages, resetBoard } = useBoardStore();
 
     const { boardId } = useParams();
 
@@ -216,12 +216,12 @@ export default function BoardUpdate() {
         return;
       }
 
-      if (boardImageFileList.length === 0) {
+      if (boardImageFileList.length === 0 && existingBoardImages.length === 0) {
         alert('이미지는 필수 입력사항입니다.');
         return;
       }
 
-      const boardImageList: string[] = [];
+      const boardImageList: string[] = [...existingBoardImages];
 
       for (const file of boardImageFileList) {
         const data = new FormData();
@@ -239,7 +239,7 @@ export default function BoardUpdate() {
 
       if (!boardId) return;
       const requestBody: PatchBoardRequestDTO = {
-        title, content, boardImageList
+        title, content, boardImageList, existingBoardImages
       };
 
       patchBoardRequest(boardId, requestBody, accessToken).then(patchBoardResponse);
@@ -249,7 +249,7 @@ export default function BoardUpdate() {
     /**
      *  TODO: render: 업로드 버튼 컴포넌트 렌더링
      * */
-    if (title && content && boardImageFileList.length > 0)
+    if (title && content && (boardImageFileList.length > 0 || existingBoardImages.length > 0))
       return (
         <div className='blue-button' onClick={onUploadButtonClickHandler}>
           {'업로드'}

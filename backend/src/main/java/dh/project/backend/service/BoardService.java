@@ -137,8 +137,10 @@ public class BoardService {
             List<ImageEntity> imagesToRemove = new ArrayList<>();
             List<ImageEntity> imagesToSave = new ArrayList<>(newImageEntities);
 
+            // 기존 이미지는 새 이미지 목록에 포함되지 않으면 삭제 대상
             for (ImageEntity currentImage : currentImages) {
-                if (!newImageEntities.stream().anyMatch(newImage -> newImage.getImageUrl().equals(currentImage.getImageUrl()))) {
+                if (!dto.getExistingBoardImages().contains(currentImage.getImageUrl()) &&
+                        !newImageEntities.stream().anyMatch(newImage -> newImage.getImageUrl().equals(currentImage.getImageUrl()))) {
                     imagesToRemove.add(currentImage);
                 }
             }
@@ -148,12 +150,14 @@ public class BoardService {
                 boardEntity.getImages().removeAll(imagesToRemove);
             }
 
+            // 새로 추가된 이미지가 있으면 저장 처리
             if (!imagesToSave.isEmpty()) {
                 imageRepository.saveAll(imagesToSave);
+                boardEntity.getImages().addAll(imagesToSave); // 새 이미지 목록을 게시물에 추가
             }
 
-            boardEntity = boardRepository.findById(boardId)
-                    .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
+//            boardEntity = boardRepository.findById(boardId)
+//                    .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
 
             boardRepository.save(boardEntity);
 

@@ -24,15 +24,20 @@ public class PatchBoardRequestDto {
     @NotNull
     private List<String> boardImageList;
 
+    @NotNull
+    private List<String> existingBoardImages;
+
     private String modifiedDate;
 
 
     @Builder
-    public PatchBoardRequestDto(Long boardId, String title, String content, List<String> boardImageList, String modifiedDte) {
+    public PatchBoardRequestDto(Long boardId, String title, String content,
+                                List<String> boardImageList, List<String> existingBoardImages, String modifiedDte) {
         this.boardId = boardId;
         this.title = title;
         this.content = content;
         this.boardImageList = boardImageList;
+        this.existingBoardImages = existingBoardImages;
         this.modifiedDate = modifiedDte;
     }
 
