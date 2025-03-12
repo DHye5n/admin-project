@@ -35,9 +35,20 @@ spring:
     init:
       mode: always
 
+cloud:
+  aws:
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
+    region:
+      static:
+        ap-northeast-2
+    stack:
+      auto: false
+    s3:
+      bucket: dhyeon-bucket
+
 file:
-  upload:
-    type: local
   path: C:/fileUpload
   url: http://localhost:8080/api/v1/files/
 

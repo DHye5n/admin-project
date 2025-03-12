@@ -15,17 +15,14 @@ public class PatchBoardResponseDto {
     private final String title;
     private final String content;
     private final List<String> boardImageList;
-    private final List<String> existingBoardImages;
 
 
     @Builder
-    public PatchBoardResponseDto(Long boardId, String title, String content,
-                                 List<String> boardImageList, List<String> existingBoardImages) {
+    public PatchBoardResponseDto(Long boardId, String title, String content, List<String> boardImageList) {
         this.boardId = boardId;
         this.title = title;
         this.content = content;
         this.boardImageList = boardImageList;
-        this.existingBoardImages = existingBoardImages;
     }
 
     public static PatchBoardResponseDto fromEntity(BoardEntity board) {
@@ -34,10 +31,6 @@ public class PatchBoardResponseDto {
                 .title(board.getTitle())
                 .content(board.getContent())
                 .boardImageList(board.getImages().stream()
-                        .map(ImageEntity::getImageUrl)
-                        .collect(Collectors.toList()))
-                .existingBoardImages(board.getImages().stream()
-                        .filter(image -> image.getImageUrl() != null) // 기존 이미지 URL 필터링 (필요시 조정)
                         .map(ImageEntity::getImageUrl)
                         .collect(Collectors.toList()))
                 .build();

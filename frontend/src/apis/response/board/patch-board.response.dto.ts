@@ -5,5 +5,4 @@ export default interface PatchBoardResponseDto extends ApiResponseDto {
   title: string;
   content: string;
   boardImageList: string[];
-  existingBoardImages: string[];
 }
