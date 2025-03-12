@@ -34,9 +34,23 @@ spring:
     init:
       mode: always
 
+cloud:
+  aws:
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
+    region:
+      static:
+        ap-northeast-2
+    stack:
+      auto: false
+    s3:
+      bucket: ${S3_BUCKET_NAME}
+
 file:
-  path: C:/fileUpload
-  url: http://localhost:8080/api/v1/files/
+  upload:
+    type: s3
+  url: ${S3_URL}
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
