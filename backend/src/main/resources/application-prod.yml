@@ -45,7 +45,7 @@ cloud:
     stack:
       auto: false
     s3:
-      bucket: ${S3_BUCKET_NAME}
+      bucket: dhyeon-bucket
 
 file:
   upload:
