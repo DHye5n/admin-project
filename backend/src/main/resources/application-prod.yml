@@ -50,6 +50,7 @@ cloud:
 file:
   upload:
     type: s3
+  path: C:/fileUpload
   url: ${S3_URL}
 
 jwt:
