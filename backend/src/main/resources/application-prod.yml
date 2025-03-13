@@ -45,7 +45,7 @@ cloud:
     stack:
       auto: false
     s3:
-      bucket: dhyeon-bucket
+      bucket: ${S3_BUCKET_NAME}
 
 file:
   path: C:/fileUpload
