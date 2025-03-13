@@ -93,7 +93,7 @@ jobs:
               -e S3_SECRET_KEY=${S3_SECRET_KEY} \
               -e S3_BUCKET_NAME=${S3_BUCKET_NAME} \
               -e S3_URL=${S3_URL} \
-              -p 8080:8080 \
+              -p 8080:8081 \
               ${{ secrets.DOCKER_USERNAME }}/backend-app:latest
 
             docker run -d --name frontend-container \

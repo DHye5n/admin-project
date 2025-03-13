@@ -55,6 +55,6 @@ jwt:
   secret-key: ${JWT_SECRET_KEY}
 
 server:
-  port: 8080
+  port: 8081
   tomcat:
     uri-encoding: UTF-8

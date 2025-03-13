@@ -5,7 +5,7 @@ services:
     image: dhye5n/backend-app:latest
     container_name: backend-container
     ports:
-      - "8080:8080"
+      - "8080:8081"
     environment:
       DB_URL: ${DB_URL}
       DB_USERNAME: ${DB_USERNAME}
