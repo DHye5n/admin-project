@@ -85,9 +85,10 @@ function App() {
     <Routes>
       <Route element={<Container />}>
         <Route path='/' element={<Navigate to={AUTH_PATH()} replace />} />
+        <Route path={AUTH_PATH()} element={<Authentication />} />
+
         <Route path={MAIN_PATH()} element={<Main />} />
-        <Route path={AUTH_PATH()} element={<Authentication />} />
-        <Route path={AUTH_PATH()} element={<Authentication />} />
+
         <Route path={SEARCH_PATH(':searchWord')} element={<Search />} />
         <Route path={USER_PATH(':userId')} element={<UserPage />} />
         <Route path={BOARD_PATH()}>
