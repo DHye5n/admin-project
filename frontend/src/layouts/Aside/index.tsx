@@ -71,8 +71,9 @@ export default function Aside() {
 
   const onSignOutButtonClickHandler = () => {
     resetSignInUser();
-    setCookie('accessToken', '', { path: MAIN_PATH(), expires: new Date() });
+    setCookie('accessToken', '', { path: '/', expires: new Date(0) });
     navigator(AUTH_PATH());
+
   };
 
   useEffect(() => {
