@@ -9,6 +9,10 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ *  공통 객체 DTO 클래스
+ * */
+
 @Getter
 @NoArgsConstructor
 public class UserListItem {

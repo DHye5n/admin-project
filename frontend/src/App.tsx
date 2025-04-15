@@ -24,6 +24,7 @@ import { signInUserRequest } from './apis';
 import { SignInUserResponseDto } from './apis/response/user';
 import { ApiResponseDto } from './apis/response';
 import useSignInUserStore from './stores/login-user.store';
+import OAuth2 from './views/OAuth2';
 
 /**
  *  TODO: component: Application 컴포넌트
@@ -83,6 +84,7 @@ function App() {
    * */
   return (
     <Routes>
+      <Route path='/auth/oauth-response/:accessToken/:expirationTime' element={<OAuth2 />} />
       <Route element={<Container />}>
         <Route path='/' element={<Navigate to={AUTH_PATH()} replace />} />
         <Route path={AUTH_PATH()} element={<Authentication />} />

@@ -5,7 +5,7 @@ import dh.project.backend.dto.request.board.PatchBoardRequestDto;
 import dh.project.backend.dto.request.board.PostBoardRequestDto;
 import dh.project.backend.dto.response.board.*;
 import dh.project.backend.service.BoardService;
-import dh.project.backend.service.principal.PrincipalDetails;
+import dh.project.backend.service.principal.user.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

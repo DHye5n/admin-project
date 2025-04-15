@@ -10,7 +10,7 @@ import dh.project.backend.enums.ResponseStatus;
 import dh.project.backend.exception.ErrorException;
 import dh.project.backend.repository.UserRepository;
 import dh.project.backend.service.JwtService;
-import dh.project.backend.service.principal.PrincipalDetails;
+import dh.project.backend.service.principal.user.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

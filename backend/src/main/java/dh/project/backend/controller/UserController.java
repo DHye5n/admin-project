@@ -5,7 +5,7 @@ import dh.project.backend.dto.request.user.PatchPasswordRequestDto;
 import dh.project.backend.dto.request.user.PatchUserRequestDto;
 import dh.project.backend.dto.response.user.*;
 import dh.project.backend.service.UserService;
-import dh.project.backend.service.principal.PrincipalDetails;
+import dh.project.backend.service.principal.user.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

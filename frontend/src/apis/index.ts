@@ -111,6 +111,10 @@ export const signInRequest = async (requestBody: SignInRequestDto) => {
   return result;
 };
 
+// 소셜 로그인
+export const SOCIAL_SIGN_IN_URL = (provider: 'google' | 'kakao') => `${API_DOMAIN}/auth/oauth2/${provider}`;
+
+
 // 회원가입
 const SIGN_UP_URL = () => `${API_DOMAIN}/auth/sign-up`;
 export const signUpRequest = async (requestBody: SignUpRequestDto) => {

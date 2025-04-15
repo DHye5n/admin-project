@@ -24,7 +24,7 @@ public class GetUserResponseDto {
         this.userId = userId;
         this.email = email;
         this.username = username;
-        this.profileImage = profileImage;
+        this.profileImage = profileImage != null ? profileImage : "";
         this.phone = phone;
         this.followersCount = followersCount;
         this.followingsCount = followingsCount;
@@ -37,7 +37,7 @@ public class GetUserResponseDto {
                 .userId(userEntity.getUserId())
                 .email(userEntity.getEmail())
                 .username(userEntity.getUsername())
-                .profileImage(userEntity.getProfileImage())
+                .profileImage(userEntity.getProfileImage() != null ? userEntity.getProfileImage() : "")
                 .phone(userEntity.getPhone())
                 .followersCount(userEntity.getFollowersCount())
                 .followingsCount(userEntity.getFollowingsCount())

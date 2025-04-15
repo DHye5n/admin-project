@@ -20,7 +20,7 @@ public class EmailEntity {
     @Column(name = "email_id")
     private Long emailId;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", length = 30, nullable = false, unique = true)
     private String email;
 
     @Column(name = "verification_code", nullable = false)

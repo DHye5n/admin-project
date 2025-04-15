@@ -9,6 +9,7 @@ import Search from 'views/Search';
 import UserPage from 'views/User';
 import BoardRead from 'views/Board/Read';
 import UserList from 'views/User/List';
+import OAuth2 from '../../views/OAuth2';
 
 export default function Content() {
   /**
@@ -25,6 +26,7 @@ export default function Content() {
       {pathname.startsWith('/boards/detail') && <BoardDetail />}
 
       {pathname.startsWith('/dashboard') && <Main />}
+
       {pathname.startsWith('/search') && searchWord && <Search />}
       {pathname.startsWith('/users/profile') && <UserPage />}
       {pathname.startsWith('/users/list') && <UserList />}

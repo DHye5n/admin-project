@@ -20,7 +20,7 @@ public class SignInUserResponseDto {
         this.userId = userId;
         this.email = email;
         this.username = username;
-        this.profileImage = profileImage;
+        this.profileImage = profileImage != null ? profileImage : "";
         this.phone = phone;
         this.role = role;
     }
@@ -30,7 +30,7 @@ public class SignInUserResponseDto {
                 .userId(userEntity.getUserId())
                 .email(userEntity.getEmail())
                 .username(userEntity.getUsername())
-                .profileImage(userEntity.getProfileImage() != null ? userEntity.getProfileImage() : null)
+                .profileImage(userEntity.getProfileImage() != null ? userEntity.getProfileImage() : "")
                 .phone(userEntity.getPhone())
                 .role(userEntity.getRole())
                 .build();

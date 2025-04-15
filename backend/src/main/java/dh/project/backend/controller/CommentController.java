@@ -8,7 +8,7 @@ import dh.project.backend.dto.response.comment.GetCommentListResponseDto;
 import dh.project.backend.dto.response.comment.PatchCommentResponseDto;
 import dh.project.backend.dto.response.comment.PostCommentResponseDto;
 import dh.project.backend.service.CommentService;
-import dh.project.backend.service.principal.PrincipalDetails;
+import dh.project.backend.service.principal.user.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

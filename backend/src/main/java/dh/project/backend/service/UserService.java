@@ -13,7 +13,7 @@ import dh.project.backend.exception.ErrorException;
 import dh.project.backend.repository.FollowRepository;
 import dh.project.backend.repository.UserListViewRepository;
 import dh.project.backend.repository.UserRepository;
-import dh.project.backend.service.principal.PrincipalDetails;
+import dh.project.backend.service.principal.user.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;

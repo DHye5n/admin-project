@@ -1,4 +1,4 @@
-package dh.project.backend.service.principal;
+package dh.project.backend.service.principal.user;
 
 import dh.project.backend.domain.UserEntity;
 import lombok.Getter;

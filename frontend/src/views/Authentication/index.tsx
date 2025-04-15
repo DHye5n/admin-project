@@ -8,7 +8,7 @@ import {
   resendVerificationCode,
   sendVerificationCode,
   signInRequest,
-  signUpRequest, verifyCode,
+  signUpRequest, SOCIAL_SIGN_IN_URL, verifyCode,
 } from 'apis';
 import { ApiResponseDto } from 'apis/response';
 import { SignInResponseDto } from 'apis/response/auth';
@@ -52,14 +52,14 @@ export default function Authentication() {
         <div className={`toggle-container ${view}`}>
           {view === 'sign-in' ? (
               <div className="toggle-panel-box">
-                <div className='toggle-panel-text'>Hello, Friend!</div>
-                <div className='toggle-panel-text'>Sign up now to access all features.</div>
+                <div className='toggle-panel-text'>아직 회원이 아니신가요?</div>
+                <div className='toggle-panel-text'>회원가입을 해주세요.</div>
                 <div className='auth-move-button' onClick={() => toggleView('sign-up')}>{'회원가입'}</div>
               </div>
           ) : (
               <div className="toggle-panel-box">
-                <div className='toggle-panel-text'>Welcome Back!</div>
-                <div className='toggle-panel-text'>Sign in to continue.</div>
+                <div className='toggle-panel-text'>이미 가입하셨나요?</div>
+                <div className='toggle-panel-text'>로그인을 해주세요.</div>
                 <div className='auth-move-button' onClick={() => toggleView('sign-in')}>{'로그인'}</div>
               </div>
           )}
@@ -207,24 +207,11 @@ function SignInCard() {
   /**
    *   TODO:  event handler: 소셜 로그인 버튼 클릭 이벤트 처리
    */
-  const handleSocialLogin = (provider: 'google' | 'github' | 'kakao') => {
-    const redirectUri = 'http://localhost:3000/auth/callback'; // 인증 후 리다이렉트할 URL
-    let authUrl = '';
-
-    switch (provider) {
-      case 'google':
-        authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=YOUR_GOOGLE_CLIENT_ID&redirect_uri=${redirectUri}&response_type=code&scope=email profile`;
-        break;
-      case 'github':
-        authUrl = `https://github.com/login/oauth/authorize?client_id=YOUR_GITHUB_CLIENT_ID&redirect_uri=${redirectUri}&scope=user`;
-        break;
-      case 'kakao':
-        authUrl = `https://kauth.kakao.com/oauth/authorize?client_id=YOUR_KAKAO_CLIENT_ID&redirect_uri=${redirectUri}&response_type=code`;
-        break;
-    }
-
-    window.location.href = authUrl; // 사용자 인증 페이지로 리다이렉트
+  const onSocialSignInButtonClickHandler = (provider: 'google' | 'kakao') => {
+    // window.location.href = SOCIAL_SIGN_IN_URL(provider);
+    alert("운영 서버에서는 현재 기능이 아직 활성화 안되었습니다.");
   };
+
 
   /**
    *   TODO:  event handler: 비밀번호 버튼 클릭 이벤트 처리
@@ -295,9 +282,9 @@ function SignInCard() {
         </div>
 
         <div className="social-login-box">
-          <div className="icon github-icon" onClick={() => handleSocialLogin('github')}></div>
-          <div className="icon google-icon" onClick={() => handleSocialLogin('google')}></div>
-          <div className="icon kakao-icon" onClick={() => handleSocialLogin('kakao')}></div>
+          {/*<div className="icon github-icon" onClick={() => handleSocialLogin('github')}></div>*/}
+          <div className="icon google-icon" onClick={() => onSocialSignInButtonClickHandler('google')}></div>
+          <div className="icon kakao-icon" onClick={() => onSocialSignInButtonClickHandler('kakao')}></div>
         </div>
       </div>
     </div>

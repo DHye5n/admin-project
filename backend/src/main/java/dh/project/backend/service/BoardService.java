@@ -10,7 +10,7 @@ import dh.project.backend.enums.ResponseStatus;
 import dh.project.backend.exception.ErrorException;
 import dh.project.backend.repository.*;
 import dh.project.backend.service.auth.AuthService;
-import dh.project.backend.service.principal.PrincipalDetails;
+import dh.project.backend.service.principal.user.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
