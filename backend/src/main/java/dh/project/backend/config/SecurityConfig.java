@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -24,7 +23,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
-    private final DefaultOAuth2UserService oAuth2UserService;
+//    private final DefaultOAuth2UserService oAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Bean
@@ -66,15 +65,15 @@ public class SecurityConfig {
                         .loginPage("/auth/sign-in")
                         .defaultSuccessUrl("/")
                         .permitAll()
-                )
-                .oauth2Login(oAuth2 -> oAuth2
-                        .authorizationEndpoint(endpoints ->
-                                endpoints.baseUri("/api/v1/auth/oauth2"))
-                        .redirectionEndpoint(endpoint ->
-                                endpoint.baseUri("/oauth2/callback/*"))
-                        .userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService))
-                        .successHandler(oAuth2SuccessHandler)
                 );
+//                .oauth2Login(oAuth2 -> oAuth2
+//                        .authorizationEndpoint(endpoints ->
+//                                endpoints.baseUri("/api/v1/auth/oauth2"))
+//                        .redirectionEndpoint(endpoint ->
+//                                endpoint.baseUri("/oauth2/callback/*"))
+//                        .userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService))
+//                        .successHandler(oAuth2SuccessHandler)
+//                );
 
         return http.build();
     }

@@ -3,18 +3,40 @@ spring:
     activate:
       on-profile: local
 
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          kakao:
+#            client-id: ${CLIENT_ID}
+#            client-secret: ${CLIENT_SECRET}
+#            scope:
+#              - profile_nickname
+#              - account_email
+#              - name
+#              - phone_number
+#            redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
+#            client-name: kakao
+#            authorization-grant-type: authorization_code
+#            client-authentication-method: client_secret_post
+#        provider:
+#          kakao:
+#            authorization-uri: https://kauth.kakao.com/oauth/authorize
+#            token-uri: https://kauth.kakao.com/oauth/token
+#            user-info-uri: https://kapi.kakao.com/v2/user/me
+#            user-name-attribute: id
 
   datasource:
     url: jdbc:mysql://localhost:3306/admin_project?serverTimezone=UTC
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    username: ENC(hjMovEvXslkNcBl8O/DATA==)
+    password: ENC(15rwtWiFfquvgJpwQsZEZw==)
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   mail:
     host: smtp.naver.com
     port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
+    username: ENC(DEcVaQgStkpM3sL2VvQ3jS5lMOOzBcR4jSdQS3LDoyY=)
+    password: ENC(n5E7A+TAUGIim46RzqpX3ARJdfgcHkft)
     properties:
       mail:
         smtp:
@@ -46,7 +68,7 @@ cloud:
     stack:
       auto: false
     s3:
-      bucket: dhyeon-bucket
+      bucket: ${S3_BUCKET_NAME}
 
 file:
   path: C:/fileUpload
