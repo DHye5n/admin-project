@@ -22,12 +22,12 @@ public interface BoardListViewRepository extends JpaRepository<BoardListViewEnti
                     "u.profile_image AS profile_image " +
                     "FROM board b " +
                     "INNER JOIN user u ON b.user_id = u.user_id " +
-                    "LEFT JOIN ( " +
+                    "INNER JOIN ( " +
                     "    SELECT board_id, MIN(image_id) AS min_image_id " +
                     "    FROM image " +
                     "    GROUP BY board_id " +
                     ") AS min_image ON b.board_id = min_image.board_id " +
-                    "LEFT JOIN image i ON min_image.board_id = i.board_id AND min_image.min_image_id = i.image_id " +
+                    "INNER JOIN image i ON min_image.board_id = i.board_id AND min_image.min_image_id = i.image_id " +
                     "WHERE b.deleted_date IS NULL " +
                     "ORDER BY b.created_date DESC",
             nativeQuery = true)
@@ -46,12 +46,12 @@ public interface BoardListViewRepository extends JpaRepository<BoardListViewEnti
                     "u.profile_image AS profile_image " +
                     "FROM board b " +
                     "INNER JOIN user u ON b.user_id = u.user_id " +
-                    "LEFT JOIN ( " +
+                    "INNER JOIN ( " +
                     "    SELECT board_id, MIN(image_id) AS min_image_id " +
                     "    FROM image " +
                     "    GROUP BY board_id " +
                     ") AS min_image ON b.board_id = min_image.board_id " +
-                    "LEFT JOIN image i ON min_image.board_id = i.board_id AND min_image.min_image_id = i.image_id " +
+                    "INNER JOIN image i ON min_image.board_id = i.board_id AND min_image.min_image_id = i.image_id " +
                     "WHERE b.deleted_date IS NULL " +
                     "ORDER BY b.created_date DESC",
             nativeQuery = true)
@@ -70,12 +70,12 @@ public interface BoardListViewRepository extends JpaRepository<BoardListViewEnti
                     "u.profile_image AS profile_image " +
                     "FROM board b " +
                     "INNER JOIN user u ON b.user_id = u.user_id " +
-                    "LEFT JOIN ( " +
+                    "INNER JOIN ( " +
                     "    SELECT board_id, MIN(image_id) AS min_image_id " +
                     "    FROM image " +
                     "    GROUP BY board_id " +
                     ") AS min_image ON b.board_id = min_image.board_id " +
-                    "LEFT JOIN image i ON min_image.board_id = i.board_id AND min_image.min_image_id = i.image_id " +
+                    "INNER JOIN image i ON min_image.board_id = i.board_id AND min_image.min_image_id = i.image_id " +
                     "WHERE b.created_date >= NOW() - INTERVAL 1 WEEK " +
                     "  AND b.deleted_date IS NULL " +
                     "ORDER BY b.view_count DESC " +
@@ -97,12 +97,12 @@ public interface BoardListViewRepository extends JpaRepository<BoardListViewEnti
                     "u.user_id AS userId " +
                     "FROM board b " +
                     "INNER JOIN user u ON b.user_id = u.user_id " +
-                    "LEFT JOIN ( " +
+                    "INNER JOIN ( " +
                     "    SELECT board_id, MIN(image_id) AS min_image_id " +
                     "    FROM image " +
                     "    GROUP BY board_id " +
                     ") AS min_image ON b.board_id = min_image.board_id " +
-                    "LEFT JOIN image i ON min_image.board_id = i.board_id AND min_image.min_image_id = i.image_id " +
+                    "INNER JOIN image i ON min_image.board_id = i.board_id AND min_image.min_image_id = i.image_id " +
                     "WHERE (LOWER(b.title) LIKE LOWER(CONCAT('%', :title, '%')) " +
                     "OR LOWER(b.content) LIKE LOWER(CONCAT('%', :content, '%'))) " +
                     "AND b.deleted_date IS NULL " +
@@ -123,12 +123,12 @@ public interface BoardListViewRepository extends JpaRepository<BoardListViewEnti
                     "u.profile_image AS profile_image " +
                     "FROM board b " +
                     "INNER JOIN user u ON b.user_id = u.user_id " +
-                    "LEFT JOIN ( " +
+                    "INNER JOIN ( " +
                     "    SELECT board_id, MIN(image_id) AS min_image_id " +
                     "    FROM image " +
                     "    GROUP BY board_id " +
                     ") AS min_image ON b.board_id = min_image.board_id " +
-                    "LEFT JOIN image i ON min_image.board_id = i.board_id AND min_image.min_image_id = i.image_id " +
+                    "INNER JOIN image i ON min_image.board_id = i.board_id AND min_image.min_image_id = i.image_id " +
                     "WHERE u.user_id = :userId " +
                     "AND b.deleted_date IS NULL " +
                     "ORDER BY b.created_date DESC",
