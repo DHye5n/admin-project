@@ -55,7 +55,7 @@ export default function Aside() {
     { icon: homeOutline, title: "Dashboard", path: "/dashboard" },
     { icon: clipboardOutline, title: "Board", path: "/boards/list" },
     { icon: personOutline, title: "User", path: "/users/list" },
-    { icon: settingsOutline, title: "Setting", path: "/settings" },
+    // { icon: settingsOutline, title: "Setting", path: "/settings" },
   ];
 
   const handleOpenInNewTab = (url: string) => { window.open(url, '_blank', 'noopener,noreferrer'); };

@@ -27,7 +27,7 @@ public class BoardController {
     public ResponseEntity<ApiResponseDto<PostBoardResponseDto>> createBoard(
             @Valid @RequestBody PostBoardRequestDto dto,
             @AuthenticationPrincipal PrincipalDetails user) {
-        ApiResponseDto<PostBoardResponseDto> responseDto = boardService.postBoard(dto, user);
+        ApiResponseDto<PostBoardResponseDto> responseDto = boardService.postBoard(dto, user.getUserId());
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
@@ -66,7 +66,7 @@ public class BoardController {
             @Valid @RequestBody PatchBoardRequestDto dto,
             @PathVariable("boardId") Long boardId,
             @AuthenticationPrincipal PrincipalDetails user) {
-        ApiResponseDto<PatchBoardResponseDto> responseDto = boardService.patchBoard(dto, boardId, user);
+        ApiResponseDto<PatchBoardResponseDto> responseDto = boardService.patchBoard(dto, boardId, user.getUserId());
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
@@ -77,7 +77,7 @@ public class BoardController {
     public ResponseEntity<ApiResponseDto<DeleteBoardResponseDto>> deleteBoard(
             @PathVariable("boardId") Long boardId,
             @AuthenticationPrincipal PrincipalDetails user) {
-        ApiResponseDto<DeleteBoardResponseDto> responseDto = boardService.deleteBoard(boardId, user);
+        ApiResponseDto<DeleteBoardResponseDto> responseDto = boardService.deleteBoard(boardId, user.getUserId());
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
@@ -98,7 +98,7 @@ public class BoardController {
             @PathVariable("boardId") Long boardId,
             @AuthenticationPrincipal PrincipalDetails user
     ) {
-        ApiResponseDto<PutLikeResponseDto> responseDto = boardService.toggleLike(boardId, user);
+        ApiResponseDto<PutLikeResponseDto> responseDto = boardService.toggleLike(boardId, user.getUserId());
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
