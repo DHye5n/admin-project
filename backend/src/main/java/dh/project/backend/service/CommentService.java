@@ -2,7 +2,6 @@ package dh.project.backend.service;
 
 import dh.project.backend.domain.BoardEntity;
 import dh.project.backend.domain.CommentEntity;
-import dh.project.backend.domain.UserEntity;
 import dh.project.backend.dto.ApiResponseDto;
 import dh.project.backend.dto.request.comment.PatchCommentRequestDto;
 import dh.project.backend.dto.request.comment.PostCommentRequestDto;
@@ -14,8 +13,8 @@ import dh.project.backend.enums.ResponseStatus;
 import dh.project.backend.exception.ErrorException;
 import dh.project.backend.repository.BoardRepository;
 import dh.project.backend.repository.CommentRepository;
-import dh.project.backend.repository.UserRepository;
 import dh.project.backend.service.auth.AuthService;
+import dh.project.backend.service.principal.user.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,6 @@ import java.util.List;
 public class CommentService {
 
     private final BoardRepository boardRepository;
-    private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final AuthService authService;
 
@@ -37,9 +35,9 @@ public class CommentService {
      * */
     @Transactional
     public ApiResponseDto<PostCommentResponseDto> postComment(
-            PostCommentRequestDto requestDto, Long boardId, Long userId) {
+            PostCommentRequestDto requestDto, Long boardId, PrincipalDetails user) {
 
-        if (userId == null) {
+        if (user == null) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
@@ -51,10 +49,7 @@ public class CommentService {
             throw new ErrorException(ResponseStatus.NOT_EMPTY);
         }
 
-        UserEntity userEntity = userRepository.findById(userId)
-                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
-
-        CommentEntity commentEntity = requestDto.toEntity(userEntity, boardEntity);
+        CommentEntity commentEntity = requestDto.toEntity(user.getUser(), boardEntity);
 
         CommentEntity savedComment = commentRepository.save(commentEntity);
 
@@ -88,16 +83,16 @@ public class CommentService {
     @PreAuthorize("isAuthenticated()")
     @Transactional
     public ApiResponseDto<PatchCommentResponseDto> patchComment(
-            PatchCommentRequestDto dto, Long boardId, Long commentId, Long userId) {
+            PatchCommentRequestDto dto, Long boardId, Long commentId, PrincipalDetails user) {
 
-        if (userId == null) {
+        if (user == null) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
         CommentEntity commentEntity = commentRepository.findByIdWithUser(boardId, commentId)
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_COMMENT));
 
-        if (!commentEntity.getUser().getUserId().equals(userId)) {
+        if (!commentEntity.getUser().getUserId().equals(user.getUserId())) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
@@ -116,16 +111,16 @@ public class CommentService {
      * */
     @PreAuthorize("isAuthenticated()")
     @Transactional
-    public ApiResponseDto<DeleteCommentResponseDto> deleteComment(Long boardId, Long commentId, Long userId) {
+    public ApiResponseDto<DeleteCommentResponseDto> deleteComment(Long boardId, Long commentId, PrincipalDetails user) {
 
-        if (userId == null) {
+        if (user == null) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
         CommentEntity commentEntity = commentRepository.findByIdWithUser(boardId, commentId)
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_COMMENT));
 
-        if (!commentEntity.getUser().getUserId().equals(userId)) {
+        if (!commentEntity.getUser().getUserId().equals(user.getUserId())) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 

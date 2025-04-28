@@ -32,7 +32,7 @@ public class CommentController {
             @PathVariable("boardId") Long boardId,
             @AuthenticationPrincipal PrincipalDetails user
             ) {
-        ApiResponseDto<PostCommentResponseDto> responseDto = commentService.postComment(dto, boardId, user.getUserId());
+        ApiResponseDto<PostCommentResponseDto> responseDto = commentService.postComment(dto, boardId, user);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
@@ -45,7 +45,7 @@ public class CommentController {
             @PathVariable("boardId") Long boardId,
             @PathVariable("commentId") Long commentId,
             @AuthenticationPrincipal PrincipalDetails user) {
-        ApiResponseDto<PatchCommentResponseDto> responseDto = commentService.patchComment(dto, boardId, commentId, user.getUserId());
+        ApiResponseDto<PatchCommentResponseDto> responseDto = commentService.patchComment(dto, boardId, commentId, user);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
@@ -58,7 +58,7 @@ public class CommentController {
             @PathVariable("commentId") Long commentId,
             @AuthenticationPrincipal PrincipalDetails user
     ) {
-        ApiResponseDto<DeleteCommentResponseDto> responseDto = commentService.deleteComment(boardId, commentId, user.getUserId());
+        ApiResponseDto<DeleteCommentResponseDto> responseDto = commentService.deleteComment(boardId, commentId, user);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 

@@ -20,7 +20,7 @@ import {
 import { useCookies } from 'react-cookie';
 import useSignInUserStore from 'stores/login-user.store';
 import defaultProfileImage from 'assets/image/default-profile-image.png';
-import { closeOutline, mailOutline, searchOutline } from 'ionicons/icons';
+import { closeOutline, searchOutline } from 'ionicons/icons';
 import { IonIcon } from '@ionic/react';
 
 

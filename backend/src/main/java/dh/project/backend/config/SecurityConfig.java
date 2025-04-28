@@ -22,7 +22,8 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
-
+//    private final DefaultOAuth2UserService oAuth2UserService;
+//    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
@@ -64,7 +65,14 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/")
                         .permitAll()
                 );
-
+//                .oauth2Login(oAuth2 -> oAuth2
+//                        .authorizationEndpoint(endpoints ->
+//                                endpoints.baseUri("/api/v1/auth/oauth2"))
+//                        .redirectionEndpoint(endpoint ->
+//                                endpoint.baseUri("/oauth2/callback/*"))
+//                        .userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService))
+//                        .successHandler(oAuth2SuccessHandler)
+//                );
 
         return http.build();
     }

@@ -8,7 +8,6 @@ import dh.project.backend.dto.response.message.GetMessageResponseDto;
 import dh.project.backend.dto.response.message.PostMessageResponseDto;
 import dh.project.backend.enums.ResponseStatus;
 import dh.project.backend.exception.ErrorException;
-import dh.project.backend.handler.MessageHandler;
 import dh.project.backend.repository.MessageRepository;
 import dh.project.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +22,12 @@ public class MessageService {
 
     private final UserRepository userRepository;
     private final MessageRepository messageRepository;
-    private final MessageHandler messageHandler;
 
     /**
      *   TODO: 메시지 작성
      * */
     @Transactional
-    public ApiResponseDto<PostMessageResponseDto> sendMessage(
-            PostMessageRequestDto requestDto, Long senderId, Long receiverId) {
+    public ApiResponseDto<PostMessageResponseDto> sendMessage(PostMessageRequestDto requestDto, Long senderId, Long receiverId) {
 
         UserEntity sender = userRepository.findById(senderId)
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
@@ -47,8 +44,6 @@ public class MessageService {
         MessageEntity savedMessage = messageRepository.save(messageEntity);
 
         PostMessageResponseDto responseDto = PostMessageResponseDto.fromEntity(savedMessage);
-
-        messageHandler.sendMessageToUser(receiverId, savedMessage.getMessage());
 
         return ApiResponseDto.success(ResponseStatus.SUCCESS, responseDto);
     }
