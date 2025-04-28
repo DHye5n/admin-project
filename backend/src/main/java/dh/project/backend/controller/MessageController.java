@@ -5,8 +5,10 @@ import dh.project.backend.dto.request.message.PostMessageRequestDto;
 import dh.project.backend.dto.response.message.GetMessageResponseDto;
 import dh.project.backend.dto.response.message.PostMessageResponseDto;
 import dh.project.backend.service.MessageService;
+import dh.project.backend.service.principal.user.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,22 +26,22 @@ public class MessageController {
     @PostMapping("/send")
     public ResponseEntity<ApiResponseDto<PostMessageResponseDto>> sendMessage(
             @RequestBody PostMessageRequestDto dto,
-            @RequestParam Long senderId,
+            @AuthenticationPrincipal PrincipalDetails user,
             @RequestParam Long receiverId
     ) {
-        ApiResponseDto<PostMessageResponseDto> responseDto = messageService.sendMessage(dto, senderId, receiverId);
+        ApiResponseDto<PostMessageResponseDto> responseDto = messageService.sendMessage(dto, user.getUserId(), receiverId);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 
     /**
      *   TODO: 메시지 조회
      * */
-    @GetMapping("/{senderId}/{receiverId}")
+    @GetMapping("/{receiverId}")
     public ResponseEntity<ApiResponseDto<List<GetMessageResponseDto>>> getMessages(
-            @PathVariable("senderId") Long senderId,
+            @AuthenticationPrincipal PrincipalDetails user,
             @PathVariable("receiverId") Long receiverId
     ) {
-        ApiResponseDto<List<GetMessageResponseDto>> responseDto = messageService.getMessages(senderId, receiverId);
+        ApiResponseDto<List<GetMessageResponseDto>> responseDto = messageService.getMessages(user.getUserId(), receiverId);
         return ResponseEntity.status(responseDto.getStatus()).body(responseDto);
     }
 }

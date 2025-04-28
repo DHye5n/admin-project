@@ -177,9 +177,9 @@ public class AuthService {
     /**
      *   TODO: 유저 권한 체크
      * */
-    public void checkUserAuthorization(Long userId, PrincipalDetails user) {
+    public void checkUserAuthorization(Long userId, Long currentUserId) {
 
-        if (!userId.equals(user.getUserId())) {
+        if (!userId.equals(currentUserId)) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
     }

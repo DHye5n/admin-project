@@ -10,7 +10,6 @@ import dh.project.backend.enums.ResponseStatus;
 import dh.project.backend.exception.ErrorException;
 import dh.project.backend.repository.*;
 import dh.project.backend.service.auth.AuthService;
-import dh.project.backend.service.principal.user.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -26,6 +25,7 @@ import java.util.stream.Collectors;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
     private final ImageRepository imageRepository;
     private final LikeRepository likeRepository;
     private final AuthService authService;
@@ -36,9 +36,9 @@ public class BoardService {
      *   TODO: 게시물 작성
      * */
     @Transactional
-    public ApiResponseDto<PostBoardResponseDto> postBoard(PostBoardRequestDto dto, PrincipalDetails user) {
+    public ApiResponseDto<PostBoardResponseDto> postBoard(PostBoardRequestDto dto, Long userId) {
 
-        if (user == null) {
+        if (userId == null) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
@@ -48,7 +48,7 @@ public class BoardService {
             throw new ErrorException(ResponseStatus.NOT_EMPTY);
         }
 
-        BoardEntity boardEntity = dto.toEntity(user.getUserId());
+        BoardEntity boardEntity = dto.toEntity(userId);
 
         BoardEntity savedBoard = boardRepository.save(boardEntity);
 
@@ -115,16 +115,16 @@ public class BoardService {
     @PreAuthorize("isAuthenticated()")
     @Transactional
     public ApiResponseDto<PatchBoardResponseDto> patchBoard(
-            PatchBoardRequestDto dto, Long boardId, PrincipalDetails user) {
+            PatchBoardRequestDto dto, Long boardId, Long userId) {
 
-            if (user == null) {
+            if (userId == null) {
                 throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
             }
 
             BoardEntity boardEntity = boardRepository.findByIdWithImages(boardId)
                     .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
 
-            authService.checkUserAuthorization(boardEntity.getUser().getUserId(), user);
+            authService.checkUserAuthorization(boardEntity.getUser().getUserId(), userId);
 
             boardEntity.patchBoard(dto);
 
@@ -167,9 +167,9 @@ public class BoardService {
      * */
     @PreAuthorize("isAuthenticated()")
     @Transactional
-    public ApiResponseDto<DeleteBoardResponseDto> deleteBoard(Long boardId, PrincipalDetails user) {
+    public ApiResponseDto<DeleteBoardResponseDto> deleteBoard(Long boardId, Long userId) {
 
-        if (user == null) {
+        if (userId == null) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
@@ -177,7 +177,7 @@ public class BoardService {
                 .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_BOARD));
 
 
-        authService.checkUserAuthorization(boardEntity.getUser().getUserId(), user);
+        authService.checkUserAuthorization(boardEntity.getUser().getUserId(), userId);
 
         boardRepository.delete(boardEntity);
 
@@ -235,9 +235,9 @@ public class BoardService {
      *   TODO: 좋아요
      * */
     @Transactional
-    public ApiResponseDto<PutLikeResponseDto> toggleLike(Long boardId, PrincipalDetails user) {
+    public ApiResponseDto<PutLikeResponseDto> toggleLike(Long boardId, Long userId) {
 
-        if (user == null) {
+        if (userId == null) {
             throw new ErrorException(ResponseStatus.AUTHORIZATION_FAIL);
         }
 
@@ -247,8 +247,11 @@ public class BoardService {
         }
         BoardEntity boardEntity = boardOptional.get();
 
-        Optional<LikeEntity> likeEntity = likeRepository.findByBoard_BoardIdAndUser_UserId(boardId, user.getUserId());
+        Optional<LikeEntity> likeEntity = likeRepository.findByBoard_BoardIdAndUser_UserId(boardId, userId);
         boolean isLiking = likeEntity.isPresent();
+
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new ErrorException(ResponseStatus.NOT_FOUND_USER));
 
         if (likeEntity.isPresent()) {
             likeRepository.delete(likeEntity.get());
@@ -259,7 +262,7 @@ public class BoardService {
             isLiking = false;
         } else {
             LikeEntity newLike = LikeEntity.builder()
-                    .user(user.getUser())
+                    .user(userEntity)
                     .board(boardEntity)
                     .build();
             likeRepository.save(newLike);

@@ -27,7 +27,8 @@ public interface BoardListViewRepository extends JpaRepository<BoardListViewEnti
                     "    FROM image " +
                     "    GROUP BY board_id " +
                     ") AS min_image ON b.board_id = min_image.board_id " +
-                    "INNER JOIN image i ON min_image.board_id = i.board_id AND min_image.min_image_id = i.image_id " +
+                    "INNER JOIN image i ON min_image.board_id = i.board_id " +
+                    "AND min_image.min_image_id = i.image_id " +
                     "WHERE b.deleted_date IS NULL " +
                     "ORDER BY b.created_date DESC",
             nativeQuery = true)

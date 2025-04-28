@@ -29,6 +29,8 @@ import { PatchPasswordRequestDto, PatchUserRequestDto } from './request/user';
 import GetAllBoardListResponseDto from './response/board/get-all-board-list.response.dto';
 import PatchCommentRequestDto from './request/comment/patch-comment.request.dto';
 import { DeleteCommentResponseDto, GetCommentListResponseDto, PatchCommentResponseDto } from './response/comment';
+import { PostMessageRequestDto } from './request/message';
+import { PostMessageResponseDto } from './response/messge';
 
 
 
@@ -51,10 +53,6 @@ const multipartFormData = {
   }
 };
 
-const VIEW_COUNT_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/view-counts`;
-
-const POST_COMMENT_URL = (boardId: number | string) => `${API_DOMAIN}/comments/${boardId}/comment`;
-
 
 // 파일 업로드
 const FILE_UPLOAD_URL = () => `${API_DOMAIN}/files/upload`;
@@ -76,6 +74,8 @@ export const fileUploadRequest = async (data: FormData, accessToken: string) => 
   return result;
 };
 
+// 조회 수
+const VIEW_COUNT_URL = (boardId: number | string) => `${API_DOMAIN}/boards/${boardId}/view-counts`;
 export const viewCountRequest = async (boardId: number | string, accessToken: string) => {
   const result = await axios.get(VIEW_COUNT_URL(boardId), authorization(accessToken))
     .then(response => {
@@ -527,6 +527,7 @@ export const findUsernameRequest = async (email: string, verificationCode: strin
 };
 
 // 댓글 작성
+const POST_COMMENT_URL = (boardId: number | string) => `${API_DOMAIN}/comments/${boardId}/comment`;
 export const postCommentRequest = async (boardId: number | string, requestBody: PostCommentRequestDto, accessToken: string) => {
   const result = await axios.post(POST_COMMENT_URL(boardId), requestBody, authorization(accessToken))
     .then(response => {
@@ -540,6 +541,22 @@ export const postCommentRequest = async (boardId: number | string, requestBody: 
     })
   return result;
 };
+
+// 메시지
+const SEND_MESSAGE_URL = () => `${API_DOMAIN}/messages/send`;
+export const postMessageRequest = async (receiverId: number | string, requestBody: PostMessageRequestDto) => {
+  const result = await axios.post(SEND_MESSAGE_URL(), requestBody)
+    .then(response => {
+      const responseBody: ApiResponseDto<PostMessageResponseDto> = response.data;
+      return responseBody;
+    })
+    .catch(error => {
+      if (!error.response) return null;
+      const responseBody: ApiResponseDto<PostMessageResponseDto> = error.response.data;
+      return responseBody;
+    })
+  return result;
+}
 
 /**
  *   TODO: Patch 요청

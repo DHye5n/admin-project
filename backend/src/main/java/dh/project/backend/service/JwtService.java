@@ -64,10 +64,10 @@ public class JwtService {
                     .getPayload()
                     .getSubject();
         } catch (ExpiredJwtException e) {
-            log.error("Token has expired: {}", e.getMessage());
+//            log.error("Token has expired: {}", e.getMessage());
             throw e;
         } catch (JwtException e) {
-            log.error("Invalid JWT token: {}", e.getMessage());
+//            log.error("Invalid JWT token: {}", e.getMessage());
             throw e;
         }
     }
@@ -77,7 +77,7 @@ public class JwtService {
             getSubject(accessToken);  // 토큰이 유효한지 확인
             return true;  // 유효한 경우
         } catch (JwtException e) {
-            log.error("Invalid access token: {}", e.getMessage());
+//            log.error("Invalid access token: {}", e.getMessage());
             return false;  // 유효하지 않은 경우
         }
     }
@@ -87,7 +87,7 @@ public class JwtService {
             getSubject(refreshToken);  // 리프레시 토큰의 유효성 검증
             return true;  // 유효한 경우
         } catch (JwtException e) {
-            log.error("Invalid refresh token: {}", e.getMessage());
+//            log.error("Invalid refresh token: {}", e.getMessage());
             return false;  // 유효하지 않은 경우
         }
     }
