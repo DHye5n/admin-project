@@ -8,8 +8,16 @@
 }
 
 .user-list-item:hover {
-    background-color: rgba(0, 0, 0, 0.03);
+    /*background-color: rgba(0, 0, 0, 0.03);*/
+    background-color: var(--blue);
     border-radius: 10px;
+}
+
+.user-list-item:hover .user-list-item-username,
+.user-list-item:hover .user-list-item-role,
+.user-list-item:hover .user-list-item-email,
+.user-list-item:hover .user-list-item-counts {
+    color: #ffffff;
 }
 
 .user-list-item-main-box {

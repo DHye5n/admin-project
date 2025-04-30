@@ -101,7 +101,7 @@ public class EmailCodeService {
         );
 
         // 인증 코드와 만료 시간 업데이트
-        emailEntity.updateVerificationCode(verificationCode, LocalDateTime.now().plusMinutes(5));
+        emailEntity.updateVerificationCode(verificationCode, LocalDateTime.now().plusMinutes(3));
 
         emailCodeRepository.save(emailEntity);
     }

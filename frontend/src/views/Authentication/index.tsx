@@ -353,6 +353,11 @@ function SignUpCard() {
 
   const [passwordCheckType, setPasswordCheckType] = useState<'text' | 'password'>('password');
 
+  // 타이머
+  const [timeLeft, setTimeLeft] = useState(0);
+
+  const [timerActive, setTimerActive] = useState(false);
+
   /**
    *   TODO:  state: 에러 상태
    */
@@ -672,6 +677,43 @@ function SignUpCard() {
     setAddressDetailErrorMessage('상세 주소를 입력 바랍니다.');
   };
 
+  // 타이머
+  useEffect(() => {
+    if (!timerActive) return;
+
+    const interval = setInterval(() => {
+      setTimeLeft(prev => {
+        const nextTime = prev - 1;
+        if (nextTime <= 0) {
+          clearInterval(interval);
+          setTimerActive(false);
+          setEmailError(true);
+          setEmailSuccessMessage('');
+          setEmailErrorMessage('인증 시간이 만료되었습니다. 다시 요청해주세요.');
+          setEmailButtonIcon('emailError');
+          return 0;
+        } else {
+          setEmailSuccessMessage(`사용 가능한 이메일입니다. (남은 시간: ${formatTime(nextTime)})`);
+          return nextTime;
+        }
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [timerActive]);
+
+  const startTimer = () => {
+    setTimerActive(true);
+    setTimeLeft(180); // 3분 초기화
+  };
+
+  const formatTime = (seconds: number) => {
+    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const s = String(seconds % 60).padStart(2, '0');
+    return `${m}:${s}`;
+  };
+
+
   /**
    *   TODO:  event handler:  버튼 클릭 이벤트 처리
    */
@@ -702,13 +744,19 @@ function SignUpCard() {
       } else if (response && response.code === 'SU') {
         setEmailError(false);
         setEmailErrorMessage('');
-        setEmailSuccessMessage('사용 가능한 이메일입니다.');
+        setEmailSuccessMessage(`사용 가능한 이메일입니다. (남은 시간: ${formatTime(180)})`);
         setEmailButtonIcon('emailSuccess');
 
         // 이메일이 사용 가능하면 인증 코드 발송
         const sendCodeResponse = await sendVerificationCode(email);
         if (sendCodeResponse && sendCodeResponse.code === 'SU') {
           alert('인증 코드가 발송되었습니다.');
+          setEmailError(false);
+          setEmailErrorMessage('');
+          setEmailSuccessMessage(`사용 가능한 이메일입니다. (남은 시간: ${formatTime(180)})`);
+          setEmailButtonIcon('emailSuccess');
+          startTimer();
+          verificationCodeRef.current?.focus();
         } else {
           alert('인증 코드 발송에 실패했습니다.');
         }
@@ -723,7 +771,11 @@ function SignUpCard() {
       const sendCodeResponse = await sendVerificationCode(email);
       if (sendCodeResponse && sendCodeResponse.code === 'SU') {
         alert('인증 코드가 발송되었습니다.');
-        setEmailButtonIcon('email'); // 상태 초기화
+        setEmailError(false);
+        setEmailErrorMessage('');
+        setEmailSuccessMessage(`사용 가능한 이메일입니다. (남은 시간: ${formatTime(180)})`);
+        setEmailButtonIcon('emailSuccess');
+        startTimer();
       } else {
         alert('인증 코드 발송에 실패했습니다.');
       }
@@ -734,7 +786,11 @@ function SignUpCard() {
       const resendResponse = await resendVerificationCode(email);
       if (resendResponse && resendResponse.code === 'SU') {
         alert('인증 코드가 재발송되었습니다.');
-        setEmailButtonIcon('email'); // 상태 초기화
+        setEmailError(false);
+        setEmailErrorMessage('');
+        setEmailSuccessMessage(`사용 가능한 이메일입니다. (남은 시간: ${formatTime(180)})`);
+        setEmailButtonIcon('emailSuccess');
+        startTimer();
       } else {
         alert('인증 코드 재발송에 실패했습니다.');
       }
@@ -759,6 +815,12 @@ function SignUpCard() {
       setVerificationCodeErrorMessage('');
       setVerificationCodeSuccessMessage('인증이 완료되었습니다.');
       setEmailCheckButtonIcon('shieldSuccess');
+
+      setTimerActive(false);
+      setEmailSuccessMessage(`사용 가능한 이메일입니다.`);
+
+      usernameRef.current?.focus();
+
     } else if (response && response.code === 'IE') {
       setVerificationCodeError(true);
       setVerificationCodeErrorMessage('');
@@ -802,6 +864,7 @@ function SignUpCard() {
       setUsernameErrorMessage('');
       setUsernameSuccessMessage('사용 가능한 아이디입니다.');
       setUsernameButtonIcon('personSuccess');
+      passwordRef.current?.focus();
     } else {
       alert('아이디 중복 체크에 실패했습니다.');
     }
@@ -1065,6 +1128,11 @@ function SignUpCard() {
                         placeholder='이메일 주소를 입력해주세요.' value={email} onChange={onEmailChangeHandler}
                         error={isEmailError} message={emailErrorMessage} successMessage={emailSuccessMessage}
                         icon={emailButtonIcon} onButtonClick={onEmailButtonClickHandler} />
+              {/*{timerActive && (*/}
+              {/*  <div style={{ color: 'red' }}>*/}
+              {/*    인증 코드 유효 시간: {formatTime(timeLeft)}*/}
+              {/*  </div>*/}
+              {/*)}*/}
 
               <InputBox ref={verificationCodeRef} label='인증코드*' type='text'
                         placeholder='인증번호를 입력해주세요.' value={verificationCode} onChange={onVerificationCodeChangeHandler}
