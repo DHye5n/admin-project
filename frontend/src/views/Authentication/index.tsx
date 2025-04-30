@@ -728,7 +728,7 @@ function SignUpCard() {
       setEmailError(true);
       setEmailErrorMessage('이메일을 입력해주세요.');
       setEmailSuccessMessage('');
-      setEmailButtonIcon('email');
+      setEmailButtonIcon('emailError');
       return;
     }
 
