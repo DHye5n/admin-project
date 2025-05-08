@@ -9,7 +9,7 @@
     justify-content: center;
     align-items: center;
     animation: fadeIn 0.3s ease-out;
-    z-index: 1000;  /* 충분히 높은 z-index 설정 */
+    z-index: 9999;  /* 충분히 높은 z-index 설정 */
     cursor: default;
 }
 
@@ -21,7 +21,7 @@
     border-radius: 8px;
     width: 500px;
     height: 500px;
-    z-index: 1100;  /* 배경보다 위에 위치 */
+    z-index: 10000;  /* 배경보다 위에 위치 */
     position: relative;  /* z-index 활성화 */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);  /* 모달에 그림자 추가 */
     opacity: 1 !important;

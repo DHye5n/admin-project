@@ -2,6 +2,7 @@ import './style.css';
 import FindForm from '../FindForm';
 import UpdateForm from '../UpdateForm';
 import ListForm from '../ListForm';
+import ReactDOM from 'react-dom';
 
 
 interface Props {
@@ -29,7 +30,7 @@ export default function Modal({ isOpen, onClose, mode  }: Props) {
 
   if (!isOpen) return null;
 
-  return (
+  return ReactDOM.createPortal(
     <div id='modal-card-wrapper'>
       <div className="modal-card-container">
         <div className='modal-card-content-box'>
@@ -38,6 +39,7 @@ export default function Modal({ isOpen, onClose, mode  }: Props) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
