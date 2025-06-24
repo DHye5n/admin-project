@@ -1,7 +1,7 @@
 package dh.project.backend.service.file;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.*;
 import dh.project.backend.dto.ApiResponseDto;
 import dh.project.backend.enums.ResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Profile("prod")
@@ -43,16 +46,53 @@ public class S3FileService implements FileStorageService {
 
         String extension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
         String[] allowedExtensions = {".png", ".jpg", ".jpeg"};
-        boolean isValidExtension = Arrays.asList(allowedExtensions).contains(extension);
-
-        if (!isValidExtension) {
+        if (!Arrays.asList(allowedExtensions).contains(extension)) {
             return ApiResponseDto.failure(ResponseStatus.INVALID_FILE_EXTENSION);
         }
 
         String saveFileName = UUID.randomUUID() + extension;
 
         try {
-            amazonS3.putObject(s3Bucket, saveFileName, file.getInputStream(), null);
+            // 1. 업로드 초기화
+            InitiateMultipartUploadRequest initRequest = new InitiateMultipartUploadRequest(s3Bucket, saveFileName);
+            InitiateMultipartUploadResult initResponse = amazonS3.initiateMultipartUpload(initRequest);
+
+            // 2. InputStream에서 버퍼 단위로 읽어 파트 업로드
+            List<PartETag> partETags = new ArrayList<>();
+            long contentLength = file.getSize();
+            long partSize = 5 * 1024 * 1024; // 5MB 파트 크기
+
+            InputStream inputStream = file.getInputStream();
+            int partNumber = 1;
+            long filePosition = 0;
+
+            while (filePosition < contentLength) {
+                long currentPartSize = Math.min(partSize, contentLength - filePosition);
+
+                UploadPartRequest uploadRequest = new UploadPartRequest()
+                        .withBucketName(s3Bucket)
+                        .withKey(saveFileName)
+                        .withUploadId(initResponse.getUploadId())
+                        .withPartNumber(partNumber)
+                        .withInputStream(inputStream)
+                        .withPartSize(currentPartSize);
+
+                UploadPartResult uploadResult = amazonS3.uploadPart(uploadRequest);
+                partETags.add(uploadResult.getPartETag());
+
+                filePosition += currentPartSize;
+                partNumber++;
+            }
+
+            // 3. 멀티파트 업로드 완료
+            CompleteMultipartUploadRequest compRequest = new CompleteMultipartUploadRequest(
+                    s3Bucket,
+                    saveFileName,
+                    initResponse.getUploadId(),
+                    partETags);
+
+            amazonS3.completeMultipartUpload(compRequest);
+
         } catch (IOException e) {
             return ApiResponseDto.failure(ResponseStatus.FILE_UPLOAD_FAIL);
         }
